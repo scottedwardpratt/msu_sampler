@@ -1,4 +1,4 @@
-# How to Set Up best_sampler
+# How to Set Up msu_sampler
 
 mkdir build
 cd build
