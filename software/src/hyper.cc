@@ -4,8 +4,6 @@
 #include <iostream>
 #include "msu_sampler/sampler.h"
 
-using namespace msu_sampler;
-
 Chyper::Chyper(){
 	muB=muI=muS=0.0;
 	Rvisc_calculated=false;

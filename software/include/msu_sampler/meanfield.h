@@ -3,21 +3,19 @@
 
 #include "classdefs.h"
 #include "resonances.h"
-#include "parametermap.h"
+#include "msu_commonutils/parametermap.h"
 
-namespace msu_sampler {
-	class CmeanField{
-	public:
-		bool crap;
-		CmeanField();
-		virtual double GetMass(CresInfo* resinfo,double sigma);
-	};
+class CmeanField{
+public:
+	bool crap;
+	CmeanField();
+	virtual double GetMass(CresInfo* resinfo,double sigma);
+};
 
-	class CmeanField_Simple : public CmeanField {
-	public:
-		CmeanField_Simple(CparameterMap *parmap);
-		double GetMass(CresInfo* resinfo,double sigma);
-	};
-}
+class CmeanField_Simple : public CmeanField {
+public:
+	CmeanField_Simple(CparameterMap *parmap);
+	double GetMass(CresInfo* resinfo,double sigma);
+};
 
 #endif

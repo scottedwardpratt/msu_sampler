@@ -5,10 +5,10 @@
 #include <array>
 #include <gsl/gsl_sf.h>
 #include <Eigen/Dense>
-#include "parametermap.h"
-#include "randy.h"
+#include "msu_commonutils/parametermap.h"
+#include "msu_commonutils/randy.h"
 #include "classdefs.h"
-#include "misc.h"
+#include "msu_commonutils/misc.h"
 using namespace std;
 
 // --------------------
@@ -19,9 +19,8 @@ using namespace std;
 // resmap good for finding resinformation indexed by pid, massmap good for thumbing through resonances lightest first
 // -------------------
 
-namespace msu_sampler {
-	class CbranchInfo{
-	public:
+class CbranchInfo{
+public:
 		vector<CresInfo *> resinfo; //pointers for resinfo
 		double branching;
 		int L;
@@ -64,7 +63,7 @@ namespace msu_sampler {
 		double ChiTilde(double T,double vmax); // Integral used by ChiOmega
 		CresInfo();
 		~CresInfo();
-		static Crandy *randy;
+		static CRandy *randy;
 		static CresList *reslist;
 		void CalcSpectralFunction();
 		void ReadSpectralFunction();
@@ -109,6 +108,5 @@ namespace msu_sampler {
 		int products[25][5];
 		unsigned int d_L[25];
 	};
-}
 
 #endif

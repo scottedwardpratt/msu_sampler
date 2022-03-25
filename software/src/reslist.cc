@@ -1,6 +1,5 @@
 #include "msu_sampler/resonances.h"
-#include "msu_sampler/constants.h"
-using namespace msu_sampler;
+#include "msu_commonutils/constants.h"
 
 CresList::CresList(){
 }
@@ -53,7 +52,7 @@ CresList::CresList(CparameterMap* parmap_in){
 void CresList::ReadResInfo(){
 	//Cmerge *merge;
 	int motherpid,pid;
-	double bsum,netm,bmax;
+	double bsum,bmax;
 	unsigned int ires,ichannel,ibody,nbodies,n;
 	int netq,netb,nets;
 	string name, filename;
@@ -189,7 +188,6 @@ void CresList::ReadResInfo(){
 			netq=-resinfo->charge;
 			netb=-resinfo->baryon;
 			nets=-resinfo->strange;
-			netm=0.0;
 
 			for(ibody=0; ibody<nbodies; ibody++) {
 				pid=decayinfo->products[ichannel][ibody];
@@ -197,7 +195,6 @@ void CresList::ReadResInfo(){
 				netq+=bptr->resinfo[ibody]->charge;
 				netb+=bptr->resinfo[ibody]->baryon;
 				nets+=bptr->resinfo[ibody]->strange;
-				netm+=bptr->resinfo[ibody]->mass;
 			}
 
 			bptr->L=decayinfo->d_L[ichannel];

@@ -2,9 +2,9 @@
 #define __MASTER_SAMPLER_H__
 #include "classdefs.h"
 #include "meanfield.h"
-#include "parametermap.h"
-#include "randy.h"
-#include "misc.h"
+#include "msu_commonutils/parametermap.h"
+#include "msu_commonutils/randy.h"
+#include "msu_commonutils/misc.h"
 #include "resonances.h"
 #include <list>
 #include "hyper.h"
@@ -25,43 +25,40 @@ using namespace std;
 //
 // ---------------------------------
 
-namespace msu_sampler {
-	class CmasterSampler{
-	public:
-		CmasterSampler(CparameterMap *parmapin);
-		CmasterSampler(string parsfilename); // Constructor
-		~CmasterSampler();
-		CparameterMap *parmap;
-		CresList *reslist;
-		Crandy *randy;
-		double TFmax;
-		string MEANFIELD;
-		double SIGMAFmin,SIGMAFmax;
-		int NTF,NSIGMAF;
-		double DELTF,DELSIGMAF;
-		bool SETMU0,CALCMU;
-		double RESWIDTH_ALPHA;
-		double YMAX; // only for 2D sampler
-		long long int NEVENTS,NEVENTS_TOT;
-		int nelements;
-		bool FINDT;  // true if you need to find T(epsilon) in hyper elements
+class CmasterSampler{
+public:
+	CmasterSampler(CparameterMap *parmapin);
+	CmasterSampler(string parsfilename); // Constructor
+	~CmasterSampler();
+	CparameterMap *parmap;
+	CresList *reslist;
+	CRandy *randy;
+	double TFmax;
+	string MEANFIELD;
+	double SIGMAFmin,SIGMAFmax;
+	int NTF,NSIGMAF;
+	double DELTF,DELSIGMAF;
+	bool SETMU0,CALCMU;
+	double RESWIDTH_ALPHA;
+	double YMAX; // only for 2D sampler
+	long long int NEVENTS,NEVENTS_TOT;
+	int nelements;
+	bool FINDT;  // true if you need to find T(epsilon) in hyper elements
 
-		list<Chyper *> hyperlist;
-		vector<vector<Csampler *>> sampler;  // array of samplers indexed by T and sigma
-		CpartList *partlist;
+	list<Chyper *> hyperlist;
+	vector<vector<Csampler *>> sampler;  // array of samplers indexed by T and sigma
+	CpartList *partlist;
 
-		void ReadHyper();
-		int MakeEvent(); // returns number of parts
-		Csampler* ChooseSampler(Chyper *hyper);
-		void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);
-		void MakeDummyHyper(int nhyper);
-		void GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVector &u);
-		static CmeanField *meanfield;
-		void TransformPiTotz(FourTensor &piMline, const double cosh_eta,
+	void ReadHyper();
+	int MakeEvent(); // returns number of parts
+	Csampler* ChooseSampler(Chyper *hyper);
+	void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);
+	void MakeDummyHyper(int nhyper);
+	void GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVector &u);
+	static CmeanField *meanfield;
+	void TransformPiTotz(FourTensor &piMline, const double cosh_eta,
 		const double sinh_eta);
-		void ClearHyperList();
-	};
-}
-
+	void ClearHyperList();
+};
 
 #endif

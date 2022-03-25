@@ -1,24 +1,23 @@
 #ifndef __HYPER_H__
 #define __HYPER_H__
 #include "classdefs.h"
-#include "parametermap.h"
-#include "randy.h"
+#include "msu_commonutils/parametermap.h"
+#include "msu_commonutils/randy.h"
 #include "eos.h"
-#include "misc.h"
+#include "msu_commonutils/misc.h"
 using namespace std;
 
-namespace msu_sampler {
-	class Csampler;
-	class CbulkQuantities;
+class Csampler;
+class CbulkQuantities;
 
 	// ------------------------
 	// Information about hyper-surface element
 	//
 	// ------------------------
-	class Chyper{
-	public:
-		Chyper();
-		//~Chyper();
+class Chyper{
+public:
+	Chyper();
+	//~Chyper();
 		double T0; // T0 is read-in temperature, samplerptr->T is used to make parts;
 		//Csampler *sampler;
 		int firstcall;
@@ -44,6 +43,5 @@ namespace msu_sampler {
 		bool epsilon_calculated;
 		Csampler *sampler;
 	};
-}
 
 #endif

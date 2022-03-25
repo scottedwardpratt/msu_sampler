@@ -1,9 +1,8 @@
 #define __RESINFO_CC__
 #include "msu_sampler/resonances.h"
-#include "msu_sampler/constants.h"
-using namespace msu_sampler;
+#include "msu_commonutils/constants.h"
 
-Crandy *CresInfo::randy=NULL;
+CRandy *CresInfo::randy=NULL;
 unsigned int CresInfo::NSPECTRAL=100;
 string CresInfo::SFDIRNAME="../local/resinfo/spectralfunctions";
 
@@ -257,7 +256,7 @@ double CresInfo::GetBL2(double k,unsigned int L){
 	double BL2=1.0;
 	double x2;
 	if(L>0){
-		x2=pow(k*R/HBARC,2);
+		x2=pow(k*R/HBARC_GEV,2);
 		BL2=pow(x2/(1.0+x2),L);
 	}
 	return BL2;

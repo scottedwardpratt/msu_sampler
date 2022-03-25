@@ -1,11 +1,10 @@
 #include "msu_sampler/sampler.h"
-#include "msu_sampler/sf.h"
-#include "msu_sampler/constants.h"
+#include "msu_commonutils/sf.h"
+#include "msu_commonutils/constants.h"
 
 using namespace std;
-using namespace msu_sampler;
 
-Crandy* Csampler::randy=NULL;
+CRandy* Csampler::randy=NULL;
 CresList *Csampler::reslist=NULL;
 CparameterMap *Csampler::parmap=NULL;
 CmasterSampler *Csampler::mastersampler=NULL;
@@ -51,21 +50,21 @@ Csampler::~Csampler(){
 	pibose_P0.clear();
 	pibose_epsilon0.clear();
 	pibose_dedt0.clear();
-	
 }
 
 // Calculates array of densities for each resonance with mu=0, to be used in sampling
 void Csampler::CalcDensitiesMu0(){
 	CresInfo *resinfo;
 	CresMassMap::iterator rpos;
-	double Pi,epsiloni,densi,dedti,p4overE3i;
+	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
 	int ires;
 	nhadrons0=P0=epsilon0=0.0;
 
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
 		resinfo=rpos->second;
 		if(resinfo->pid!=22){
-			GetDensPMax(resinfo,densi,epsiloni,Pi,dedti,p4overE3i);
+			// note this does not change mass due to sigma!=93 MeV
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji);
 			ires=resinfo->ires;
 			density0i[ires]=densi;
 			epsilon0i[ires]=epsiloni;
@@ -80,11 +79,13 @@ void Csampler::CalcDensitiesMu0(){
 	}
 	if(bose_corr){
 		for(int nbose=2;nbose<=n_bose_corr;nbose++){
-			EOS::freegascalc_onespecies(Tf/nbose,0.138,pibose_epsilon0[nbose],pibose_P0[nbose],pibose_dens0[nbose],
-			pibose_dedt0[nbose],p4overE3i);
+			MSU_EOS::freegascalc_onespecies(Tf/nbose,0.138,pibose_epsilon0[nbose],pibose_P0[nbose],pibose_dens0[nbose],
+			pibose_dedt0[nbose]);
+			p4overE3i=MSU_EOS::Getp4overE3(Tf/nbose,0.138,pibose_dens0[nbose]);
 			nhadrons0+=3.0*pibose_dens0[nbose];
 			epsilon0+=3.0*pibose_epsilon0[nbose];
 			P0+=3.0*pibose_P0[nbose];
+			p4overE30+=3.0*p4overE3i;
 		}
 	}
 }
@@ -93,7 +94,7 @@ void Csampler::CalcDensitiesMu0(){
 void Csampler::GetNHMu0(){
 	CresInfo *resinfo;
 	CresMassMap::iterator rpos;
-	double Pi,epsiloni,densi,dedti,p4overE3i,m2;
+	double Pi,epsiloni,densi,dedti,p4overE3i,Ji,m2;
 	int B,S,II,Q;
 
 	nh0_b0i0s0=nh0_b0i2s0=nh0_b0i1s1=0.0;
@@ -121,18 +122,34 @@ void Csampler::GetNHMu0(){
 	m2densh0_b2i0s0=0.0;
 
 	if(bose_corr){
+		densi=p4overE3i=epsiloni=dedti=0.0;
 		for(int nbose=2;nbose<=n_bose_corr;nbose++){
-			EOS::freegascalc_onespecies(Tf/nbose,0.138,pibose_epsilon0[nbose],pibose_P0[nbose],pibose_dens0[nbose],
-			pibose_dedt0[nbose],p4overE3i);
+			MSU_EOS::freegascalc_onespecies(Tf/nbose,0.138,pibose_epsilon0[nbose],pibose_P0[nbose],pibose_dens0[nbose],
+			pibose_dedt0[nbose]);
+			epsiloni+=pibose_epsilon0[nbose];
+			densi+=pibose_dens0[nbose];
+			dedti+=pibose_dedt0[nbose];
+			p4overE3i+=MSU_EOS::Getp4overE3(Tf/nbose,0.138,pibose_dens0[nbose]);
 		}
+		m2=0.138*0.138;
+		nh0_b0i0s0+=densi;
+		eh0_b0i0s0+=epsiloni;
+		dedth0_b0i0s0+=dedti;
+		p4overE3h0_b0i0s0+=p4overE3i;
+		eEbarh0_b0i0s0+=epsiloni*epsiloni/densi;
+		m2densh0_b0i0s0+=m2*densi;
+		nh0_b0i2s0+=densi;
+		eh0_b0i2s0+=epsiloni;
+		dedth0_b0i2s0+=dedti;
+		p4overE3h0_b0i2s0+=p4overE3i;
+		eEbarh0_b0i2s0+=epsiloni*epsiloni/densi;
+		m2densh0_b0i2s0+=m2*densi;
 	}
 
-	double p4overE3sum=0.0;
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
 		resinfo=rpos->second;
 		if(resinfo->pid!=22){
-			GetDensPMax(resinfo,densi,epsiloni,Pi,dedti,p4overE3i);
-			p4overE3sum+=p4overE3i;
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji);
 			m2=resinfo->mass*resinfo->mass;
 
 			B=resinfo->baryon;
@@ -286,13 +303,11 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoItarget,double rhoStarget,dou
 	double drhoS_dmuS;
 
 	double xB,xI,xS,xxB,xxI,xxS,dmumag;
-	int ntries=0;
 
 	mu[0]=muB;
 	mu[1]=0.5*muI;
 	mu[2]=muS;
 	do{
-		ntries+=1;
 		xB=exp(mu[0]);
 		xI=exp(mu[1]);
 		xS=exp(mu[2]);
@@ -669,7 +684,7 @@ void Csampler::CalcRvisc(Chyper *hyper){
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
 		resinfo=rpos->second;
 		m=resinfo->mass;
-		prefactor=resinfo->degen/(2.0*M_PI*M_PI*HBARC*HBARC*HBARC);
+		prefactor=resinfo->degen/(2.0*M_PI*M_PI*HBARC_GEV*HBARC_GEV*HBARC_GEV);
 		if(resinfo->pid!=22){
 			Pi=epsiloni=p4overE3i=densi=dedti=eEbari=Rbulki=0.0;
 			for(pmag=0.5*delp;pmag<7.0;pmag+=delp){
@@ -733,30 +748,6 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 		exit(1);
 	}
 	return E; //returns a random mass proportional to dens*SF'
-}
-
-// Calculates density, pressure, energy density, de/dt (for MC mass choice) for individual resonances
-void Csampler::GetDensPMax(CresInfo *resinfo,double &densi,double &epsiloni,double &Pi,double &dedti,double &p4overE3i){
-	double degen,width,m,minmass;
-	CmeanField *mf=mastersampler->meanfield;
-	bool decay=resinfo->decay;
-	//decay=false;
-	degen=resinfo->degen;
-	m=mf->GetMass(resinfo,sigmaf);
-	width=resinfo->width;
-	minmass=resinfo->minmass;
-
-	if((minmass>-0.001) && (width>1.0E-6) && decay && !USE_POLE_MASS){
-		EOS::freegascalc_onespecies_finitewidth(resinfo,Tf,epsiloni,Pi,densi,dedti,p4overE3i);
-	}
-	else{
-		EOS::freegascalc_onespecies(Tf,m,epsiloni,Pi,densi,dedti,p4overE3i);
-	}
-	epsiloni*=degen;
-	Pi*=degen;
-	dedti*=degen;
-	densi*=degen;
-	p4overE3i*=degen;
 }
 
 // gets nhadrons, epsilon and P

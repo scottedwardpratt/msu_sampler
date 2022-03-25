@@ -1,6 +1,7 @@
 #ifndef __PART_H__
 #define __PART_H__
-#include "misc.h"
+#include "msu_commonutils/commondefs.h"
+#include "msu_commonutils/misc.h"
 #include "resonances.h"
 #include "classdefs.h"
 #include "eos.h"
@@ -14,30 +15,29 @@ using namespace std;
 // Only particles 0 through nparts-1 are to be considered
 // ----------------------------
 
-namespace msu_sampler {
-	class Cpart{
-	public:
-		Cpart();
-		~Cpart();
-		int pid;
-		double msquared;
-		FourVector p,r;
-		void Print();
-		double GetMass();
-		void AddPart(int pid,FourVector &p,FourVector &r);
-		void Setp0();
-		void SetMsquared();
-		void Boost(FourVector &u);
-		void BoostP(FourVector &u);
-		void BoostR(FourVector &u);
-	};
+class Cpart{
+public:
+	Cpart();
+	~Cpart();
+	int pid;
+	double msquared;
+	FourVector p,r;
+	void Print();
+	double GetMass();
+	void AddPart(int pid,FourVector &p,FourVector &r);
+	void Setp0();
+	void SetMsquared();
+	void Boost(FourVector &u);
+	void BoostP(FourVector &u);
+	void BoostR(FourVector &u);
+};
 
 
-	class CpartList{
-	public:
-		double SE[4][4];
-		CpartList(CparameterMap *parmap,CresList *reslist);
-		~CpartList();
+class CpartList{
+public:
+	double SE[4][4];
+	CpartList(CparameterMap *parmap,CresList *reslist);
+	~CpartList();
 		unsigned int nparts,nparts_blocksize;  // increases array by nparts_blocksize when needed
 		vector<Cpart> partvec;
 		Cpart *GetPart();
@@ -54,5 +54,4 @@ namespace msu_sampler {
 		void AddPart(int pidset,FourVector &pset,FourVector &rset);
 		static CresList *reslist;
 	};
-}
 #endif

@@ -1,9 +1,5 @@
-#ifndef __PART_CC__
-#define __PART_CC__
-
 #include "msu_sampler/part.h"
-using namespace msu_sampler;
-CresList *msu_sampler::CpartList::reslist=NULL;
+CresList *CpartList::reslist=NULL;
 
 Cpart::Cpart(){
 	msquared=0.0;
@@ -197,5 +193,3 @@ void CpartList::SumSETensor(){
 		}
 	}
 }
-
-#endif

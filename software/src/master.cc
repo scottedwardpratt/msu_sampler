@@ -1,15 +1,14 @@
 #include "msu_sampler/master.h"
-#include "msu_sampler/constants.h"
+#include "msu_commonutils/constants.h"
 
 //#define __TEST_PITILDE_TRACE__
 
 using namespace std;
-using namespace msu_sampler;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	parmap=parmapin;
-	randy=new Crandy(-1234);
+	randy=new CRandy(-1234);
 	reslist=new CresList(parmap);
 	NEVENTS=0;
 	RESWIDTH_ALPHA=parmap->getD("SAMPLER_RESWIDTH_ALPHA",0.5);
@@ -188,8 +187,6 @@ void CmasterSampler::ReadHyper(){
 		printf("Error %d \n", errno);
 	}
 
-	double TotalVolume=0.0;
-
 	while(!feof(fptr)){
 		elem=new Chyper();
 		// read from binary file
@@ -242,28 +239,28 @@ void CmasterSampler::ReadHyper(){
 			udotdOmega, udotdOmega_music);
 		}
  
-		epsilonf = array[12]*HBARC; //was labeled Edec--guessed this was epsilon
-		Tdec = array[13]*HBARC;
-		muB  = array[14]*HBARC/Tdec;
-		muS  = array[15]*HBARC/Tdec;
-		muC  = array[16]*HBARC/Tdec;
+		epsilonf = array[12]*HBARC_GEV; //was labeled Edec--guessed this was epsilon
+		Tdec = array[13]*HBARC_GEV;
+		muB  = array[14]*HBARC_GEV/Tdec;
+		muS  = array[15]*HBARC_GEV/Tdec;
+		muC  = array[16]*HBARC_GEV/Tdec;
 		Pdec = array[17]*Tdec - epsilonf;
 		
-		pivisc[0][0]=array[18]*HBARC;
-		pivisc[0][1]=pivisc[1][0]=array[19]*HBARC;
-		pivisc[0][2]=pivisc[2][0]=array[20]*HBARC;
-		pivisc[0][3]=pivisc[3][0]=array[21]*HBARC; // /tau;
-		pivisc[1][1]=array[22]*HBARC;
-		pivisc[1][2]=pivisc[2][1]=array[23]*HBARC;
-		pivisc[1][3]=pivisc[3][1]=array[24]*HBARC;  // /tau;
-		pivisc[2][2]=array[25]*HBARC;
-		pivisc[2][3]=pivisc[3][2]=array[26]*HBARC; // /tau;
-		pivisc[3][3]=array[27]*HBARC; // /(tau*tau);
+		pivisc[0][0]=array[18]*HBARC_GEV;
+		pivisc[0][1]=pivisc[1][0]=array[19]*HBARC_GEV;
+		pivisc[0][2]=pivisc[2][0]=array[20]*HBARC_GEV;
+		pivisc[0][3]=pivisc[3][0]=array[21]*HBARC_GEV; // /tau;
+		pivisc[1][1]=array[22]*HBARC_GEV;
+		pivisc[1][2]=pivisc[2][1]=array[23]*HBARC_GEV;
+		pivisc[1][3]=pivisc[3][1]=array[24]*HBARC_GEV;  // /tau;
+		pivisc[2][2]=array[25]*HBARC_GEV;
+		pivisc[2][3]=pivisc[3][2]=array[26]*HBARC_GEV; // /tau;
+		pivisc[3][3]=array[27]*HBARC_GEV; // /(tau*tau);
         TransformPiTotz(pivisc, ch_eta, sh_eta);
 		
 		//printf("reading, trace=%g =? 0\n",pivisc[0][0]-pivisc[1][1]-pivisc[2][2]-pivisc[3][3]);
 
-		PIbulk = array[28]*HBARC;   // GeV/fm^3
+		PIbulk = array[28]*HBARC_GEV;   // GeV/fm^3
 		rhoB = array[29];  // 1/fm^3
 
 		qmu_tau = array[30];
@@ -318,7 +315,6 @@ void CmasterSampler::ReadHyper(){
 			elem->rhoB=rhoB;
 
 			hyperlist.push_back(elem);
-			TotalVolume+=udotdOmega;
 			ielement+=1;
 
 		}

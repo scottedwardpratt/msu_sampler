@@ -1,12 +1,11 @@
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include "msu_sampler/sampler.h"
-#include "msu_sampler/constants.h"
-#include "msu_sampler/misc.h"
+#include "msu_commonutils/constants.h"
+#include "msu_commonutils/misc.h"
 #include <iostream>
 
 using namespace std;
-using namespace msu_sampler;
 
 int Csampler::MakeParts(Chyper *hyper){
 	int nparts=0,dnparts,ires,nbose;
