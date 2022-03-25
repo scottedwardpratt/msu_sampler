@@ -8,7 +8,7 @@ CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	parmap=parmapin;
-	randy=new CRandy(-1234);
+	randy=new Crandy(-1234);
 	reslist=new CresList(parmap);
 	NEVENTS=0;
 	RESWIDTH_ALPHA=parmap->getD("SAMPLER_RESWIDTH_ALPHA",0.5);

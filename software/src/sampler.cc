@@ -4,7 +4,7 @@
 
 using namespace std;
 
-CRandy* Csampler::randy=NULL;
+Crandy* Csampler::randy=NULL;
 CresList *Csampler::reslist=NULL;
 CparameterMap *Csampler::parmap=NULL;
 CmasterSampler *Csampler::mastersampler=NULL;

@@ -32,7 +32,7 @@ public:
 	~CmasterSampler();
 	CparameterMap *parmap;
 	CresList *reslist;
-	CRandy *randy;
+	Crandy *randy;
 	double TFmax;
 	string MEANFIELD;
 	double SIGMAFmin,SIGMAFmax;

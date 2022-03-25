@@ -96,7 +96,7 @@ public:
 	void GetPInFluidFrame(double m,Chyper *hyper,double T,FourVector &p);
 	void CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap);
 
-	static CRandy *randy;
+	static Crandy *randy;
 	static CresList *reslist;
 	static CparameterMap *parmap;
 	static CmasterSampler *mastersampler;

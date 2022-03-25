@@ -63,7 +63,7 @@ public:
 		double ChiTilde(double T,double vmax); // Integral used by ChiOmega
 		CresInfo();
 		~CresInfo();
-		static CRandy *randy;
+		static Crandy *randy;
 		static CresList *reslist;
 		void CalcSpectralFunction();
 		void ReadSpectralFunction();

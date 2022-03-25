@@ -2,7 +2,7 @@
 #include "msu_sampler/resonances.h"
 #include "msu_commonutils/constants.h"
 
-CRandy *CresInfo::randy=NULL;
+Crandy *CresInfo::randy=NULL;
 unsigned int CresInfo::NSPECTRAL=100;
 string CresInfo::SFDIRNAME="../local/resinfo/spectralfunctions";
 
