@@ -4,12 +4,10 @@ using namespace std;
 
 int main(){
 	CparameterMap parmap;
-	parmap.ReadParsFromFile("hydroparameters_3D.txt");
+	parmap.ReadParsFromFile("parameters_sampler.txt");
 	CmasterSampler::meanfield=new CmeanField_Simple(&parmap);
 	CmasterSampler ms(&parmap);
 	long long int deltacount=0;
-	CpartList pl=new CpartList(&parmap);
-	ms.partlist=&pl;
 	ms.randy->reset(time(NULL));
 	
 	ms.ReadHyper();
@@ -23,7 +21,7 @@ int main(){
 				+ms.partlist->CountResonances(2224)+ms.partlist->CountResonances(-2224)
 					+ms.partlist->CountResonances(1114)+ms.partlist->CountResonances(-1114);
 		if((10*(ievent+1))%nevents==0)
-			printf("ievent=%d nparts/event=%g\n",ms.NEVENTS,double(nparts)/double(ms.NEVENTS));
+			printf("ievent=%lld nparts/event=%g\n",ms.NEVENTS,double(nparts)/double(ms.NEVENTS));
 	}
 	printf("Ndelta=%g\n",double(deltacount)/double(nevents));
 	printf("YIPPEE!!!!! We made it all the way through!\n");

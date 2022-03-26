@@ -10,6 +10,7 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	parmap=parmapin;
 	randy=new Crandy(-1234);
 	reslist=new CresList(parmap);
+	partlist=new CpartList(parmap,reslist);
 	NEVENTS=0;
 	RESWIDTH_ALPHA=parmap->getD("SAMPLER_RESWIDTH_ALPHA",0.5);
 	TFmax=0.250;
