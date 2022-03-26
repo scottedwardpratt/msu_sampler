@@ -9,8 +9,8 @@ SAMPLER_NEVENTS_TOT 10000
 SAMPLER_FINDT false
 SAMPLER_NPARTS_BLOCKSIZE 2000
 SAMPLER_CALCMU false #true if hydro hyper info doesn't already have mu.
-RESONANCES_INFO_FILE ../software/resinfo/pdg-SMASH.dat
-RESONANCES_DECAYS_FILE ../software/resinfo/pdg-SMASH.dat
+RESONANCES_INFO_FILE ../progdata/resinfo/pdg-SMASH.dat
+RESONANCES_DECAYS_FILE ../progdata/resinfo/pdg-SMASH.dat
 SAMPLER_BOSE_CORR false
 SAMPLER_N_BOSE_CORR 1
 SAMPLER_BJORKEN_2D true

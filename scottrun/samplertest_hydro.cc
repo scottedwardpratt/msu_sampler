@@ -1,7 +1,6 @@
 #include "msu_sampler/master.h"
 #include <cstring>
 using namespace std;
-using namespace msu_sampler;
 
 int main(){
 	CparameterMap parmap;
@@ -9,7 +8,7 @@ int main(){
 	CmasterSampler::meanfield=new CmeanField_Simple(&parmap);
 	CmasterSampler ms(&parmap);
 	long long int deltacount=0;
-	CpartList pl=CpartList(&parmap);
+	CpartList pl=new CpartList(&parmap);
 	ms.partlist=&pl;
 	ms.randy->reset(time(NULL));
 	
