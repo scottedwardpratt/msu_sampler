@@ -10,7 +10,7 @@ int main(){
 	long long int deltacount=0;
 	ms.randy->reset(time(NULL));
 	
-	ms.ReadHyper();
+	ms.ReadHyper_BEST_Binary3D();
 	
 	long long int nparts=0;
 	int	nevents=parmap.getI("SAMPLER_NEVENTS_TOT",10);

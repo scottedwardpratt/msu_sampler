@@ -52,7 +52,7 @@ CresList::CresList(CparameterMap* parmap_in){
 void CresList::ReadResInfo(){
 	//Cmerge *merge;
 	int motherpid,pid;
-	double bsum,bmax;
+	double bmax;
 	unsigned int ires,ichannel,ibody,nbodies,n;
 	int netq,netb,nets;
 	string name, filename;
@@ -174,8 +174,6 @@ void CresList::ReadResInfo(){
 		resinfo=iter->second;
 		motherpid=iter->first;
 		decayinfo=decaymap[motherpid];
-
-		bsum=0.0;
 		bmax=0.0;
 
 		for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
@@ -209,8 +207,6 @@ void CresList::ReadResInfo(){
 				if(netq!=0 || netb!=0)
 					exit(1);
 			}
-
-			bsum+=bptr->branching;
 
 			// switch places to make sure first branch has largest
 			if(bptr->branching>bmax){

@@ -49,7 +49,8 @@ public:
 	vector<vector<Csampler *>> sampler;  // array of samplers indexed by T and sigma
 	CpartList *partlist;
 
-	void ReadHyper();
+	void ReadHyper_BEST_Binary3D();
+		void ReadHyper_OSU_2D();
 	int MakeEvent(); // returns number of parts
 	Csampler* ChooseSampler(Chyper *hyper);
 	void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);
