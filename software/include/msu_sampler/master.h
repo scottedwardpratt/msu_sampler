@@ -50,7 +50,7 @@ public:
 	CpartList *partlist;
 
 	void ReadHyper_BEST_Binary3D();
-		void ReadHyper_OSU_2D();
+	void ReadHyper_OSU_2D();
 	int MakeEvent(); // returns number of parts
 	Csampler* ChooseSampler(Chyper *hyper);
 	void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);

@@ -10,7 +10,8 @@ int main(){
 	long long int deltacount=0;
 	ms.randy->reset(time(NULL));
 	
-	ms.ReadHyper_BEST_Binary3D();
+	//ms.ReadHyper_BEST_Binary3D();
+	ms.ReadHyper_OSU_2D();
 	
 	long long int nparts=0;
 	int	nevents=parmap.getI("SAMPLER_NEVENTS_TOT",10);
