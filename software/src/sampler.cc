@@ -24,7 +24,7 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	sigmaf=sigmafset;
 	if(!bose_corr)
 		n_bose_corr=1;
-	int nres=reslist->massmap.size();
+	int nres=reslist->resmap.size();
 	if(reslist->GetResInfoPtr(22)->pid==22)
 		nres-=1;
 	density0i.resize(nres);
@@ -146,7 +146,7 @@ void Csampler::GetNHMu0(){
 		m2densh0_b0i2s0+=m2*densi;
 	}
 
-	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
+	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();++rpos){
 		resinfo=rpos->second;
 		if(resinfo->pid!=22){
 			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji);
@@ -758,7 +758,6 @@ void Csampler::CalcNHadronsEpsilonP(Chyper *hyper){
 void Csampler::CalcNHadronsEpsilonP(double muB,double muI,double muS,double &nhadronsf,double &epsilonf,double &Pf){
 	double xB,xI,xS,xxB,xxI,xxS,xbose;
 	int nbose;
-	//printf("epsilon0=%g\n",epsilon0);
 	if(mastersampler->SETMU0){
 		nhadronsf=nhadrons0;
 		epsilonf=epsilon0;

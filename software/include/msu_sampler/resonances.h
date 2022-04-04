@@ -47,6 +47,7 @@ public:
 		int up,down;
 		int G_Parity;
 		bool decay; //false if stable, true if can decay. check if true
+		int Btype;
 		unsigned int nchannels;
 		CbranchList branchlist;
 		vector<double> SpectVec;
@@ -80,6 +81,7 @@ public:
 		double GenerateMass_base();
 		double GetDecayMomentum(double M,double ma,double mb);
 		void NormalizeSF();  //normalizes spectral function
+		void SetBtype();
 		bool SFcalculated;
 		static string SFDIRNAME; // location of spectral functions for reading in
 		static unsigned int NSPECTRAL;  // number of points in spectral function

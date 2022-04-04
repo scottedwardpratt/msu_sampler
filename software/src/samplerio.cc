@@ -114,11 +114,11 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
         qmu3 = qmu_tau*sh_eta + qmu_eta*ch_eta;
 
 		if(parmap->getB("SAMPLER_BJORKEN_2D",false)){
-			double YMAX_ratio=parmap->getD("SAMPLER_BJORKEN_YMAX",1.0)/parmap->getD("HYDRO_BJORKEN_YMAX",1.0);
-			dOmega0*=YMAX_ratio;
-			dOmegaX*=YMAX_ratio;
-			dOmegaY*=YMAX_ratio;
-			dOmegaZ*=YMAX_ratio;
+			double ETAMAX_ratio=parmap->getD("SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
+			dOmega0*=ETAMAX_ratio;
+			dOmegaX*=ETAMAX_ratio;
+			dOmegaY*=ETAMAX_ratio;
+			dOmegaZ*=ETAMAX_ratio;
 		}
 		if(udotdOmega >= 0.0) {
 			elem->tau=tau;
