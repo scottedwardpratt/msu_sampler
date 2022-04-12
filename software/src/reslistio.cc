@@ -5,7 +5,8 @@ void CresList::ReadResInfo(){
 	//Cmerge *merge;
 	int motherpid,pid;
 	double bmax;
-	int ires,ichannel,ibody,nbodies,n;
+	int ires,jres,ichannel,ibody,nbodies,NResonances,LDecay=1;
+	int ires1,ires2,iresflip;
 	int netq,netb,nets;
 	string name, filename;
 	CresInfo *resinfo=NULL,*aresinfo=NULL,*temp=NULL;
@@ -18,6 +19,7 @@ void CresList::ReadResInfo(){
 	int dummy_int;
 	CresInfoMap::iterator iter;
 	CdecayInfoMap::iterator diter;
+	Cmerge *merge;
 	
 	filename=parmap->getS("RESONANCES_INFO_FILE",string("../software/resinfo/pdg-SMASH.dat"));
 	printf("will read resonance info from %s\n",filename.c_str());
@@ -28,12 +30,13 @@ void CresList::ReadResInfo(){
 		exit(1);
 	}
 
+
 	ires=0;
-	n=0;
-	while(fscanf(resinfofile," %d",&pid)!=EOF && n<1000) {
+	NResonances=0;
+	while(fscanf(resinfofile," %d",&pid)!=EOF && NResonances<20000){
 		resinfo=new CresInfo();
 		decayinfo=new CdecayInfo();
-		n++;
+		NResonances+=1;
 		resinfo->pid=pid;
 
 		//main reading
@@ -74,7 +77,7 @@ void CresList::ReadResInfo(){
 		if(resinfo->baryon!=0) {
 			aresinfo=new CresInfo();
 			adecayinfo=new CdecayInfo();
-			n+=1;
+			NResonances+=1;
 
 			aresinfo->pid=-resinfo->pid;
 			aresinfo->mass=resinfo->mass;
@@ -118,8 +121,18 @@ void CresList::ReadResInfo(){
 			decaymap.insert(CdecayInfoPair(aresinfo->pid,adecayinfo));
 		}
 	}
-	printf("NResonances:%d\n",n);
+	printf("NResonances:%d\n",NResonances);
 	fclose(resinfofile);
+	MergeArray=new Cmerge **[NResonances];
+	//SigmaMaxArray=new double *[NResonances];
+	for(ires=0;ires<NResonances;ires++){
+		MergeArray[ires]=new Cmerge *[NResonances];
+		//SigmaMaxArray[ires]=new double[NResonances];
+		for(jres=0;jres<NResonances;jres++){
+			MergeArray[ires][jres]=NULL;
+			//SigmaMaxArray[ires][jres]=0.0;
+		}
+	}
 
 	//now, use the stored decay information to create branchlists
 	for(iter=resmap.begin();iter!=resmap.end();++iter){
@@ -158,6 +171,21 @@ void CresList::ReadResInfo(){
 					bptr->resinfo[ibody]->Print();
 				if(netq!=0 || netb!=0)
 					exit(1);
+			}
+			ires1=bptr->resinfo[0]->ires;
+			ires2=bptr->resinfo[1]->ires;
+			if(ires1>ires2){
+				iresflip=ires1; ires1=ires2; ires2=iresflip;
+			}
+			merge=MergeArray[ires1][ires2];
+			if(merge==NULL){
+				MergeArray[ires1][ires2]=new Cmerge(resinfo,bptr->branching, LDecay);
+			}
+			else{
+				while(merge->next!=NULL){
+					merge=merge->next;
+				}
+				merge->next=new Cmerge(resinfo,bptr->branching, LDecay);
 			}
 
 			// switch places to make sure first branch has largest
