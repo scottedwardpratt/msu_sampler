@@ -66,7 +66,7 @@ CpartList::~CpartList(){
 }
 
 Cpart* CpartList::GetPart(){
-	if(partvec.size()==nparts){
+	if(int(partvec.size())==nparts){
 		printf("resizing partvec, old size=%lu\n",partvec.size());
 		partvec.resize(partvec.size()+nparts);
 	}
@@ -94,7 +94,7 @@ void CpartList::WriteParts(string filename){
 		printf("Error %d \n", errno);
 		exit(1);
 	}
-	for(unsigned int ipart=0;ipart<nparts;ipart++){
+	for(int ipart=0;ipart<nparts;ipart++){
 		fprintf(fptr,"%5d %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e\n",
 		partvec[ipart].pid,partvec[ipart].msquared,partvec[ipart].p[0],partvec[ipart].p[1],partvec[ipart].p[2],partvec[ipart].p[3],
 		partvec[ipart].r[0],partvec[ipart].r[1],partvec[ipart].r[2],partvec[ipart].r[3]);
@@ -104,7 +104,7 @@ void CpartList::WriteParts(string filename){
 
 void CpartList::CountResonances(){
 	CresInfo *resinfo;
-	for(unsigned int ipart=0;ipart<nparts;ipart++){
+	for(int ipart=0;ipart<nparts;ipart++){
 		resinfo=reslist->GetResInfoPtr(partvec[ipart].pid);
 		resinfo->count+=1;
 	}
@@ -112,7 +112,7 @@ void CpartList::CountResonances(){
 
 long long int CpartList::CountResonances(int pid){
 	long long int count=0;
-	for(unsigned int ipart=0;ipart<nparts;ipart++){
+	for(int ipart=0;ipart<nparts;ipart++){
 		if(partvec[ipart].pid==pid)
 		count+=1;
 	}
@@ -120,7 +120,7 @@ long long int CpartList::CountResonances(int pid){
 }
 
 void CpartList::IncrementSpectra(int pid,double dp,vector<double> &spectra){
-	unsigned int ip,ipart,np=spectra.size();
+	int ip,ipart,np=spectra.size();
 	double pt;
 	for(ipart=0;ipart<nparts;ipart++){
 		if(abs(partvec[ipart].pid)==pid){
@@ -135,7 +135,7 @@ void CpartList::IncrementSpectra(int pid,double dp,vector<double> &spectra){
 }
 
 void CpartList::IncrementMassDist(int pid,double dm,vector<double> &massdist){
-	unsigned int im,ipart,nm=massdist.size();
+	int im,ipart,nm=massdist.size();
 	double m;
 	for(ipart=0;ipart<nparts;ipart++){
 		if(abs(partvec[ipart].pid)==pid){
@@ -158,7 +158,7 @@ double CpartList::SumEnergy(){
 
 double CpartList::SumEnergy(int pid){
 	double energy=0.0;
-	unsigned int ipart;
+	int ipart;
 	for(ipart=0;ipart<nparts;ipart++){
 		if(partvec[ipart].pid==pid)
 			energy+=partvec[ipart].p[0];
@@ -167,8 +167,8 @@ double CpartList::SumEnergy(int pid){
 }
 
 void CpartList::AddPart(int pidset,FourVector &pset,FourVector &rset){
-	unsigned int alpha;
-	if(partvec.size()==nparts){
+	int alpha;
+	if(int(partvec.size())==nparts){
 		partvec.resize(partvec.size()+nparts_blocksize);
 		printf("resizing partvec, new size=%lu\n",partvec.size());
 	}
@@ -182,7 +182,7 @@ void CpartList::AddPart(int pidset,FourVector &pset,FourVector &rset){
 }
 
 void CpartList::SumSETensor(){
-	unsigned int ipart,alpha,beta;
+	int ipart,alpha,beta;
 	//nparts=partvec.size();
 	for(ipart=0;ipart<nparts;ipart++){
 		//printf("partvec[%d]=(%g,%g,%g,%g)\n",ipart,partvec[ipart].p[0],partvec[ipart].p[1],partvec[ipart].p[2],partvec[ipart].p[3]);

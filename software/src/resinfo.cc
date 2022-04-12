@@ -3,7 +3,7 @@
 #include "msu_commonutils/constants.h"
 
 Crandy *CresInfo::randy=NULL;
-unsigned int CresInfo::NSPECTRAL=100;
+int CresInfo::NSPECTRAL=100;
 string CresInfo::SFDIRNAME="../local/resinfo/spectralfunctions";
 
 CresInfo::CresInfo(){
@@ -19,8 +19,8 @@ CresInfo::CresInfo(){
 }
 
 CresInfo::~CresInfo(){
-	unsigned int b=branchlist.size()-1;
-	for(b=0;b<branchlist.size();b++){
+	int b=branchlist.size()-1;
+	for(b=0;b<int(branchlist.size());b++){
 		delete branchlist[b];
 	}
 	branchlist.clear();
@@ -40,9 +40,9 @@ void CresInfo::PrintBranchInfo(){
 	Print();
 	if(decay){
 		printf(" ------  branches -------\n");
-		for(unsigned int ib=0;ib<branchlist.size();ib++){
+		for(int ib=0;ib<int(branchlist.size());ib++){
 			printf("%2d, branching=%5.3f, ",ib,branchlist[ib]->branching);
-			for(unsigned int ir=0;ir<branchlist[ib]->resinfo.size();ir++)
+			for(int ir=0;ir<int(branchlist[ib]->resinfo.size());ir++)
 				printf("%6d ",branchlist[ib]->resinfo[ir]->pid);
 			printf("Gamma_i=%g\n",width*branchlist[ib]->branching);
 		}
@@ -59,9 +59,9 @@ void CresInfo::CalcMinMass(){
 	if(decay){
 		minmass=1.0E20;
 		double mbranch;
-		unsigned int ibranch,nbodies,ibody;
+		int ibranch,nbodies,ibody;
 		CbranchInfo *bptr;
-		for(ibranch=0;ibranch<branchlist.size();ibranch++){
+		for(ibranch=0;ibranch<int(branchlist.size());ibranch++){
 			bptr=branchlist[ibranch];
 			mbranch=0.0;
 			nbodies=bptr->resinfo.size();
@@ -109,7 +109,7 @@ void CresInfo::CalcSpectralFunction(){
 		printf("Calling CalcSpectralFunction() for stable particle\n");
 		exit(1);
 	}
-	unsigned int n,ibranch;
+	int n,ibranch;
 	double E,M0=mass,A,rhoratio;
 	double rho_ab,rho_ab0,Gamma,Gamma0,dGamma;
 	CresInfo *resinfo_a,*resinfo_b;
@@ -119,7 +119,7 @@ void CresInfo::CalcSpectralFunction(){
 	for(n=0;n<NSPECTRAL;n++){
 		E=GetEofN(n);
 		Gamma=0;
-		for(ibranch=0;ibranch<branchlist.size();ibranch++){
+		for(ibranch=0;ibranch<int(branchlist.size());ibranch++){
 			dGamma=0.0;
 			Gamma0=width*branchlist[ibranch]->branching;
 			resinfo_a=branchlist[ibranch]->resinfo[0];
@@ -166,7 +166,7 @@ double CresInfo::GetSpectralFunction(double E){
 	return SpectVec[n];
 }
 
-double CresInfo::GetEofN(unsigned int n){
+double CresInfo::GetEofN(int n){
 	return mass+0.5*width*tan(M_PI*(double(n)+0.5-0.5*NSPECTRAL)/double(NSPECTRAL));
 }
 
@@ -175,11 +175,11 @@ double CresInfo::GetMeshE(double E){
 	return GetEofN(n);
 }
 
-double CresInfo::GetRhoAB(double E,CresInfo *resinfo_a,CresInfo *resinfo_b,unsigned int L){
+double CresInfo::GetRhoAB(double E,CresInfo *resinfo_a,CresInfo *resinfo_b,int L){
 	//printf("CHECK, starting CresInfo::GetRhoAB()\n");
 	double pf=0.0,rho_ab=0.0,drho=0.0;
 	double Ea,Aa,Eb,Ab;
-	unsigned int na,nb;
+	int na,nb;
 	if(!resinfo_a->decay){  // both a & b stable
 		pf=GetDecayMomentum(E,resinfo_a->mass,resinfo_b->mass);
 		rho_ab=(pf/E)*GetBL2(pf,L);
@@ -251,7 +251,7 @@ double CresInfo::GetFF(double E,double Ea,double Eb,CresInfo *resinfo_a,CresInfo
 	return FF*FF;
 }
 
-double CresInfo::GetBL2(double k,unsigned int L){
+double CresInfo::GetBL2(double k,int L){
 	const double R=1.0;
 	double BL2=1.0;
 	double x2;
@@ -277,7 +277,7 @@ double CresInfo::GenerateMass_base(){
 }
 
 void CresInfo::NormalizeSF(){
-	unsigned int n,N=SpectVec.size();
+	int n,N=SpectVec.size();
 	double norm=0.0;
 	for(n=0;n<N;n++){
 		norm+=SpectVec[n];
@@ -288,10 +288,10 @@ void CresInfo::NormalizeSF(){
 }
 
 void CresInfo::PrintSpectralFunction(){
-	unsigned int n;
+	int n;
 	printf("- Spectral Function for pid=%d -\n",pid);
 	printf("__ E ___ Gamma ____  A/A_BW ___ A _ (A/A_BW)*dens(M)/dens(M0) _ A*dens(M)/dens(M0) \n");
-	for(n=0;n<SpectVec.size();n++){
+	for(n=0;n<int(SpectVec.size());n++){
 		printf("%8.4f %8.4f %8.4f\n",
 		SpectEVec[n],GammaVec[n],SpectVec[n]);
 	}

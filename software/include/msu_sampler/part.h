@@ -38,7 +38,7 @@ public:
 	double SE[4][4];
 	CpartList(CparameterMap *parmap,CresList *reslist);
 	~CpartList();
-		unsigned int nparts,nparts_blocksize;  // increases array by nparts_blocksize when needed
+		int nparts,nparts_blocksize;  // increases array by nparts_blocksize when needed
 		vector<Cpart> partvec;
 		Cpart *GetPart();
 		void Clear(); // set nparts=0 and frees memory

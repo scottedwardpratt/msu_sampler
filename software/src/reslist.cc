@@ -53,7 +53,7 @@ void CresList::ReadResInfo(){
 	//Cmerge *merge;
 	int motherpid,pid;
 	double bmax;
-	unsigned int ires,ichannel,ibody,nbodies,n;
+	int ires,ichannel,ibody,nbodies,n;
 	int netq,netb,nets;
 	string name, filename;
 	CresInfo *resinfo=NULL,*aresinfo=NULL,*temp=NULL;
@@ -95,7 +95,7 @@ void CresList::ReadResInfo(){
 
 		//decay reading
 		//reads into map values: will access for decays when done creating resonances
-		for (unsigned int j=0; j<resinfo->nchannels; j++) { 
+		for (int j=0; j<resinfo->nchannels; j++) { 
 			fscanf(resinfofile, " %d %d %lf %d %d %d %d %d %d", 
 			&dummy_int,&decayinfo->Nparts[j],&decayinfo->branchratio[j],&decayinfo->products[j][0],
 			&decayinfo->products[j][1],&decayinfo->products[j][2],&decayinfo->products[j][3],
@@ -143,8 +143,8 @@ void CresList::ReadResInfo(){
 
 			aresinfo->branchlist.clear();
 
-			for (unsigned int j=0; j<resinfo->nchannels; j++) { //reads into map values: will access for decays when done creating resonances
-				for (unsigned int i=0; i<5; i++) {
+			for (int j=0; j<resinfo->nchannels; j++) { //reads into map values: will access for decays when done creating resonances
+				for (int i=0; i<5; i++) {
 					pid=decayinfo->products[j][i];
 					if (pid!=0) {
 						temp=GetResInfoPtr(pid);
