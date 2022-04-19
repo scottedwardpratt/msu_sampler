@@ -50,16 +50,18 @@ public:
 	int Btype;
 	int nchannels;
 	CbranchList branchlist;
+	CbranchInfo *bptr_minmass;
 	vector<double> SpectVec;
 	vector<double> SpectEVec;
 	vector<double> GammaVec;
+	map<double,double> massmap;
 	void Print();
 	void PrintBranchInfo();
 	void DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresinfo);
 	void DecayGetResInfoPtr_minmass(int &nbodies,array<CresInfo *,5> &daughterresinfo);
 	bool CheckForDaughters(int pid);
 	bool CheckForNeutral();
-	double GenerateMass();
+	double GenerateMass_T0();  // mass according to spectral function (temperature=0)
 	double ChiInt(double T,double vmax); // Integral used by ChiOmega
 	double ChiTilde(double T,double vmax); // Integral used by ChiOmega
 	CresInfo();
@@ -78,7 +80,7 @@ public:
 	double GetBL2(double k,int L); // factor used to generate spectral functions in arXiv:1606642v2
 	double GetBW(double E,double Mr,double Gamma);  // relativistic Breit Wigner
 	double GetBW_base(double E,double Mr,double Gamma); // simple non-rel. fixed gamma BW, used as base for Monte Carlo
-	double GenerateMass_base();
+	double GenerateMass_BW(); // mass according to Breit Wigner
 	double GetDecayMomentum(double M,double ma,double mb);
 	void NormalizeSF();  //normalizes spectral function
 	void SetBtype();
@@ -116,6 +118,7 @@ public:
 	void CalcSpectralFunctions();
 	//bool RESONANCE_DECAYS;
 	CparameterMap *parmap;
+	static double MIN_DECAY_WIDTH;
 };
 
 class CdecayInfo{

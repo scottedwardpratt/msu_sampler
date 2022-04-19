@@ -729,8 +729,8 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 			printf("it1 already at end of map\n");
 			exit(1);
 		}
+		it2=it1;
 		--it1;
-		it2=it1; it2++;
 		p1=it1->first;
 		p2=it2->first;
 		E1=it1->second;

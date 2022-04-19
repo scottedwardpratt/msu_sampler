@@ -1,5 +1,6 @@
 #include "msu_sampler/resonances.h"
 #include "msu_commonutils/constants.h"
+double CresList::MIN_DECAY_WIDTH=0.0001;
 
 CresList::CresList(){
 }
@@ -44,9 +45,9 @@ CresList::CresList(CparameterMap* parmap_in){
 	CresInfo::SFDIRNAME=parmap->getS("SAMPLER_SFDIRNAME","../local/resinfo/spectralfunctions");
 	//RESONANCE_DECAYS=parmap->getB("RESONANCE_DECAYS",true);
 	ReadResInfo();
-	CalcMinMasses();
 	//CalcSpectralFunctions();
 	ReadSpectralFunctions();
+	CalcMinMasses();
 }
 
 void CresList::CalcSpectralFunctions(){

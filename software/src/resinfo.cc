@@ -1,6 +1,8 @@
 #define __RESINFO_CC__
 #include "msu_sampler/resonances.h"
 #include "msu_commonutils/constants.h"
+#include "msu_commonutils/log.h"
+
 
 Crandy *CresInfo::randy=NULL;
 int CresInfo::NSPECTRAL=100;
@@ -56,8 +58,9 @@ void CresInfo::Print(){
 }
 
 void CresInfo::CalcMinMass(){
+	bptr_minmass=NULL;
 	if(decay){
-		minmass=1.0E20;
+		minmass=SpectEVec[0];
 		double mbranch;
 		int ibranch,nbodies,ibody;
 		CbranchInfo *bptr;
@@ -71,8 +74,9 @@ void CresInfo::CalcMinMass(){
 				}
 				mbranch+=bptr->resinfo[ibody]->minmass;
 			}
-			if(mbranch<minmass)
-				minmass=mbranch;
+			if(mbranch<minmass){
+				bptr_minmass=bptr;
+			}
 		}
 	}
 	else
@@ -271,19 +275,54 @@ double CresInfo::GetBW_base(double E,double M0,double Gamma0){ // simple lorentz
 	//return (2.0*E*E*Gamma0/M_PI)/(pow(E*E-M0*M0,2)+E*E*Gamma0*Gamma0);
 }
 
-double CresInfo::GenerateMass_base(){
+double CresInfo::GenerateMass_BW(){
 	double r1=randy->ran();
 	return ((width/2)*tan(M_PI*(r1-0.5))) + mass;  // mass according to BW distribution
 }
 
+double CresInfo::GenerateMass_T0(){
+	map<double,double>::iterator it1,it2;
+	double E = 0.0, E1 = 0.0, E2 = 0.0;
+	double p1 = 0.0, p2 = 0.0, netprob=randy->ran();
+	if(!decay)
+		E=mass;
+	else{
+		it1=massmap.lower_bound(netprob);
+		if(it1==massmap.end()){
+			printf("it1 already at end of map\n");
+			exit(1);
+		}
+		it2=it1;
+		--it1;
+		p1=it1->first;
+		p2=it2->first;
+		E1=it1->second;
+		E2=it2->second;
+		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
+	}
+	if(E<minmass || E1>E || E2<E){
+		printf("something odd in CresInfo::GenerateMass_T0, E=%g, (E1,E2)=(%g,%g), (p1,p2)=(%g,%g), minmass=%g, netprob=%g\n",E,E1, E2,p1,p2,minmass,netprob);
+		PrintBranchInfo();
+		PrintSpectralFunction();
+		for(it1=massmap.begin();it1!=massmap.end();++it1){
+			printf("Emap=%g, netdens=%g\n",it1->second,it1->first);
+		}
+		exit(1);
+	}
+	return E; //returns a random mass proportional to SF'
+}
+
 void CresInfo::NormalizeSF(){
 	int n,N=SpectVec.size();
-	double norm=0.0;
+	double netnorm,norm=0.0;
 	for(n=0;n<N;n++){
 		norm+=SpectVec[n];
 	}
+	netnorm=0.0;
 	for(n=0;n<N;n++){
 		SpectVec[n]=SpectVec[n]/norm;
+		netnorm+=SpectVec[n];
+		massmap.insert(pair<double,double>(netnorm,SpectEVec[n]));
 	}
 }
 
@@ -302,4 +341,35 @@ double CresInfo::GetDecayMomentum(double M,double ma,double mb){ // Gives relati
 	if(ma+mb<M)
 		pf=sqrt(fabs(pow((M*M-ma*ma-mb*mb),2.0)-(4.0*ma*ma*mb*mb)))/(2.0*M);
 	return pf;
+}
+
+void CresInfo::DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresinfo){
+	char message[100];
+	double r,bsum;
+	int ibody,ibranch;
+	CbranchInfo *bptr;
+	bptr=NULL;
+	bsum=0.0;
+	r=randy->ran();
+	ibranch=0;
+	do{
+		bptr=branchlist[ibranch];
+		bsum+=bptr->branching;
+		ibranch++;
+		if(bsum>1.00000001){
+			sprintf(message,"In DecayGetResInfo: bsum too large, = %g\n",bsum);
+			CLog::Fatal(message);
+		}
+	}while(bsum<r);
+	nbodies=bptr->resinfo.size();
+	for(ibody=0;ibody<nbodies;ibody++){
+		daughterresinfo[ibody]=bptr->resinfo[ibody];
+	}
+}
+
+void CresInfo::DecayGetResInfoPtr_minmass(int &nbodies,array<CresInfo *,5> &daughterresinfo){
+	nbodies=bptr_minmass->resinfo.size();
+	for(int ibody=0;ibody<nbodies;ibody++){
+		daughterresinfo[ibody]=bptr_minmass->resinfo[ibody];
+	}
 }

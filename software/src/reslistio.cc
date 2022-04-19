@@ -30,7 +30,6 @@ void CresList::ReadResInfo(){
 		exit(1);
 	}
 
-
 	ires=0;
 	NResonances=0;
 	while(fscanf(resinfofile," %d",&pid)!=EOF && NResonances<20000){
@@ -41,10 +40,12 @@ void CresList::ReadResInfo(){
 
 		//main reading
 		fscanf(resinfofile, " %s %lf %lf %lf %d %d %d %d %lf %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&gisospin,&resinfo->charge,&resinfo->nchannels);
-		if(resinfo->nchannels==1 && resinfo->width==0.00000)
-			{resinfo->decay=false;}
-		else
-			{resinfo->decay=true;}
+		if(resinfo->nchannels==1 || resinfo->width<MIN_DECAY_WIDTH){
+			resinfo->decay=false;
+		}
+		else{
+			resinfo->decay=true;
+		}
 		cname[int(strlen(cname))-1]='\0';
 		resinfo->name=cname;
 
@@ -52,9 +53,9 @@ void CresList::ReadResInfo(){
 		//reads into map values: will access for decays when done creating resonances
 		for (int j=0; j<resinfo->nchannels; j++) { 
 			fscanf(resinfofile, " %d %d %lf %d %d %d %d %d %d", 
-			&dummy_int,&decayinfo->Nparts[j],&decayinfo->branchratio[j],&decayinfo->products[j][0],
-			&decayinfo->products[j][1],&decayinfo->products[j][2],&decayinfo->products[j][3],
-			&decayinfo->products[j][4],&decayinfo->d_L[j]);
+				&dummy_int,&decayinfo->Nparts[j],&decayinfo->branchratio[j],&decayinfo->products[j][0],
+				&decayinfo->products[j][1],&decayinfo->products[j][2],&decayinfo->products[j][3],
+				&decayinfo->products[j][4],&decayinfo->d_L[j]);
 		}
 
 		if(resinfo->pid!=22){ //copied from old pid
@@ -137,67 +138,69 @@ void CresList::ReadResInfo(){
 	//now, use the stored decay information to create branchlists
 	for(iter=resmap.begin();iter!=resmap.end();++iter){
 		resinfo=iter->second;
-		motherpid=iter->first;
-		decayinfo=decaymap[motherpid];
-		bmax=0.0;
+		if(resinfo->decay){
+			motherpid=iter->first;
+			decayinfo=decaymap[motherpid];
+			bmax=0.0;
 
-		for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
-			nbodies=decayinfo->Nparts[ichannel];
-			bptr=new CbranchInfo();
-			bptr->resinfo.clear();
-			resinfo->branchlist.push_back(bptr);
-			bptr->branching=decayinfo->branchratio[ichannel];
+			for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
+				nbodies=decayinfo->Nparts[ichannel];
+				bptr=new CbranchInfo();
+				bptr->resinfo.clear();
+				resinfo->branchlist.push_back(bptr);
+				bptr->branching=decayinfo->branchratio[ichannel];
 
-			netq=-resinfo->charge;
-			netb=-resinfo->baryon;
-			nets=-resinfo->strange;
+				netq=-resinfo->charge;
+				netb=-resinfo->baryon;
+				nets=-resinfo->strange;
 
-			for(ibody=0; ibody<nbodies; ibody++) {
-				pid=decayinfo->products[ichannel][ibody];
-				bptr->resinfo.push_back(GetResInfoPtr(pid));
-				netq+=bptr->resinfo[ibody]->charge;
-				netb+=bptr->resinfo[ibody]->baryon;
-				nets+=bptr->resinfo[ibody]->strange;
-			}
+				for(ibody=0; ibody<nbodies; ibody++) {
+					pid=decayinfo->products[ichannel][ibody];
+					bptr->resinfo.push_back(GetResInfoPtr(pid));
+					netq+=bptr->resinfo[ibody]->charge;
+					netb+=bptr->resinfo[ibody]->baryon;
+					nets+=bptr->resinfo[ibody]->strange;
+				}
 
-			bptr->L=decayinfo->d_L[ichannel];
+				bptr->L=decayinfo->d_L[ichannel];
 
 			//total charge and baryon number should be conserved, and shouldn't be larger than single strangeness
-			if(netq!=0 || netb!=0 || abs(nets)>1){
-				printf("Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
-				resinfo->Print();
-				printf("DAUGHTERS:\n");
-				for(ibody=0;ibody<nbodies;ibody++)
-					bptr->resinfo[ibody]->Print();
-				if(netq!=0 || netb!=0)
-					exit(1);
-			}
-			ires1=bptr->resinfo[0]->ires;
-			ires2=bptr->resinfo[1]->ires;
-			if(ires1>ires2){
-				iresflip=ires1; ires1=ires2; ires2=iresflip;
-			}
-			merge=MergeArray[ires1][ires2];
-			if(merge==NULL){
-				MergeArray[ires1][ires2]=new Cmerge(resinfo,bptr->branching, LDecay);
-			}
-			else{
-				while(merge->next!=NULL){
-					merge=merge->next;
+				if(netq!=0 || netb!=0 || abs(nets)>1){
+					printf("Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
+					resinfo->Print();
+					printf("DAUGHTERS:\n");
+					for(ibody=0;ibody<nbodies;ibody++)
+						bptr->resinfo[ibody]->Print();
+					if(netq!=0 || netb!=0)
+						exit(1);
 				}
-				merge->next=new Cmerge(resinfo,bptr->branching, LDecay);
-			}
+				ires1=bptr->resinfo[0]->ires;
+				ires2=bptr->resinfo[1]->ires;
+				if(ires1>ires2){
+					iresflip=ires1; ires1=ires2; ires2=iresflip;
+				}
+				merge=MergeArray[ires1][ires2];
+				if(merge==NULL){
+					MergeArray[ires1][ires2]=new Cmerge(resinfo,bptr->branching, LDecay);
+				}
+				else{
+					while(merge->next!=NULL){
+						merge=merge->next;
+					}
+					merge->next=new Cmerge(resinfo,bptr->branching, LDecay);
+				}
 
-			// switch places to make sure first branch has largest
-			if(bptr->branching>bmax){
-				bmax=bptr->branching;
-				if(ichannel>0){
-					firstbptr=resinfo->branchlist[0];
-					resinfo->branchlist[0]=bptr;
-					resinfo->branchlist[ichannel]=firstbptr;
+				// switch places to make sure first branch has largest
+				if(bptr->branching>bmax){
+					bmax=bptr->branching;
+					if(ichannel>0){
+						firstbptr=resinfo->branchlist[0];
+						resinfo->branchlist[0]=bptr;
+						resinfo->branchlist[ichannel]=firstbptr;
+					}
 				}
-			}
-		}  //out of channel loops
+			}  //out of channel loops
+		}
 	}
 	for(iter=resmap.begin();iter!=resmap.end();++iter){
 		resinfo=iter->second;
