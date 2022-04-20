@@ -40,7 +40,7 @@ void CresList::ReadResInfo(){
 
 		//main reading
 		fscanf(resinfofile, " %s %lf %lf %lf %d %d %d %d %lf %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&gisospin,&resinfo->charge,&resinfo->nchannels);
-		if(resinfo->nchannels==1 || resinfo->width<MIN_DECAY_WIDTH){
+		if(resinfo->nchannels==0 || resinfo->width<MIN_DECAY_WIDTH){
 			resinfo->decay=false;
 		}
 		else{

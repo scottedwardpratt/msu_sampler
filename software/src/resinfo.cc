@@ -99,10 +99,10 @@ void CresInfo::ReadSpectralFunction(){
 	fscanf(fptr,"%lf",&E);
 	do{
 		fscanf(fptr,"%lf %lf %lf",&Gamma,&SF,&netprob);
-		SpectVec.push_back(SF);
 		SpectEVec.push_back(E);
 		GammaVec.push_back(Gamma);
 		fscanf(fptr,"%lf",&E);
+		SpectVec.push_back(SF);
 	}while(!feof(fptr));
 	fclose(fptr);
 	SFcalculated=true;
@@ -164,10 +164,22 @@ void CresInfo::CalcSpectralFunction(){
 	SFcalculated=true;
 }
 
-double CresInfo::GetSpectralFunction(double E){
+double CresInfo::GetSpectralFunction(double E){  // FIX THIS
 	int n;
-	n=floorl(NSPECTRAL*(0.5+atan2(E-mass,0.5*width)/M_PI));
-	return SpectVec[n];
+	double delE,E0;
+	E0=SpectEVec[0];
+	if(SpectVec.size()>1){
+		delE=SpectEVec[1]-E0;
+		n=lrint((E-E0)/delE);
+		if(n<int(SpectVec.size())){
+			return SpectVec[n]/delE;
+		}
+		else
+			return 0.0;
+	}
+	else{
+		return 0.0;
+	}
 }
 
 double CresInfo::GetEofN(int n){

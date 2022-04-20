@@ -283,7 +283,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		}
 	}
 	nelements=ielement;
-	printf("netvolume=%g\n",netvolume);
+	//printf("netvolume=%g\n",netvolume);
 }
 
 

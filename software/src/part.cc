@@ -67,7 +67,6 @@ CpartList::~CpartList(){
 
 Cpart* CpartList::GetPart(){
 	if(int(partvec.size())==nparts){
-		printf("resizing partvec, old size=%lu\n",partvec.size());
 		partvec.resize(partvec.size()+nparts);
 	}
 	nparts+=1;
@@ -170,7 +169,6 @@ void CpartList::AddPart(int pidset,FourVector &pset,FourVector &rset){
 	int alpha;
 	if(int(partvec.size())==nparts){
 		partvec.resize(partvec.size()+nparts_blocksize);
-		printf("resizing partvec, new size=%lu\n",partvec.size());
 	}
 	partvec[nparts].pid=pidset;
 	for(alpha=0;alpha<4;alpha++){
