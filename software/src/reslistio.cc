@@ -4,8 +4,8 @@
 void CresList::ReadResInfo(){
 	//Cmerge *merge;
 	int motherpid,pid;
-	double bmax;
-	int ires,jres,ichannel,ibody,nbodies,NResonances,LDecay=1;
+	double bmax,bsum;
+	int ires,ichannelres,ichannel,ibody,nbodies,NResonances,LDecay=1;
 	int ires1,ires2,iresflip;
 	int netq,netb,nets;
 	string name, filename;
@@ -13,7 +13,7 @@ void CresList::ReadResInfo(){
 	CdecayInfo *decayinfo, *adecayinfo;
 	CbranchInfo *bptr=NULL,*firstbptr=NULL;
 	FILE *resinfofile;
-	char cname[200];
+	char cname[200],dummy[200];
 	CdecayInfoMap decaymap;
 	double gisospin;
 	int dummy_int;
@@ -34,28 +34,42 @@ void CresList::ReadResInfo(){
 	NResonances=0;
 	while(fscanf(resinfofile," %d",&pid)!=EOF && NResonances<20000){
 		resinfo=new CresInfo();
-		decayinfo=new CdecayInfo();
 		NResonances+=1;
 		resinfo->pid=pid;
 
 		//main reading
 		fscanf(resinfofile, " %s %lf %lf %lf %d %d %d %d %lf %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&gisospin,&resinfo->charge,&resinfo->nchannels);
-		if(resinfo->nchannels==0 || resinfo->width<MIN_DECAY_WIDTH){
+		if(resinfo->width<MIN_DECAY_WIDTH){
 			resinfo->decay=false;
 		}
 		else{
 			resinfo->decay=true;
+			decayinfo=new CdecayInfo();
 		}
 		cname[int(strlen(cname))-1]='\0';
 		resinfo->name=cname;
 
 		//decay reading
 		//reads into map values: will access for decays when done creating resonances
-		for (int j=0; j<resinfo->nchannels; j++) { 
-			fscanf(resinfofile, " %d %d %lf %d %d %d %d %d %d", 
-				&dummy_int,&decayinfo->Nparts[j],&decayinfo->branchratio[j],&decayinfo->products[j][0],
-				&decayinfo->products[j][1],&decayinfo->products[j][2],&decayinfo->products[j][3],
-				&decayinfo->products[j][4],&decayinfo->d_L[j]);
+		for (ichannel=0; ichannel<resinfo->nchannels; ichannel++){
+			if(resinfo->decay){
+				fscanf(resinfofile, " %d %d %lf %d %d %d %d %d %d", 
+					&dummy_int,&decayinfo->Nparts[ichannel],&decayinfo->branchratio[ichannel],&decayinfo->products[ichannel][0],
+					&decayinfo->products[ichannel][1],&decayinfo->products[ichannel][2],&decayinfo->products[ichannel][3],
+					&decayinfo->products[ichannel][4],&decayinfo->d_L[ichannel]);
+			}
+			else{
+				fscanf(resinfofile,"%d",&dummy_int);
+				fgets(dummy,200,resinfofile);
+			}
+		}
+		if(resinfo->decay){
+			bsum=0.0;
+			for(ichannel=0;ichannel<resinfo->nchannels;ichannel++)
+				bsum+=decayinfo->branchratio[ichannel];
+			printf("bsum=%g\n",bsum);
+			for(ichannel=0;ichannel<resinfo->nchannels;ichannel++)
+				decayinfo->branchratio[ichannel]=decayinfo->branchratio[ichannel]/bsum;
 		}
 
 		if(resinfo->pid!=22){ //copied from old pid
@@ -65,17 +79,18 @@ void CresList::ReadResInfo(){
 
 		resinfo->branchlist.clear();
 
-		if(!resinfo->decay && (resinfo->nchannels-1)==1){
-			printf("decay turned off, but channels exist\n");
-			resinfo->Print();
-		}
-
 		resmap.insert(CresInfoPair(resinfo->pid,resinfo));
 		massmap.insert(CresMassPair(resinfo->mass,resinfo));
-		decaymap.insert(CdecayInfoPair(resinfo->pid,decayinfo));
-
-		//antiparticle creation
-		if(resinfo->baryon!=0) {
+		if(resinfo->decay)
+			decaymap.insert(CdecayInfoPair(resinfo->pid,decayinfo));
+	}
+	//antiparticle creation
+	iter=resmap.begin();
+	int ires0=0,nres0=resmap.size();
+	while(iter!=resmap.end() && ires0<nres0){
+		ires0+=1;
+		resinfo=iter->second;
+		if(resinfo->baryon!=0){
 			aresinfo=new CresInfo();
 			adecayinfo=new CdecayInfo();
 			NResonances+=1;
@@ -98,40 +113,41 @@ void CresList::ReadResInfo(){
 			ires+=1;
 
 			aresinfo->branchlist.clear();
-
-			for (int j=0; j<resinfo->nchannels; j++) { //reads into map values: will access for decays when done creating resonances
-				for (int i=0; i<5; i++) {
-					pid=decayinfo->products[j][i];
-					if (pid!=0) {
+			for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) { //reads into map values: will access for decays when done creating resonances
+				for(int i=0; i<decayinfo->Nparts[ichannel]; i++) {
+					pid=decayinfo->products[ichannel][i];
+					if(pid!=0){
 						temp=GetResInfoPtr(pid);
 						if(temp->baryon==0 && temp->charge==0 && temp->strange==0){
-							adecayinfo->products[j][i]=decayinfo->products[j][i];
+							adecayinfo->products[ichannel][i]=decayinfo->products[ichannel][i];
 						}
-						else {
-							adecayinfo->products[j][i]=-decayinfo->products[j][i];
+						else{
+							adecayinfo->products[ichannel][i]=-decayinfo->products[ichannel][i];
 						}
 					}
-					else adecayinfo->products[j][i]=0;
+					else adecayinfo->products[ichannel][i]=0;
 				}
-				adecayinfo->Nparts[j]=decayinfo->Nparts[j];
-				adecayinfo->branchratio[j]=decayinfo->branchratio[j];
-				adecayinfo->d_L[j]=decayinfo->d_L[j];
+				adecayinfo->Nparts[ichannel]=decayinfo->Nparts[ichannel];
+				adecayinfo->branchratio[ichannel]=decayinfo->branchratio[ichannel];
+				adecayinfo->d_L[ichannel]=decayinfo->d_L[ichannel];
 			}
 			resmap.insert(CresInfoPair(aresinfo->pid,aresinfo));
 			massmap.insert(CresMassPair(aresinfo->mass,aresinfo));
-			decaymap.insert(CdecayInfoPair(aresinfo->pid,adecayinfo));
+			if(aresinfo->decay)
+				decaymap.insert(CdecayInfoPair(aresinfo->pid,adecayinfo));
 		}
 	}
-	printf("NResonances:%d\n",NResonances);
 	fclose(resinfofile);
+	printf("NResonances:%d\n",NResonances);
+	//------------------------------------------
 	MergeArray=new Cmerge **[NResonances];
 	//SigmaMaxArray=new double *[NResonances];
 	for(ires=0;ires<NResonances;ires++){
 		MergeArray[ires]=new Cmerge *[NResonances];
 		//SigmaMaxArray[ires]=new double[NResonances];
-		for(jres=0;jres<NResonances;jres++){
-			MergeArray[ires][jres]=NULL;
-			//SigmaMaxArray[ires][jres]=0.0;
+		for(ichannelres=0;ichannelres<NResonances;ichannelres++){
+			MergeArray[ires][ichannelres]=NULL;
+			//SigmaMaxArray[ires][ichannelres]=0.0;
 		}
 	}
 
@@ -140,9 +156,8 @@ void CresList::ReadResInfo(){
 		resinfo=iter->second;
 		if(resinfo->decay){
 			motherpid=iter->first;
-			decayinfo=decaymap[motherpid];
+			decayinfo=(decaymap.find(motherpid))->second; //decaymap[motherpid];
 			bmax=0.0;
-
 			for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
 				nbodies=decayinfo->Nparts[ichannel];
 				bptr=new CbranchInfo();
@@ -161,18 +176,17 @@ void CresList::ReadResInfo(){
 					netb+=bptr->resinfo[ibody]->baryon;
 					nets+=bptr->resinfo[ibody]->strange;
 				}
-
 				bptr->L=decayinfo->d_L[ichannel];
 
 			//total charge and baryon number should be conserved, and shouldn't be larger than single strangeness
 				if(netq!=0 || netb!=0 || abs(nets)>1){
 					printf("Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
 					resinfo->Print();
+					printf("nchannels=%d, ichannel=%d\n",resinfo->nchannels,ichannel);
 					printf("DAUGHTERS:\n");
 					for(ibody=0;ibody<nbodies;ibody++)
 						bptr->resinfo[ibody]->Print();
-					if(netq!=0 || netb!=0)
-						exit(1);
+					exit(1);
 				}
 				ires1=bptr->resinfo[0]->ires;
 				ires2=bptr->resinfo[1]->ires;
@@ -218,6 +232,7 @@ void CresList::ReadSpectralFunctions(){
 		resinfo=rpos->second;
 		if(resinfo->decay && !resinfo->SFcalculated){
 			resinfo->ReadSpectralFunction();
+			resinfo->NormalizeSF();
 		}
 		else
 			resinfo->SFcalculated=true;

@@ -23,6 +23,7 @@ class CbranchInfo{
 public:
 	vector<CresInfo *> resinfo; //pointers for resinfo
 	double branching;
+	double mtot;
 	int L;
 	CbranchInfo();
 	~CbranchInfo();
@@ -54,7 +55,7 @@ public:
 	vector<double> SpectVec;
 	vector<double> SpectEVec;
 	vector<double> GammaVec;
-	map<double,double> massmap;
+	map<double,double> sfmassmap;
 	void Print();
 	void PrintBranchInfo();
 	void DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresinfo);
@@ -116,6 +117,7 @@ public:
 	void CalcMinMasses();
 	void ReadSpectralFunctions();
 	void CalcSpectralFunctions();
+	void PrintMassMaps();
 	//bool RESONANCE_DECAYS;
 	CparameterMap *parmap;
 	static double MIN_DECAY_WIDTH;

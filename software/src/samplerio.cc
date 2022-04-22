@@ -187,7 +187,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 	double qmu0,qmu1,qmu2,qmu3;
 	double rhoB;
 	char dummy[200];
-	double netvolume=0.0;
+	//double netvolume=0.0;
 
 	if(parmap->getB("SAMPLER_BJORKEN_2D",true)){
 		ETAMAX_ratio=2.0*parmap->getD("SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
@@ -233,7 +233,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 		udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
 		if(udotdOmega >= 0.0) {
-			netvolume+=udotdOmega;
+			//netvolume+=udotdOmega;
 			elem->tau=tau;
 			elem->dOmega[0]=dOmega0; 
 			elem->dOmega[1]=dOmegaX; 

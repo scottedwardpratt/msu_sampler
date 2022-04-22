@@ -299,9 +299,16 @@ double CresInfo::GenerateMass_T0(){
 	if(!decay)
 		E=mass;
 	else{
-		it1=massmap.lower_bound(netprob);
-		if(it1==massmap.end()){
-			printf("it1 already at end of map\n");
+		it1=sfmassmap.lower_bound(netprob);
+		if(it1==sfmassmap.end()){
+			printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
+			Print();
+			it2=sfmassmap.begin();
+			printf(" -----SF massmap----- \n");
+			while(it2!=sfmassmap.end()){
+				printf("%g   %g\n",it2->first,it2->second);
+				it2++;
+			}
 			exit(1);
 		}
 		it2=it1;
@@ -316,7 +323,7 @@ double CresInfo::GenerateMass_T0(){
 		printf("something odd in CresInfo::GenerateMass_T0, E=%g, (E1,E2)=(%g,%g), (p1,p2)=(%g,%g), minmass=%g, netprob=%g\n",E,E1, E2,p1,p2,minmass,netprob);
 		PrintBranchInfo();
 		PrintSpectralFunction();
-		for(it1=massmap.begin();it1!=massmap.end();++it1){
+		for(it1=sfmassmap.begin();it1!=sfmassmap.end();++it1){
 			printf("Emap=%g, netdens=%g\n",it1->second,it1->first);
 		}
 		exit(1);
@@ -334,7 +341,7 @@ void CresInfo::NormalizeSF(){
 	for(n=0;n<N;n++){
 		SpectVec[n]=SpectVec[n]/norm;
 		netnorm+=SpectVec[n];
-		massmap.insert(pair<double,double>(netnorm,SpectEVec[n]));
+		sfmassmap.insert(pair<double,double>(netnorm,SpectEVec[n]));
 	}
 }
 
@@ -356,6 +363,30 @@ double CresInfo::GetDecayMomentum(double M,double ma,double mb){ // Gives relati
 }
 
 void CresInfo::DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresinfo){
+	char message[100];
+	double r,bsum;
+	int ibody,ibranch;
+	CbranchInfo *bptr;
+	bptr=NULL;
+	bsum=0.0;
+	r=randy->ran();
+	ibranch=0;
+	do{
+		bptr=branchlist[ibranch];
+		bsum+=bptr->branching;
+		ibranch++;
+		if(bsum>1.00000001){
+			sprintf(message,"In DecayGetResInfo: bsum too large, = %g\n",bsum);
+			CLog::Fatal(message);
+		}
+	}while(bsum<r);
+	nbodies=bptr->resinfo.size();
+	for(ibody=0;ibody<nbodies;ibody++){
+		daughterresinfo[ibody]=bptr->resinfo[ibody];
+	}
+}
+
+void CresInfo::DecayGetResInfoPtr(double mothermass,int &nbodies,array<CresInfo *,5> &daughterresinfo){
 	char message[100];
 	double r,bsum;
 	int ibody,ibranch;

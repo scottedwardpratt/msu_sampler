@@ -62,3 +62,20 @@ void CresList::CalcSpectralFunctions(){
 			resinfo->SFcalculated=true;
 	}
 }
+
+void CresList::PrintMassMaps(){
+	CresMassMap::iterator rpos;
+	map<double,double>::iterator it;
+	CresInfo *resinfo;
+	for(rpos=massmap.begin();rpos!=massmap.end();++rpos){
+		resinfo=rpos->second;
+		if(resinfo->decay){
+			it=resinfo->sfmassmap.begin();
+			printf(" ----- SF massmap for pid=%d ----- \n",resinfo->pid);
+			while(it!=resinfo->sfmassmap.end()){
+				printf("%g   %g\n",it->first,it->second);
+				it++;
+			}
+		}
+	}
+}
