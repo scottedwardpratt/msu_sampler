@@ -39,6 +39,7 @@ void CresList::ReadResInfo(){
 
 		//main reading
 		fscanf(resinfofile, " %s %lf %lf %lf %d %d %d %d %lf %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&gisospin,&resinfo->charge,&resinfo->nchannels);
+		resinfo->minmass=resinfo->mass;
 		if(resinfo->width<MIN_DECAY_WIDTH){
 			resinfo->decay=false;
 		}
@@ -97,6 +98,7 @@ void CresList::ReadResInfo(){
 
 			aresinfo->pid=-resinfo->pid;
 			aresinfo->mass=resinfo->mass;
+			aresinfo->minmass=resinfo->minmass;
 			aresinfo->width=resinfo->width;
 			aresinfo->degen=resinfo->degen;
 			aresinfo->baryon=-resinfo->baryon;

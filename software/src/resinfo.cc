@@ -74,6 +74,7 @@ void CresInfo::CalcMinMass(){
 				}
 				mbranch+=bptr->resinfo[ibody]->minmass;
 			}
+			bptr->mtot=mbranch;
 			if(mbranch<minmass){
 				bptr_minmass=bptr;
 			}
@@ -292,6 +293,47 @@ double CresInfo::GenerateMass_BW(){
 	return ((width/2)*tan(M_PI*(r1-0.5))) + mass;  // mass according to BW distribution
 }
 
+double CresInfo::GenerateMass_T0(double Estarmax){
+	int imass;
+	map<double,double>::iterator it1,it2;
+	double E,E1,E2,p1,p2,netprob,probsum;
+	double E0;
+	if(!decay)
+		E=mass;
+	else{
+		E=E1=E2=p1=p2=0.0;
+		E0=SpectEVec[0];
+		netprob=randy->ran();
+		probsum=0.0;
+		imass=0;
+		while(SpectEVec[imass]-E0<Estarmax){
+			probsum+=SpectVec[imass];
+			imass+=1;
+		}
+		netprob=netprob*probsum;
+		it1=sfmassmap.lower_bound(netprob);
+		if(it1==sfmassmap.end()){
+			printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
+			Print();
+			it2=sfmassmap.begin();
+			printf(" -----SF massmap----- \n");
+			while(it2!=sfmassmap.end()){
+				printf("%g   %g\n",it2->first,it2->second);
+				it2++;
+			}
+			exit(1);
+		}
+		it2=it1;
+		--it1;
+		p1=it1->first;
+		p2=it2->first;
+		E1=it1->second;
+		E2=it2->second;
+		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
+	}
+	return E;
+}
+
 double CresInfo::GenerateMass_T0(){
 	map<double,double>::iterator it1,it2;
 	double E = 0.0, E1 = 0.0, E2 = 0.0;
@@ -393,17 +435,26 @@ void CresInfo::DecayGetResInfoPtr(double mothermass,int &nbodies,array<CresInfo 
 	CbranchInfo *bptr;
 	bptr=NULL;
 	bsum=0.0;
-	r=randy->ran();
+	for(ibranch=0;ibranch<int(branchlist.size());ibranch++){
+		bptr=branchlist[ibranch];
+		if(mothermass>bptr->mtot)
+			bsum+=bptr->branching;
+	};
+	if(bsum<1.0E-10){
+		sprintf(message,"In DecayGetResInfo: bsum too small, = %g\n",bsum);
+		CLog::Fatal(message);
+	}
+
+	r=randy->ran()*bsum;
+	bsum=0.0;
 	ibranch=0;
 	do{
 		bptr=branchlist[ibranch];
-		bsum+=bptr->branching;
+		if(mothermass>bptr->mtot)
+			bsum+=bptr->branching;
 		ibranch++;
-		if(bsum>1.00000001){
-			sprintf(message,"In DecayGetResInfo: bsum too large, = %g\n",bsum);
-			CLog::Fatal(message);
-		}
 	}while(bsum<r);
+
 	nbodies=bptr->resinfo.size();
 	for(ibody=0;ibody<nbodies;ibody++){
 		daughterresinfo[ibody]=bptr->resinfo[ibody];
