@@ -301,35 +301,45 @@ double CresInfo::GenerateMass_T0(double Estarmax){
 	if(!decay)
 		E=mass;
 	else{
-		E=E1=E2=p1=p2=0.0;
-		E0=SpectEVec[0];
-		netprob=randy->ran();
-		probsum=0.0;
-		imass=0;
-		while(SpectEVec[imass]-E0<Estarmax){
-			probsum+=SpectVec[imass];
-			imass+=1;
+		if(SpectEVec[0]+Estarmax>mass-2.0*width){
+			E=GenerateMass_T0();
 		}
-		netprob=netprob*probsum;
-		it1=sfmassmap.lower_bound(netprob);
-		if(it1==sfmassmap.end()){
-			printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
-			Print();
-			it2=sfmassmap.begin();
-			printf(" -----SF massmap----- \n");
-			while(it2!=sfmassmap.end()){
-				printf("%g   %g\n",it2->first,it2->second);
-				it2++;
+		else{
+			E=E1=E2=p1=p2=0.0;
+			E0=SpectEVec[0];
+			netprob=randy->ran();
+			probsum=0.0;
+			imass=0;
+			printf("hola a\n");
+			while(SpectEVec[imass]-E0<Estarmax){
+				probsum+=SpectVec[imass];
+				imass+=1;
 			}
-			exit(1);
+			netprob=netprob*probsum;
+			printf("hola, imass=%d, netprob=%g\n",imass,netprob);
+
+			it1=sfmassmap.lower_bound(netprob);
+			if(it1==sfmassmap.begin())
+				it1++;
+			if(it1==sfmassmap.end()){
+				printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
+				Print();
+				it2=sfmassmap.begin();
+				printf(" -----SF massmap----- \n");
+				while(it2!=sfmassmap.end()){
+					printf("%g   %g\n",it2->first,it2->second);
+					it2++;
+				}
+				exit(1);
+			}
+			it2=it1;
+			--it1;
+			p1=it1->first;
+			p2=it2->first;
+			E1=it1->second;
+			E2=it2->second;
+			E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
 		}
-		it2=it1;
-		--it1;
-		p1=it1->first;
-		p2=it2->first;
-		E1=it1->second;
-		E2=it2->second;
-		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
 	}
 	return E;
 }
@@ -441,7 +451,8 @@ void CresInfo::DecayGetResInfoPtr(double mothermass,int &nbodies,array<CresInfo 
 			bsum+=bptr->branching;
 	};
 	if(bsum<1.0E-10){
-		sprintf(message,"In DecayGetResInfo: bsum too small, = %g\n",bsum);
+		sprintf(message,"In DecayGetResInfo: bsum too small, = %15.7e\n",bsum);
+		printf("branchlist.size()=%d\n",int(branchlist.size()));
 		CLog::Fatal(message);
 	}
 
