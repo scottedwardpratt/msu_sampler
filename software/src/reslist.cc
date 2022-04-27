@@ -32,8 +32,8 @@ CresInfo* CresList::GetResInfoPtr(int pid){
 
 void CresList::CalcMinMasses(){
 	CresInfo *resinfo;
-	CresInfoMap::iterator rpos;
-	for(rpos=resmap.begin();rpos!=resmap.end();++rpos){
+	CresMassMap::iterator rpos;
+	for(rpos=massmap.begin();rpos!=massmap.end();++rpos){
 		resinfo=rpos->second;
 		resinfo->CalcMinMass();
 	}

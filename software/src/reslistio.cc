@@ -68,7 +68,6 @@ void CresList::ReadResInfo(){
 			bsum=0.0;
 			for(ichannel=0;ichannel<resinfo->nchannels;ichannel++)
 				bsum+=decayinfo->branchratio[ichannel];
-			printf("bsum=%g\n",bsum);
 			for(ichannel=0;ichannel<resinfo->nchannels;ichannel++)
 				decayinfo->branchratio[ichannel]=decayinfo->branchratio[ichannel]/bsum;
 		}
@@ -240,3 +239,5 @@ void CresList::ReadSpectralFunctions(){
 			resinfo->SFcalculated=true;
 	}
 }
+
+

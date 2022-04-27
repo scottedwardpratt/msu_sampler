@@ -63,8 +63,8 @@ public:
 	void DecayGetResInfoPtr_minmass(int &nbodies,array<CresInfo *,5> &daughterresinfo);
 	bool CheckForDaughters(int pid);
 	bool CheckForNeutral();
-	double GenerateMass_T0();  // mass according to spectral function (temperature=0)
-	double GenerateMass_T0(double Estarmax);  // mass according to spectral function (temperature=0)
+	double GenerateMassFromSF(double netprob); // mass according to spectral function (temperature=0)
+	double GenerateMassForDecay(double estarmax);  // mass according to spectral function (temperature=0)
 	double ChiInt(double T,double vmax); // Integral used by ChiOmega
 	double ChiTilde(double T,double vmax); // Integral used by ChiOmega
 	CresInfo();

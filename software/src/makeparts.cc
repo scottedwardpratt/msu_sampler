@@ -19,6 +19,8 @@ int Csampler::MakeParts(Chyper *hyper){
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
 	else
 		dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
+	dNtot*=NSAMPLE;
+	dNtotprime*=NSAMPLE;
 	
 	totvol+=udotdOmega;
 	if(randy->test_threshold(dNtot)){
@@ -30,7 +32,7 @@ int Csampler::MakeParts(Chyper *hyper){
 				I3=0.5*(2.0*resinfo->charge-resinfo->baryon-resinfo->strange);
 				mutot=hyper->muB*resinfo->baryon+hyper->muI*I3+hyper->muS*resinfo->strange;
 				mutot=mutot*hyper->T0/Tf;
-				dN=exp(mutot)*density0i[ires]*udotdOmega;
+				dN=NSAMPLE*exp(mutot)*density0i[ires]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				if(dNtotprime<-0.0001){
@@ -52,7 +54,7 @@ int Csampler::MakeParts(Chyper *hyper){
 				resinfo=reslist->GetResInfoPtr(211);
 				ires=resinfo->ires;
 				mutot=nbose*hyper->muI*hyper->T0/Tf;
-				dN=exp(mutot)*pibose_dens0[nbose]*udotdOmega;
+				dN=NSAMPLE*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				dnparts=CheckResInVolume(dN,Tf/double(nbose),resinfo,hyper);

@@ -108,6 +108,7 @@ public:
 	static bool USE_POLE_MASS;
 	static bool INCLUDE_BULK_VISCOSITY;
 	static bool INCLUDE_SHEAR_VISCOSITY;
+	static int NSAMPLE;
 };
 
 

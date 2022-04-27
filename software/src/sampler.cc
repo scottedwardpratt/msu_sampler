@@ -16,6 +16,7 @@ double Csampler::BJORKEN_YMAX=1.0;
 bool Csampler::USE_POLE_MASS=false;
 bool Csampler::INCLUDE_BULK_VISCOSITY=false;
 bool Csampler::INCLUDE_SHEAR_VISCOSITY=false;
+int Csampler::NSAMPLE=1;
 
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){

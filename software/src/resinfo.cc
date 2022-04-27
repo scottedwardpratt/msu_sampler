@@ -58,12 +58,13 @@ void CresInfo::Print(){
 }
 
 void CresInfo::CalcMinMass(){
+	double mbranch,minmassSF;
+	int ibranch,nbodies,ibody;
+	CbranchInfo *bptr;
 	bptr_minmass=NULL;
 	if(decay){
-		minmass=SpectEVec[0];
-		double mbranch;
-		int ibranch,nbodies,ibody;
-		CbranchInfo *bptr;
+		minmassSF=SpectEVec[0];
+		minmass=1.0E12;
 		for(ibranch=0;ibranch<int(branchlist.size());ibranch++){
 			bptr=branchlist[ibranch];
 			mbranch=0.0;
@@ -76,9 +77,15 @@ void CresInfo::CalcMinMass(){
 			}
 			bptr->mtot=mbranch;
 			if(mbranch<minmass){
+				minmass=mbranch;
 				bptr_minmass=bptr;
 			}
 		}
+		if(minmass>minmassSF){
+			printf("%d: minmass=%g, minmassSF=%g\n",pid,minmass,minmassSF);
+			Misc::Pause();
+		}
+		minmass=SpectEVec[0];
 	}
 	else
 		minmass=mass;
@@ -100,10 +107,12 @@ void CresInfo::ReadSpectralFunction(){
 	fscanf(fptr,"%lf",&E);
 	do{
 		fscanf(fptr,"%lf %lf %lf",&Gamma,&SF,&netprob);
-		SpectEVec.push_back(E);
-		GammaVec.push_back(Gamma);
+		if(SF>1.0E-8){
+			SpectEVec.push_back(E);
+			GammaVec.push_back(Gamma);
+			SpectVec.push_back(SF);
+		}
 		fscanf(fptr,"%lf",&E);
-		SpectVec.push_back(SF);
 	}while(!feof(fptr));
 	fclose(fptr);
 	SFcalculated=true;
@@ -155,8 +164,6 @@ void CresInfo::CalcSpectralFunction(){
 			}
 			Gamma+=dGamma;
 		}
-		//if(pid==229 && E>minmass)
-		//	printf("\n");
 		A=GetBW(E,M0,Gamma);
 		SpectVec[n]=A/GetBW_base(E,M0,width);
 		GammaVec[n]=Gamma;
@@ -193,7 +200,6 @@ double CresInfo::GetMeshE(double E){
 }
 
 double CresInfo::GetRhoAB(double E,CresInfo *resinfo_a,CresInfo *resinfo_b,int L){
-	//printf("CHECK, starting CresInfo::GetRhoAB()\n");
 	double pf=0.0,rho_ab=0.0,drho=0.0;
 	double Ea,Aa,Eb,Ab;
 	int na,nb;
@@ -259,7 +265,7 @@ double CresInfo::GetFF(double E,double Ea,double Eb,CresInfo *resinfo_a,CresInfo
 			lambda=0.8;
 	}
 	FF=(pow(lambda,4)+0.25*pow(s0-mass*mass,2))
-		/(pow(lambda,4)+pow( E*E-0.5*(s0+mass*mass),2));
+	/(pow(lambda,4)+pow( E*E-0.5*(s0+mass*mass),2));
 	//if(pid==229 && resinfo_a->pid==223 && resinfo_b->pid==223 && FF>18){
 	/* if(FF>25 && E<mass){
 	printf("pid=%d, mass=%g, E=%g, Ea=%g, Eb=%g, lambda=%g, FF=%g\n",pid,mass,E,Ea,Eb,lambda,FF);
@@ -293,61 +299,10 @@ double CresInfo::GenerateMass_BW(){
 	return ((width/2)*tan(M_PI*(r1-0.5))) + mass;  // mass according to BW distribution
 }
 
-double CresInfo::GenerateMass_T0(double Estarmax){
-	int imass;
-	map<double,double>::iterator it1,it2;
-	double E,E1,E2,p1,p2,netprob,probsum;
-	double E0;
-	if(!decay)
-		E=mass;
-	else{
-		if(SpectEVec[0]+Estarmax>mass-2.0*width){
-			E=GenerateMass_T0();
-		}
-		else{
-			E=E1=E2=p1=p2=0.0;
-			E0=SpectEVec[0];
-			netprob=randy->ran();
-			probsum=0.0;
-			imass=0;
-			printf("hola a\n");
-			while(SpectEVec[imass]-E0<Estarmax){
-				probsum+=SpectVec[imass];
-				imass+=1;
-			}
-			netprob=netprob*probsum;
-			printf("hola, imass=%d, netprob=%g\n",imass,netprob);
-
-			it1=sfmassmap.lower_bound(netprob);
-			if(it1==sfmassmap.begin())
-				it1++;
-			if(it1==sfmassmap.end()){
-				printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
-				Print();
-				it2=sfmassmap.begin();
-				printf(" -----SF massmap----- \n");
-				while(it2!=sfmassmap.end()){
-					printf("%g   %g\n",it2->first,it2->second);
-					it2++;
-				}
-				exit(1);
-			}
-			it2=it1;
-			--it1;
-			p1=it1->first;
-			p2=it2->first;
-			E1=it1->second;
-			E2=it2->second;
-			E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
-		}
-	}
-	return E;
-}
-
-double CresInfo::GenerateMass_T0(){
-	map<double,double>::iterator it1,it2;
-	double E = 0.0, E1 = 0.0, E2 = 0.0;
-	double p1 = 0.0, p2 = 0.0, netprob=randy->ran();
+double CresInfo::GenerateMassFromSF(double netprob){
+	map<double,double>::iterator it0,it1,it2;
+	double E,E1,E2;
+	double p1,p2;
 	if(!decay)
 		E=mass;
 	else{
@@ -356,7 +311,6 @@ double CresInfo::GenerateMass_T0(){
 			printf("GenerateMass_T0: it1 at end of map, netprob=%g\n",netprob);
 			Print();
 			it2=sfmassmap.begin();
-			printf(" -----SF massmap----- \n");
 			while(it2!=sfmassmap.end()){
 				printf("%g   %g\n",it2->first,it2->second);
 				it2++;
@@ -364,20 +318,33 @@ double CresInfo::GenerateMass_T0(){
 			exit(1);
 		}
 		it2=it1;
-		--it1;
-		p1=it1->first;
-		p2=it2->first;
-		E1=it1->second;
-		E2=it2->second;
-		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
-	}
-	if(E<minmass || E1>E || E2<E){
-		printf("something odd in CresInfo::GenerateMass_T0, E=%g, (E1,E2)=(%g,%g), (p1,p2)=(%g,%g), minmass=%g, netprob=%g\n",E,E1, E2,p1,p2,minmass,netprob);
-		PrintBranchInfo();
-		PrintSpectralFunction();
-		for(it1=sfmassmap.begin();it1!=sfmassmap.end();++it1){
-			printf("Emap=%g, netdens=%g\n",it1->second,it1->first);
+		it2++;
+		if(it1==sfmassmap.begin()){
+			p1=0.0;
 		}
+		else{
+			it0=it1;
+			it0--;
+			p1=it0->first;
+		}
+		if(it2==sfmassmap.end()){
+			it0=it1;
+			it0--;
+			E2=2.0*it1->second-it0->second;
+		}
+		else{
+			it2=it1;
+			it2++;
+			E2=it2->second;
+		}
+		p2=it1->first;
+		E1=it1->second;
+		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
+		it1=sfmassmap.begin();
+	}
+	if(E!=E){
+		Print();
+		printf("In GenerateMasssFromSF, E=%g\n",E);
 		exit(1);
 	}
 	return E; //returns a random mass proportional to SF'
@@ -403,7 +370,7 @@ void CresInfo::PrintSpectralFunction(){
 	printf("__ E ___ Gamma ____  A/A_BW ___ A _ (A/A_BW)*dens(M)/dens(M0) _ A*dens(M)/dens(M0) \n");
 	for(n=0;n<int(SpectVec.size());n++){
 		printf("%8.4f %8.4f %8.4f\n",
-		SpectEVec[n],GammaVec[n],SpectVec[n]);
+			SpectEVec[n],GammaVec[n],SpectVec[n]);
 	}
 }
 
@@ -428,6 +395,7 @@ void CresInfo::DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresi
 		bsum+=bptr->branching;
 		ibranch++;
 		if(bsum>1.00000001){
+			Print();
 			sprintf(message,"In DecayGetResInfo: bsum too large, = %g\n",bsum);
 			CLog::Fatal(message);
 		}
@@ -451,8 +419,11 @@ void CresInfo::DecayGetResInfoPtr(double mothermass,int &nbodies,array<CresInfo 
 			bsum+=bptr->branching;
 	};
 	if(bsum<1.0E-10){
+		printf("mothermass=%g\n",mothermass);
+		Print();
+		sprintf(message,"branchlist.size()=%d\n",int(branchlist.size()));
+		CLog::Info(message);
 		sprintf(message,"In DecayGetResInfo: bsum too small, = %15.7e\n",bsum);
-		printf("branchlist.size()=%d\n",int(branchlist.size()));
 		CLog::Fatal(message);
 	}
 

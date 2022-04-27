@@ -49,6 +49,7 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	Csampler::USE_POLE_MASS=parmap->getB("SAMPLER_USE_POLE_MASS",false);
 	Csampler::INCLUDE_BULK_VISCOSITY=parmap->getB("SAMPLER_INCLUDE_BULK_VISCOSITY",false);
 	Csampler::INCLUDE_SHEAR_VISCOSITY=parmap->getB("SAMPLER_INCLUDE_SHEAR_VISCOSITY",false);
+	Csampler::NSAMPLE=parmap->getI("SAMPLER_NSAMPLE",1);
 	int it,isigma;
 	hyperlist.clear();
 	sampler.resize(NTF+1);
