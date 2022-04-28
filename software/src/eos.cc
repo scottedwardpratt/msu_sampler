@@ -60,7 +60,7 @@ void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P
 	m3=m2*m;
 	m4=m2*m2;
 	z=m/T;
-	if(z>40){ // non-relativistic approximations
+	if(z>25){ // non-relativistic approximations
 		dens=exp(-z)*pow(m*T/(2.0*M_PI*HBARC_GEV*HBARC_GEV),1.5);
 		P=dens*T;
 		epsilon=(m+1.5*T)*dens;
