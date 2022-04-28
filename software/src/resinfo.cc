@@ -6,7 +6,7 @@
 
 Crandy *CresInfo::randy=NULL;
 int CresInfo::NSPECTRAL=100;
-string CresInfo::SFDIRNAME="../local/resinfo/spectralfunctions";
+string CresInfo::SFDIRNAME="../progdata/resinfo/spectralfunctions";
 
 CresInfo::CresInfo(){
 	minmass=1.0E20;
