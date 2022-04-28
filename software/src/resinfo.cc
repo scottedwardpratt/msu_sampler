@@ -100,7 +100,7 @@ void CresInfo::ReadSpectralFunction(){
 		sprintf(filename,"%s/%d.txt",SFDIRNAME.c_str(),pid);
 	FILE *fptr=fopen(filename,"r");
 	if (fptr==NULL) {
-		fprintf(stderr,"Can't open spectral function file\n");
+		fprintf(stderr,"Can't open spectral function file, filename=%s\n",filename);
 		printf("Error %d \n", errno);
 		exit(1);
 	}
