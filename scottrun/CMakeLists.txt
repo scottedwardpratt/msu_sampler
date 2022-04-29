@@ -8,6 +8,7 @@ project(sheartest CXX)
 project(bulktest CXX)
 
 add_custom_target(extern_msu_sampler COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/msu_sampler/software)
+add_custom_target(extern_msu_commonutils COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/commonutils/software)
 
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../software/CMakeLists.txt)
 
