@@ -36,10 +36,11 @@ int Csampler::MakeParts(Chyper *hyper){
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				if(dNtotprime<-0.0001){
-					printf("res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
+					sprintf(message,"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
 					ires,dNtotprime,mutot,dNcheck,dNtot);
-					printf("nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
-					exit(1);
+					CLog::Info(message);
+					sprintf(message,"nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
+					CLog::Fatal(message);
 				}
 				dnparts=CheckResInVolume(dN,Tf,resinfo,hyper);
 				nparts+=dnparts;
@@ -90,9 +91,9 @@ int Csampler::MakeParts(Chyper *hyper){
 		}
 		NoMoreParts:
 		if(dNcheck>dNtot*1.01){
-			printf("Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
+			sprintf(message,"Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
 			dNcheck,dNtot,dNtotprime,Tf);
-			exit(1);
+			CLog::Fatal(message);
 		}
 		return nparts;
 	}
@@ -111,8 +112,8 @@ int Csampler::CheckResInVolume(double dN,double T,CresInfo *resinfo,Chyper *hype
 		GetP(hyper,T,resinfo,p);
 		if(BJORKEN_2D){
 			if(fabs(hyper->u[3])>0.01){
-				printf("BJORKEN_2D set, but u_z=%g\n",hyper->u[3]);
-				exit(1);
+				sprintf(message,"BJORKEN_2D set, but u_z=%g\n",hyper->u[3]);
+				CLog::Fatal(message);
 			}
 			eta=BJORKEN_YMAX*(1.0-randy->ran());
 			ubj[1]=ubj[2]=0.0;
@@ -145,10 +146,7 @@ void Csampler::GetPInFluidFrame(double m,Chyper *hyper,double T,FourVector &p){
 	if(INCLUDE_BULK_VISCOSITY){
 		Tbulk=T-hyper->PItilde/hyper->RTbulk;
 		randy->generate_boltzmann(m,Tbulk,pnobulk);
-		//printf("pnobulk=(%g,%g,%g,%g)\n",pnobulk[0],pnobulk[1],pnobulk[2],pnobulk[3]);
 		BulkScale(hyper,m,pnobulk,pnoshear);
-		//for(alpha=0;alpha<4;alpha++)
-		//pnoshear[alpha]=pnobulk[alpha];
 	}
 	else
 		randy->generate_boltzmann(m,T,pnoshear);
@@ -175,7 +173,6 @@ void Csampler::ShearScale(Chyper *hyper,double mass,FourVector &pnoshear,FourVec
 		p[alpha]=pnoshear[alpha];
 	pmag=sqrt(p[1]*p[1]+p[2]*p[2]+p[3]*p[3]);
 	Rmax=1.0-hyper->biggestpitilde*pmag*pmag/(p[0]*Tf*hyper->Rshear);
-	//printf("pmag=%g, Rmax=%g, biggestpitilde=%g, Rshear=%g\n",pmag,Rmax,hyper->biggestpitilde,hyper->Rshear);
 
 	R=1.0;
 	for(alpha=1;alpha<4;alpha++){
@@ -198,7 +195,8 @@ void Csampler::ShearScale(Chyper *hyper,double mass,FourVector &pnoshear,FourVec
 			}
 		}
 		if(R>Rmax){
-			printf("R=%g, pmag=%g, Rmax=%g, biggestpitilde=%g, Rshear=%g\n",R,pmag,Rmax,hyper->biggestpitilde,hyper->Rshear);
+			sprintf(message,"R=%g, pmag=%g, Rmax=%g, biggestpitilde=%g, Rshear=%g\n",R,pmag,Rmax,hyper->biggestpitilde,hyper->Rshear);
+			CLog::Info(message);
 		}
 	};
 	

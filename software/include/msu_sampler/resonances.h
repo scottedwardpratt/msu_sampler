@@ -3,12 +3,14 @@
 #include <map>
 #include <unordered_map>
 #include <array>
+#include <cstdio>
 #include <gsl/gsl_sf.h>
 #include <Eigen/Dense>
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
-#include "classdefs.h"
+#include "msu_sampler/classdefs.h"
 #include "msu_commonutils/misc.h"
+#include "msu_commonutils/log.h"
 using namespace std;
 
 // --------------------
@@ -90,6 +92,7 @@ public:
 	bool SFcalculated;
 	static string SFDIRNAME; // location of spectral functions for reading in
 	static int NSPECTRAL;  // number of points in spectral function
+	static char *message;
 };
 
 class Cmerge{
@@ -123,6 +126,7 @@ public:
 	//bool RESONANCE_DECAYS;
 	CparameterMap *parmap;
 	static double MIN_DECAY_WIDTH;
+	static char *message;
 };
 
 class CdecayInfo{

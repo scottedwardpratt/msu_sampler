@@ -1,7 +1,7 @@
 #ifndef __EOS_H_
 #define __EOS_H_
-#include "classdefs.h"
-#include "resonances.h"
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/resonances.h"
 
 // ------------------------
 // functions for calculating EoS (epsilon,P,density,depsilon/dT, and sigma^2) of single species

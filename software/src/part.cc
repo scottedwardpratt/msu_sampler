@@ -1,5 +1,8 @@
 #include "msu_sampler/part.h"
+
 CresList *CpartList::reslist=NULL;
+char *Cpart::message=new char[200];
+char *CpartList::message=new char[200];
 
 Cpart::Cpart(){
 	msquared=0.0;
@@ -8,14 +11,16 @@ Cpart::Cpart(){
 		r[alpha]=p[alpha]=0.0;
 	}
 }
-
 Cpart::~Cpart(){
 }
 
 void Cpart::Print(){
-	printf("________________ PART INFO FOR PART, pid=%d _____________________________\n",pid);
-	printf("m^2=%g\\p=(%g,%g,%g,%g)\n",msquared,p[0],p[1],p[2],p[3]);
-	printf("r=(%g,%g,%g,%g)\n",r[0],r[1],r[2],r[3]);
+	sprintf(message,"________________ PART INFO FOR PART, pid=%d _____________________________\n",pid);
+	CLog::Info(message);
+	sprintf(message,"m^2=%g\\p=(%g,%g,%g,%g)\n",msquared,p[0],p[1],p[2],p[3]);
+	CLog::Info(message);
+	sprintf(message,"r=(%g,%g,%g,%g)\n",r[0],r[1],r[2],r[3]);
+	CLog::Info(message);
 }
 
 double Cpart::GetMass(){
@@ -89,9 +94,8 @@ void CpartList::Reset(){
 void CpartList::WriteParts(string filename){
 	FILE *fptr=fopen(filename.c_str(),"w");
 	if (fptr==NULL) {
-		fprintf(stderr,"Can't open file to write parts\n");
-		printf("Error %d \n", errno);
-		exit(1);
+		sprintf(message,"Can't open file to write parts\n");
+		CLog::Info(message);
 	}
 	for(int ipart=0;ipart<nparts;ipart++){
 		fprintf(fptr,"%5d %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e %15.10e\n",
@@ -183,7 +187,6 @@ void CpartList::SumSETensor(){
 	int ipart,alpha,beta;
 	//nparts=partvec.size();
 	for(ipart=0;ipart<nparts;ipart++){
-		//printf("partvec[%d]=(%g,%g,%g,%g)\n",ipart,partvec[ipart].p[0],partvec[ipart].p[1],partvec[ipart].p[2],partvec[ipart].p[3]);
 		for(alpha=0;alpha<4;alpha++){
 			for(beta=0;beta<4;beta++){
 				SE[alpha][beta]+=partvec[ipart].p[alpha]*partvec[ipart].p[beta]/partvec[ipart].p[0];

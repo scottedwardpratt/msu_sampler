@@ -1,8 +1,8 @@
 #ifndef __SAMPLER_MEANFIELD_H__
 #define __SAMPLER_MEANFIELD_H__
 
-#include "classdefs.h"
-#include "resonances.h"
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/resonances.h"
 #include "msu_commonutils/parametermap.h"
 
 class CmeanField{

@@ -5,11 +5,11 @@
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
 #include "msu_commonutils/misc.h"
-#include "resonances.h"
+#include "msu_sampler/resonances.h"
 #include <list>
-#include "hyper.h"
-#include "sampler.h"
-#include "eos.h"
+#include "msu_sampler/hyper.h"
+#include "msu_sampler/sampler.h"
+#include "msu_sampler/eos.h"
 using namespace std;
 
 // --------------------------------
@@ -30,6 +30,7 @@ public:
 	CmasterSampler(CparameterMap *parmapin);
 	CmasterSampler(string parsfilename); // Constructor
 	~CmasterSampler();
+	char *message;
 	CparameterMap *parmap;
 	CresList *reslist;
 	Crandy *randy;

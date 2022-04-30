@@ -1,5 +1,7 @@
 #include "msu_sampler/resonances.h"
 #include "msu_commonutils/constants.h"
+#include "msu_commonutils/log.h"
+using namespace std;
 
 void CresList::ReadResInfo(){
 	//Cmerge *merge;
@@ -22,12 +24,12 @@ void CresList::ReadResInfo(){
 	Cmerge *merge;
 	
 	filename=parmap->getS("RESONANCES_INFO_FILE",string("../software/resinfo/pdg-SMASH.dat"));
-	printf("will read resonance info from %s\n",filename.c_str());
+	sprintf(message,"will read resonance info from %s\n",filename.c_str());
 	resinfofile=fopen(filename.c_str(),"r");
+	CLog::Info(message);
 	if (resinfofile==NULL) {
-		fprintf(stderr,"Can't open resinfofile\n");
-		printf("Error %d \n", errno);
-		exit(1);
+		sprintf(message,"Can't open resinfofile\n");
+		CLog::Fatal(message);
 	}
 
 	ires=0;
@@ -139,7 +141,8 @@ void CresList::ReadResInfo(){
 		}
 	}
 	fclose(resinfofile);
-	printf("NResonances:%d\n",NResonances);
+	sprintf(message,"NResonances:%d\n",NResonances);
+	CLog::Info(message);
 	//------------------------------------------
 	MergeArray=new Cmerge **[NResonances];
 	//SigmaMaxArray=new double *[NResonances];
@@ -181,10 +184,13 @@ void CresList::ReadResInfo(){
 
 			//total charge and baryon number should be conserved, and shouldn't be larger than single strangeness
 				if(netq!=0 || netb!=0 || abs(nets)>1){
-					printf("Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
+					sprintf(message,"Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
+					CLog::Info(message);
 					resinfo->Print();
-					printf("nchannels=%d, ichannel=%d\n",resinfo->nchannels,ichannel);
-					printf("DAUGHTERS:\n");
+					sprintf(message,"nchannels=%d, ichannel=%d\n",resinfo->nchannels,ichannel);
+					CLog::Info(message);
+					sprintf(message,"DAUGHTERS:\n");
+					CLog::Info(message);
 					for(ibody=0;ibody<nbodies;ibody++)
 						bptr->resinfo[ibody]->Print();
 					exit(1);

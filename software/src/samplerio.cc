@@ -12,7 +12,7 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 	int ielement=0;
 	double u0,ux,uy,uz,utau,ueta;
 	double t,x,y,z,tau,eta;
-	double udotdOmega,udotdOmega_music;
+	double udotdOmega;//,udotdOmega_music;
 	double dOmega0,dOmegaX,dOmegaY,dOmegaZ,dOmegaTau,dOmegaEta;
 	double epsilonf;
 	double Tdec,muB,muS,muC;
@@ -23,11 +23,12 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 
 	nelements=0;
 	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/BEST/surface_2D.dat"));
-	printf("opening %s\n",filename.c_str());
+	sprintf(message,"opening %s\n",filename.c_str());
+	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"rb");
 	if (fptr==NULL) {
-		fprintf(stderr,"Can't open hyper info file\n");
-		printf("Error %d \n", errno);
+		sprintf(message,"Can't open hyper info file\n");
+		CLog::Fatal(message);
 	}
 
 	while(!feof(fptr)){
@@ -51,25 +52,21 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		
 		const double u_milne_sqr = utau * utau - ux * ux - uy * uy - ueta * ueta;
 		if (std::abs(u_milne_sqr - 1.0) > 1.e-6) {
-			printf("Warning at reading from MUSIC output: "
+			sprintf(message,"Warning at reading from MUSIC output: "
 				"u_Milne (u_eta multiplied by tau) = %9.6f %9.6f %9.6f %9.6f"
 					", u^2 == 1 is not fulfilled with error %12.8f.\n",
 			utau, ux, uy, ueta, std::abs(u_milne_sqr - 1.0));
+			CLog::Info(message);
 		}
-		udotdOmega_music = tau * (dOmegaTau * utau +
-			dOmegaX * ux + dOmegaY * uy + dOmegaEta * ueta / tau);
+		//udotdOmega_music = tau * (dOmegaTau * utau +
+		//	dOmegaX * ux + dOmegaY * uy + dOmegaEta * ueta / tau);
 
 		// Transforming from Milne to Cartesian
-		const double ch_eta = std::cosh(eta), sh_eta = std::sinh(eta);
+		double ch_eta = std::cosh(eta), sh_eta = std::sinh(eta);
 		t = tau * ch_eta;
 		z = tau * sh_eta;
 		u0 = utau * ch_eta + ueta * sh_eta;
 		uz = utau * sh_eta + ueta * ch_eta;
-
-		const double usqr = u0 * u0 - ux * ux - uy * uy - uz * uz;
-		if (std::abs(usqr - 1.0) > 1.e-3) {
-			printf("u*u should be 1, u*u = %12.8f\n", usqr);
-		}
 
 		dOmega0 = tau * ch_eta * dOmegaTau - sh_eta * dOmegaEta;
 		dOmegaX = -tau * dOmegaX;
@@ -77,10 +74,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		dOmegaZ = tau * sh_eta * dOmegaTau - ch_eta * dOmegaEta;
 
 		udotdOmega = dOmega0 * u0 - dOmegaX * ux - dOmegaY * uy - dOmegaZ * uz;
-		if (std::abs(udotdOmega - udotdOmega_music) > 1.e-4) {
-			printf("u^mu * dsigma_mu should be invariant: %12.9f == %12.9f\n",
-			udotdOmega, udotdOmega_music);
-		}
  
 		epsilonf = array[12]*HBARC_GEV; //was labeled Edec--guessed this was epsilon
 		Tdec = array[13]*HBARC_GEV;
@@ -101,8 +94,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		pivisc[3][3]=array[27]*HBARC_GEV; // /(tau*tau);
         TransformPiTotz(pivisc, ch_eta, sh_eta);
 		
-		//printf("reading, trace=%g =? 0\n",pivisc[0][0]-pivisc[1][1]-pivisc[2][2]-pivisc[3][3]);
-
 		PIbulk = array[28]*HBARC_GEV;   // GeV/fm^3
 		rhoB = array[29];  // 1/fm^3
 
@@ -198,11 +189,12 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 	nelements=0;
 	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/OSU/alice_cent0_5/hyper.txt"));
-	printf("opening %s\n",filename.c_str());
+	sprintf(message,"opening %s\n",filename.c_str());
+	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
 	if (fptr==NULL) {
-		fprintf(stderr,"Can't open hyper info file\n");
-		printf("Error %d \n", errno);
+		sprintf(message,"Can't open hyper info file\n");
+		CLog::Fatal(message);
 	}
 	fscanf(fptr,"%lf",&Tdec);
 	fgets(dummy,200,fptr);	fgets(dummy,200,fptr);
@@ -283,7 +275,6 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		}
 	}
 	nelements=ielement;
-	//printf("netvolume=%g\n",netvolume);
 }
 
 

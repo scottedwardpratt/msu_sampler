@@ -5,6 +5,7 @@
 #include "msu_sampler/resonances.h"
 #include "msu_sampler/classdefs.h"
 #include "msu_sampler/eos.h"
+#include "msu_commonutils/log.h"
 using namespace std;
 
 // ----------------------------
@@ -30,6 +31,7 @@ public:
 	void Boost(FourVector &u);
 	void BoostP(FourVector &u);
 	void BoostR(FourVector &u);
+	static char *message;
 };
 
 
@@ -53,5 +55,6 @@ public:
 		void SumSETensor();
 		void AddPart(int pidset,FourVector &pset,FourVector &rset);
 		static CresList *reslist;
+		static char *message;
 	};
 #endif

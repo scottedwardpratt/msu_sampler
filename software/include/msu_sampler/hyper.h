@@ -1,9 +1,10 @@
 #ifndef __HYPER_H__
 #define __HYPER_H__
+#include <cstdio>
 #include "classdefs.h"
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
-#include "eos.h"
+#include "msu_sampler/eos.h"
 #include "msu_commonutils/misc.h"
 using namespace std;
 
@@ -42,6 +43,7 @@ public:
 		bool Rvisc_calculated;
 		bool epsilon_calculated;
 		Csampler *sampler;
+		static char *message;
 	};
 
 #endif

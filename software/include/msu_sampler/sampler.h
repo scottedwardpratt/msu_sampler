@@ -1,11 +1,12 @@
 #ifndef __SAMPLER_H__
 #define __SAMPLER_H__
-#include "resonances.h"
-#include "part.h"
 #include <Eigen/Dense>
-#include "classdefs.h"
-#include "master.h"
-#include "eos.h"
+#include "msu_sampler/resonances.h"
+#include "msu_sampler/part.h"
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/master.h"
+#include "msu_sampler/eos.h"
+#include "msu_commonutils/log.h"
 using namespace std;
 
 // -----------------
@@ -109,6 +110,7 @@ public:
 	static bool INCLUDE_BULK_VISCOSITY;
 	static bool INCLUDE_SHEAR_VISCOSITY;
 	static int NSAMPLE;
+	static char *message;
 };
 
 

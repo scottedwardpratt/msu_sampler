@@ -5,8 +5,11 @@ CmeanField::CmeanField(){
 }
 
 CmeanField_Simple::CmeanField_Simple(CparameterMap *parmap) : CmeanField(){
-	if(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")!="NO_MF_DESCRIPTION")
-		printf("MF_DESCRIPTION=%s\n",(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")).c_str());
+	char message[200];
+	if(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")!="NO_MF_DESCRIPTION"){
+		sprintf(message,"MF_DESCRIPTION=%s\n",(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")).c_str());
+		CLog::Info(message);
+	}
 }
 
 double CmeanField_Simple::GetMass(CresInfo *resinfo,double sigma){

@@ -1,6 +1,9 @@
 #include "msu_sampler/resonances.h"
 #include "msu_commonutils/constants.h"
+#include "msu_commonutils/log.h"
+
 double CresList::MIN_DECAY_WIDTH=0.0001;
+char *CresList::message=new char[200];
 
 CresList::CresList(){
 }
@@ -24,8 +27,8 @@ CresInfo* CresList::GetResInfoPtr(int pid){
 	if(rpos!=resmap.end())
 		return rpos->second;
 	else{
-		printf("Warning GetResInfoPtr() can't find match for PID=%d\n",pid);
-		exit(1);
+		sprintf(message,"GetResInfoPtr() can't find match for PID=%d\n",pid);
+		CLog::Fatal(message);
 		return NULL;
 	}
 }
@@ -71,9 +74,11 @@ void CresList::PrintMassMaps(){
 		resinfo=rpos->second;
 		if(resinfo->decay){
 			it=resinfo->sfmassmap.begin();
-			printf(" ----- SF massmap for pid=%d ----- \n",resinfo->pid);
+			sprintf(message," ----- SF massmap for pid=%d ----- \n",resinfo->pid);
+			CLog::Info(message);
 			while(it!=resinfo->sfmassmap.end()){
-				printf("%g   %g\n",it->first,it->second);
+				sprintf(message,"%g   %g\n",it->first,it->second);
+				CLog::Info(message);
 				it++;
 			}
 		}

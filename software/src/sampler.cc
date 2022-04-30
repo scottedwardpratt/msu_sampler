@@ -17,6 +17,7 @@ bool Csampler::USE_POLE_MASS=false;
 bool Csampler::INCLUDE_BULK_VISCOSITY=false;
 bool Csampler::INCLUDE_SHEAR_VISCOSITY=false;
 int Csampler::NSAMPLE=1;
+char *Csampler::message=new char[200];
 
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){
@@ -242,8 +243,8 @@ void Csampler::GetNHMu0(){
 				m2densh0_b2i0s0+=m2*densi;
 			}
 			else{
-				printf("NO BIS Match!!!! B=%d, II=%d, S=%d\n",B,II,S);
-				exit(1);
+				sprintf(message,"NO BIS Match!!!! B=%d, II=%d, S=%d\n",B,II,S);
+				CLog::Fatal(message);
 			}
 		}
 	}
@@ -415,8 +416,8 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoItarge
 	do{
 		ntries+=1;
 		if(ntries>30000){
-			printf("FAILURE, ntries=%d\n",ntries);
-			exit(1);
+			sprintf(message,"FAILURE, ntries=%d\n",ntries);
+			CLog::Fatal(message);
 		}
 		smb=sinh(muB);
 		cmb=cosh(muB);
@@ -437,8 +438,6 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoItarge
 		muI+=dmu[2];
 		muS+=dmu[3];
 	}while(fabs(drho[0])>1.0E-4 || fabs(drho[1])>1.0E-6 || fabs(drho[2])>1.0E-6 || fabs(drho[3])>1.0E-6);
-	//printf("Tf=%g, Mu=(%g,%g,%g), epsilon=%g=?%g, rho=(%g,%g,%g) =? (%g,%g,%g)\n",
-	//Tf,muB,muI,muS,epsilon,epsilontarget,rhoB,rhoI,rhoS,rhoBtarget,rhoItarget,rhoStarget);
 }
 
 void Csampler::GetEpsilonRhoDerivatives(double muB,double muI,double muS,double &epsilon,double &rhoB,double &rhoI,double &rhoS,Eigen::MatrixXd &A){
@@ -600,10 +599,6 @@ void Csampler::GetEpsilonRhoDerivatives(double muB,double muI,double muS,double 
 	A(3,2)=0.5*drhoS_dmuI;
 	A(3,3)=drhoS_dmuS;
 
-	//printf("Calculating rho,epsilon,A: T=%g, epsilon=%g, de_dT=%g\n",Tf,epsilon,de_dT);
-	//printf("mu=(%g,%g,%g), rho=(%g,%g,%g)\n",muB,muI,muS,rhoB,rhoI,rhoS);
-	//cout << A << endl;
-	//exit(1);
 }
 
 void Csampler::CalcRvisc(Chyper *hyper){
@@ -671,49 +666,7 @@ void Csampler::CalcRvisc(Chyper *hyper){
 	hyper->RTbulk=RTbulk; hyper->Rshear=Rshear; hyper->Rbulk=Rbulk;
 	hyper->dedT=dedt;
 	
-	/*
-	printf("T=%g, P=%g, epsilon=%g, dP/de=%g\n",T,P,epsilon,(P+epsilon)/(T*dedt));
-	printf("dedt=%g, eEbar=%g, m2dens=%g, p4overE3=%g\n",dedt,eEbar,m2dens,p4overE3);
-	printf("Rshear=%g, Rbulk=%g, RTbulk=%g, A=%g\n",Rshear,Rbulk,RTbulk,A);*/
 	
-	/* For checking
-	CresInfo *resinfo;
-	CresMassMap::iterator rpos;
-	P=epsilon=p4overE3=m2dens=dedt=eEbar=0.0;
-	double f,delp=0.001,pmag,ep,m,prefactor,nhtest=0,Rbulktest=0,Rbulki;
-	double Pi,epsiloni,p4overE3i,densi,dedti,eEbari;
-	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
-		resinfo=rpos->second;
-		m=resinfo->mass;
-		prefactor=resinfo->degen/(2.0*M_PI*M_PI*HBARC_GEV*HBARC_GEV*HBARC_GEV);
-		if(resinfo->pid!=22){
-			Pi=epsiloni=p4overE3i=densi=dedti=eEbari=Rbulki=0.0;
-			for(pmag=0.5*delp;pmag<7.0;pmag+=delp){
-				ep=sqrt(pmag*pmag+m*m);
-				f=exp(-ep/T);
-				Pi+=prefactor*pmag*pmag*delp*f*pmag*pmag/(3.0*ep);
-				epsiloni+=prefactor*pmag*pmag*delp*f*ep;
-				dedti+=prefactor*pmag*pmag*delp*f*(ep*ep/(T*T));
-				p4overE3i+=prefactor*pmag*pmag*delp*f*(pmag*pmag*pmag*pmag/(ep*ep*ep));
-				densi+=prefactor*pmag*pmag*delp*f;
-				Rbulki-=prefactor*pmag*pmag*delp*f*(1.0/9.0)*(2.0*(pmag*pmag/ep)-pmag*pmag*pmag*pmag/(ep*ep*ep));
-			}
-			nhtest+=densi;
-			eEbari=epsiloni*epsiloni/densi;
-			P+=Pi;
-			epsilon+=epsiloni;
-			p4overE3+=p4overE3i;
-			m2dens+=m*m*densi;
-			dedt+=dedti;
-			eEbar+=eEbari;
-			Rbulktest+=Rbulki;
-		}
-	}
-	printf("nhadrons=%g, nhtest=%g\n",nhadrons0,nhtest);
-	printf("T=%g, P=%g, epsilon=%g\n",T,P,epsilon);
-	printf("dedt=%g, eEbar=%g, m2dens=%g, p4overE3=%g\n",dedt,eEbar,m2dens,p4overE3);
-	printf("Rbulk=%g =? %g\n",Rbulk,Rbulktest);
-	*/
 }
 
 // For sampling, generates mass of resonances (uses GetDensPMax below)
@@ -727,8 +680,8 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 	else{
 		it1=sfdens0imap[ires].lower_bound(netprob);
 		if(it1==sfdens0imap[ires].end()){
-			printf("it1 already at end of map\n");
-			exit(1);
+			sprintf(message,"it1 already at end of map\n");
+			CLog::Fatal(message);
 		}
 		it2=it1;
 		--it1;
@@ -739,14 +692,15 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 		E=((netprob-p1)*E2+(p2-netprob)*E1)/(p2-p1);
 	}
 	if(E<resinfo->minmass || E1>E || E2<E){
-		printf("something odd in MSU Sampler, GenerateThermalMass, E=%g, (E1,E2)=(%g,%g), (p1,p2)=(%g,%g), minmass=%g, netprob=%g\n",E,E1, E2,p1,p2,resinfo->minmass,netprob);
 		resinfo->PrintBranchInfo();
 		resinfo->PrintSpectralFunction();
 		map<double,double>::iterator it;
 		for(it=sfdens0imap[ires].begin();it!=sfdens0imap[ires].end();++it){
-			printf("Emap=%g, netdens=%g\n",it->second,it->first);
+			sprintf(message,"Emap=%g, netdens=%g\n",it->second,it->first);
 		}
-		exit(1);
+		CLog::Info(message);
+		sprintf(message,"something odd in MSU Sampler, GenerateThermalMass, E=%g, (E1,E2)=(%g,%g), (p1,p2)=(%g,%g), minmass=%g, netprob=%g\n",E,E1, E2,p1,p2,resinfo->minmass,netprob);
+		CLog::Fatal(message);
 	}
 	return E; //returns a random mass proportional to dens*SF'
 }
@@ -781,7 +735,6 @@ void Csampler::CalcNHadronsEpsilonP(double muB,double muI,double muS,double &nha
 								+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(xI*xI+xxI*xxI)
 									+0.25*nh0_b1i3s0*(xB+xxB)*(xI*xI*xI+xxI*xxI*xxI)
 										+0.5*nh0_b2i0s0*(xB*xB+xxB*xxB);
-		//printf("nhadronsf=%g, Tf=%g\n",nhadronsf,Tf);
 		Pf=nhadronsf*Tf;
 		epsilonf=eh0_b0i0s0+0.5*eh0_b0i2s0*(xI*xI+xxI*xxI)
 			+0.25*eh0_b0i1s1*(xI+xxI)*(xS+xxS)

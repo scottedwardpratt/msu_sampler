@@ -2,7 +2,7 @@
 #include "msu_commonutils/sf.h"
 #include "msu_commonutils/constants.h"
 #include "msu_sampler/resonances.h"
-using namespace MSU_EOS;
+//using namespace MSU_EOS;
 
 void MSU_EOS::freegascalc_onespecies_finitewidth(double T,CresInfo *resinfo,double &epsilon,double &P,double &dens,double &dedt){
 	int iE,nE;
@@ -56,6 +56,7 @@ void MSU_EOS::freegascalc_onespecies_finitewidth(double T,CresInfo *resinfo,doub
 void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P,double &dens,double &dedt){
 	const double prefactor=1.0/(2.0*PI*PI*pow(HBARC_GEV,3));
 	double k0,k1,z,k0prime,k1prime,m2,m3,m4,t2,t3;
+	char message[200];
 	m2=m*m;
 	m3=m2*m;
 	m4=m2*m2;
@@ -68,8 +69,8 @@ void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P
 	}
 	else{
 		if(z<0.0){
-			printf("___z=%g,m=%g,T=%g ___\n",z,m,T);
-			exit(1);
+			sprintf(message,"___z=%g,m=%g,T=%g ___\n",z,m,T);
+			CLog::Fatal(message);
 		}
 		t2=T*T;
 		t3=t2*T;
@@ -86,6 +87,7 @@ void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P
 }
 
 double MSU_EOS::Getp4overE3(double T,double m,double dens){
+	char message[200];
 	double K2,z,J=0.0,nfact,sign;
 	double p4overE3=0.0;
 	const int nmax=50;
@@ -93,8 +95,8 @@ double MSU_EOS::Getp4overE3(double T,double m,double dens){
 	int n;
 	z=m/T;
 	if(z<0 || z!=z){
-		printf("K0(z<0)\n, z=%g\n",z);
-		exit(1);
+		sprintf(message,"K0(z<0)\n, z=%g\n",z);
+		CLog::Fatal(message);
 	}
 	if(z<50.0){
 		G[0]=gsl_sf_gamma_inc(5,z)*pow(z,-5);
@@ -122,20 +124,6 @@ double MSU_EOS::Getp4overE3(double T,double m,double dens){
 	}
 	else
 		p4overE3=0.0;
-	
-	/*
-	double delp=0.002,pmag,e;
-	double p4overE3test;
-	printf("__ TESTING, m=%g, p4overE3=%g, J=%g, T=%g, z=%g\n",m,p4overE3,J,T,z);
-	p4overE3test=0.0;
-	for(pmag=0.5*delp;pmag<10.5;pmag+=delp){
-		e=sqrt(m*m+pmag*pmag);
-		//p4overE3test+=degen*(4.0*M_PI/(8.0*M_PI*M_PI*M_PI*HBARC_GEV*HBARC_GEV*HBARC_GEV))*pmag*pmag*dp*exp(-e/T)*( (2.0/3.0)*(pmag*pmag/e) - (2.0/15.0)*pow(pmag,4)/pow(e,3) );
-		p4overE3test+=(4.0*M_PI/(8.0*M_PI*M_PI*M_PI*HBARC_GEV*HBARC_GEV*HBARC_GEV))*pmag*pmag*delp*exp(-e/T)*pow(pmag,4)/pow(e,3);
-	}
-	p4overE3=p4overE3test;
-	//printf("XXXXXXX p4overE3test=%g, p4overE3test/p4overE3=%g, z=%g\n",p4overE3test,p4overE3test/p4overE3,z);
-	*/
 		
 	return p4overE3;
 }
