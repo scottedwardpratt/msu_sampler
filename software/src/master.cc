@@ -7,6 +7,7 @@ using namespace std;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
+	message=new char[200];
 	parmap=parmapin;
 	randy=new Crandy(-1234);
 	reslist=new CresList(parmap);
