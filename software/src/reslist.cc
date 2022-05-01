@@ -46,11 +46,15 @@ CresList::CresList(CparameterMap* parmap_in){
 	parmap=parmap_in;
 	CresInfo::NSPECTRAL=parmap->getI("SAMPLER_NSPECTRAL",100);
 	CresInfo::SFDIRNAME=parmap->getS("SAMPLER_SFDIRNAME","../local/resinfo/spectralfunctions");
+	printf("check check opening %s\n",CresInfo::SFDIRNAME.c_str());
 	//RESONANCE_DECAYS=parmap->getB("RESONANCE_DECAYS",true);
 	ReadResInfo();
+	printf("check check a\n");
 	//CalcSpectralFunctions();
 	ReadSpectralFunctions();
+	printf("check check b\n");
 	CalcMinMasses();
+	printf("check check c\n");
 }
 
 void CresList::CalcSpectralFunctions(){

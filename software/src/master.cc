@@ -7,10 +7,13 @@ using namespace std;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
+	printf("howdy a\n");
 	message=new char[200];
 	parmap=parmapin;
 	randy=new Crandy(-1234);
+	printf("howdy b\n");
 	reslist=new CresList(parmap);
+	printf("howdy c\n");
 	partlist=new CpartList(parmap,reslist);
 	NEVENTS=0;
 	RESWIDTH_ALPHA=parmap->getD("SAMPLER_RESWIDTH_ALPHA",0.5);
@@ -31,12 +34,14 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	if(NSIGMAF==0)
 		DELSIGMAF=0.0;
 	MEANFIELD=parmap->getS("SAMPLER_MEANFIELD","simple");
+	printf("howdy d\n");
 	if(MEANFIELD=="simple")
 		meanfield=new CmeanField_Simple(parmap);
 	else{
 		sprintf(message,"Don't recognize SAMPLER_MEANFIELD from parameter map=%s\n",MEANFIELD.c_str());
 		CLog::Info(message);
 	}
+	printf("howdy e\n");
 	Csampler::randy=randy;
 	CresInfo::randy=randy;
 	Csampler::mastersampler=this;

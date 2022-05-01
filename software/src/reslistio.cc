@@ -4,8 +4,10 @@
 using namespace std;
 
 void CresList::ReadResInfo(){
+	printf("check check check a\n");
 	//Cmerge *merge;
 	int motherpid,pid;
+	bool nophotons;
 	double bmax,bsum;
 	int ires,ichannelres,ichannel,ibody,nbodies,NResonances,LDecay=1;
 	int ires1,ires2,iresflip;
@@ -22,15 +24,16 @@ void CresList::ReadResInfo(){
 	CresInfoMap::iterator iter;
 	CdecayInfoMap::iterator diter;
 	Cmerge *merge;
-	
+	printf("check check check b\n");
 	filename=parmap->getS("RESONANCES_INFO_FILE",string("../software/resinfo/pdg-SMASH.dat"));
 	sprintf(message,"will read resonance info from %s\n",filename.c_str());
 	resinfofile=fopen(filename.c_str(),"r");
-	CLog::Info(message);
+	CLog::Info("will read resonance info from "+filename+"\n");
 	if (resinfofile==NULL) {
 		sprintf(message,"Can't open resinfofile\n");
 		CLog::Fatal(message);
 	}
+	printf("check check check d\n");
 
 	ires=0;
 	NResonances=0;
@@ -141,8 +144,7 @@ void CresList::ReadResInfo(){
 		}
 	}
 	fclose(resinfofile);
-	sprintf(message,"NResonances:%d\n",NResonances);
-	CLog::Info(message);
+	CLog::Info("NResonances:"+to_string(NResonances)+"\n");
 	//------------------------------------------
 	MergeArray=new Cmerge **[NResonances];
 	//SigmaMaxArray=new double *[NResonances];
@@ -158,12 +160,14 @@ void CresList::ReadResInfo(){
 	//now, use the stored decay information to create branchlists
 	for(iter=resmap.begin();iter!=resmap.end();++iter){
 		resinfo=iter->second;
-		if(resinfo->decay){
+		printf("check check check ires=%d\n",resinfo->ires);
+		resinfo=iter->second;		if(resinfo->decay){
 			motherpid=iter->first;
 			decayinfo=(decaymap.find(motherpid))->second; //decaymap[motherpid];
 			bmax=0.0;
 			for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
 				nbodies=decayinfo->Nparts[ichannel];
+				printf("check check check l, nbodies=%d\n",nbodies);
 				bptr=new CbranchInfo();
 				bptr->resinfo.clear();
 				resinfo->branchlist.push_back(bptr);
@@ -173,16 +177,22 @@ void CresList::ReadResInfo(){
 				netb=-resinfo->baryon;
 				nets=-resinfo->strange;
 
+				nophotons=true;
 				for(ibody=0; ibody<nbodies; ibody++) {
 					pid=decayinfo->products[ichannel][ibody];
+					if(pid==22)
+						nophotons=false;
+					printf("check check check ibody=%d, pid=%d\n",ibody,pid);
 					bptr->resinfo.push_back(GetResInfoPtr(pid));
 					netq+=bptr->resinfo[ibody]->charge;
 					netb+=bptr->resinfo[ibody]->baryon;
 					nets+=bptr->resinfo[ibody]->strange;
 				}
 				bptr->L=decayinfo->d_L[ichannel];
+				printf("check check check m\n");
 
 			//total charge and baryon number should be conserved, and shouldn't be larger than single strangeness
+				/*
 				if(netq!=0 || netb!=0 || abs(nets)>1){
 					sprintf(message,"Charge conservation failure while reading decay info,\nnetq=%d, netb=%d, nets=%d\n",netq,netb,nets);
 					CLog::Info(message);
@@ -194,24 +204,30 @@ void CresList::ReadResInfo(){
 					for(ibody=0;ibody<nbodies;ibody++)
 						bptr->resinfo[ibody]->Print();
 					exit(1);
-				}
-				ires1=bptr->resinfo[0]->ires;
-				ires2=bptr->resinfo[1]->ires;
-				if(ires1>ires2){
-					iresflip=ires1; ires1=ires2; ires2=iresflip;
-				}
-				merge=MergeArray[ires1][ires2];
-				if(merge==NULL){
-					MergeArray[ires1][ires2]=new Cmerge(resinfo,bptr->branching, LDecay);
-				}
-				else{
-					while(merge->next!=NULL){
-						merge=merge->next;
+				}*/
+				if(nophotons){
+					ires1=bptr->resinfo[0]->ires;
+					ires2=bptr->resinfo[1]->ires;
+					printf("check check check n\n");
+					bptr->resinfo[0]->Print();
+					if(ires1>ires2){
+						iresflip=ires1; ires1=ires2; ires2=iresflip;
 					}
-					merge->next=new Cmerge(resinfo,bptr->branching, LDecay);
+					printf("check check check o, ires1=%d, ires2=%d\n",ires1,ires2);
+					merge=MergeArray[ires1][ires2];
+					if(merge==NULL){
+						MergeArray[ires1][ires2]=new Cmerge(resinfo,bptr->branching, LDecay);
+					}
+					else{
+						while(merge->next!=NULL){
+							merge=merge->next;
+						}
+						merge->next=new Cmerge(resinfo,bptr->branching, LDecay);
+					}
 				}
 
 				// switch places to make sure first branch has largest
+				printf("check check check q\n");
 				if(bptr->branching>bmax){
 					bmax=bptr->branching;
 					if(ichannel>0){
@@ -220,6 +236,7 @@ void CresList::ReadResInfo(){
 						resinfo->branchlist[ichannel]=firstbptr;
 					}
 				}
+				printf("check check check r\n");
 			}  //out of channel loops
 		}
 	}
@@ -230,6 +247,7 @@ void CresList::ReadResInfo(){
 		delete decayinfo;
 	}
 	decaymap.clear();
+	printf("check check check z\n");
 }
 
 void CresList::ReadSpectralFunctions(){
