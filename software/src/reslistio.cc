@@ -91,7 +91,6 @@ void CresList::ReadResInfo(){
 
 		if(resinfo->baryon!=0){
 			aresinfo=new CresInfo();
-			adecayinfo=new CdecayInfo();
 			NResonances+=1;
 
 			aresinfo->pid=-resinfo->pid;
@@ -111,34 +110,36 @@ void CresList::ReadResInfo(){
 			aresinfo->name="Anti-"+s;
 			aresinfo->ires=ires;
 			ires+=1;
+			resmap.insert(CresInfoPair(aresinfo->pid,aresinfo));
+			massmap.insert(CresMassPair(aresinfo->mass,aresinfo));
 			if(aresinfo->decay)
 				adecayinfo=new CdecayInfo();
 			else
 				adecayinfo=NULL;
 
 			aresinfo->branchlist.clear();
-			for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) { //reads into map values: will access for decays when done creating resonances
-				for(int i=0; i<decayinfo->Nparts[ichannel]; i++) {
-					pid=decayinfo->products[ichannel][i];
-					if(pid!=0){
-						temp=GetResInfoPtr(pid);
-						if(temp->baryon==0 && temp->charge==0 && temp->strange==0){
-							adecayinfo->products[ichannel][i]=decayinfo->products[ichannel][i];
+			if(aresinfo->decay){
+				for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) { //reads into map values: will access for decays when done creating resonances
+					for(int i=0; i<decayinfo->Nparts[ichannel]; i++) {
+						pid=decayinfo->products[ichannel][i];
+						if(pid!=0){
+							temp=GetResInfoPtr(pid);
+							if(temp->baryon==0 && temp->charge==0 && temp->strange==0){
+								adecayinfo->products[ichannel][i]=decayinfo->products[ichannel][i];
+							}
+							else{
+								adecayinfo->products[ichannel][i]=-decayinfo->products[ichannel][i];
+							}
 						}
-						else{
-							adecayinfo->products[ichannel][i]=-decayinfo->products[ichannel][i];
-						}
+						else adecayinfo->products[ichannel][i]=0;
 					}
-					else adecayinfo->products[ichannel][i]=0;
+					adecayinfo->Nparts[ichannel]=decayinfo->Nparts[ichannel];
+					adecayinfo->branchratio[ichannel]=decayinfo->branchratio[ichannel];
+					adecayinfo->d_L[ichannel]=decayinfo->d_L[ichannel];
 				}
-				adecayinfo->Nparts[ichannel]=decayinfo->Nparts[ichannel];
-				adecayinfo->branchratio[ichannel]=decayinfo->branchratio[ichannel];
-				adecayinfo->d_L[ichannel]=decayinfo->d_L[ichannel];
-			}
-			resmap.insert(CresInfoPair(aresinfo->pid,aresinfo));
-			massmap.insert(CresMassPair(aresinfo->mass,aresinfo));
-			if(aresinfo->decay)
 				decaymap.insert(CdecayInfoPair(aresinfo->pid,adecayinfo));
+			}
+
 		}
 	}
 	fclose(resinfofile);
@@ -169,7 +170,6 @@ void CresList::ReadResInfo(){
 				bptr->resinfo.clear();
 				resinfo->branchlist.push_back(bptr);
 				bptr->branching=decayinfo->branchratio[ichannel];
-
 				//netq=-resinfo->charge;
 				//netb=-resinfo->baryon;
 				//nets=-resinfo->strange;
