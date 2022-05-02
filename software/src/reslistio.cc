@@ -10,7 +10,7 @@ void CresList::ReadResInfo(){
 	double bmax,bsum;
 	int ires,ichannelres,ichannel,ibody,nbodies,NResonances,LDecay=1;
 	int ires1,ires2,iresflip;
-	int netq,netb,nets;
+	//int netq,netb,nets;
 	string name, filename;
 	CresInfo *resinfo=NULL,*aresinfo=NULL,*temp=NULL;
 	CdecayInfo *decayinfo, *adecayinfo;
@@ -85,13 +85,9 @@ void CresList::ReadResInfo(){
 		massmap.insert(CresMassPair(resinfo->mass,resinfo));
 		if(resinfo->decay)
 			decaymap.insert(CdecayInfoPair(resinfo->pid,decayinfo));
-	}
-	//antiparticle creation
-	iter=resmap.begin();
-	int ires0=0,nres0=resmap.size();
-	while(iter!=resmap.end() && ires0<nres0){
-		ires0+=1;
-		resinfo=iter->second;
+
+		//antiparticle creation
+
 		if(resinfo->baryon!=0){
 			aresinfo=new CresInfo();
 			adecayinfo=new CdecayInfo();
@@ -157,20 +153,21 @@ void CresList::ReadResInfo(){
 	//now, use the stored decay information to create branchlists
 	for(iter=resmap.begin();iter!=resmap.end();++iter){
 		resinfo=iter->second;
-		resinfo=iter->second;		if(resinfo->decay){
+		if(resinfo->decay){
 			motherpid=iter->first;
 			decayinfo=(decaymap.find(motherpid))->second; //decaymap[motherpid];
 			bmax=0.0;
-			for (ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
+			for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
+				resinfo->Print();
 				nbodies=decayinfo->Nparts[ichannel];
 				bptr=new CbranchInfo();
 				bptr->resinfo.clear();
 				resinfo->branchlist.push_back(bptr);
 				bptr->branching=decayinfo->branchratio[ichannel];
 
-				netq=-resinfo->charge;
-				netb=-resinfo->baryon;
-				nets=-resinfo->strange;
+				//netq=-resinfo->charge;
+				//netb=-resinfo->baryon;
+				//nets=-resinfo->strange;
 
 				nophotons=true;
 				for(ibody=0; ibody<nbodies; ibody++) {
@@ -178,9 +175,9 @@ void CresList::ReadResInfo(){
 					if(pid==22)
 						nophotons=false;
 					bptr->resinfo.push_back(GetResInfoPtr(pid));
-					netq+=bptr->resinfo[ibody]->charge;
-					netb+=bptr->resinfo[ibody]->baryon;
-					nets+=bptr->resinfo[ibody]->strange;
+					//netq+=bptr->resinfo[ibody]->charge;
+					//netb+=bptr->resinfo[ibody]->baryon;
+					//nets+=bptr->resinfo[ibody]->strange;
 				}
 				bptr->L=decayinfo->d_L[ichannel];
 
