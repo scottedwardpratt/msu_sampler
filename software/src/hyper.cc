@@ -22,14 +22,10 @@ void Chyper::SetSampler(Csampler *samplerptr){
 }
 
 void Chyper::Print(){
-	sprintf(message,"----- hyper info -------\n");
-	CLog::Info(message);
-	sprintf(message,"T0=%g, sampler->Tf=%g, sigma=%g, rhoB=%g, rhoI=%g\n",T0,sampler->Tf,sigma,rhoB,rhoI);
-	CLog::Info(message);
-	sprintf(message,"muB=%g, muI=%g, muS=%g\n",muB,muI,muS);
-	CLog::Info(message);
-	sprintf(message,"epsilon=%g, P=%g, s=%g\n",epsilon,P,GetEntropyDensity());
-	CLog::Info(message);
+	CLog::Info("----- hyper info -------\n");
+	CLog::Info("T0="+to_string(T0)+",sampler->TF="+to_string(sampler->Tf)+",sigma="+to_string(sigma)+",rhoB="+to_string(rhoB)+",rhoI="+to_string(rhoI));
+	CLog::Info("muB="+to_string(muB)+",muI="+to_string(muI)+",muS="+to_string(muS));
+	CLog::Info("epsilon="+to_string(epsilon)+",P="+to_string(P)+",s="+to_string(GetEntropyDensity()));
 	sprintf(message,"dOmega=(%g,%g,%g,%g), udotdOmega=%g\n",dOmega[0],dOmega[1],dOmega[2],dOmega[3],udotdOmega);
 	CLog::Info(message);
 	sprintf(message,"u=(%g,%g,%g,%g).    tau=%g,eta=%g\n",u[0],u[1],u[2],u[3],tau,eta);

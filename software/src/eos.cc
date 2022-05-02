@@ -56,7 +56,6 @@ void MSU_EOS::freegascalc_onespecies_finitewidth(double T,CresInfo *resinfo,doub
 void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P,double &dens,double &dedt){
 	const double prefactor=1.0/(2.0*PI*PI*pow(HBARC_GEV,3));
 	double k0,k1,z,k0prime,k1prime,m2,m3,m4,t2,t3;
-	char message[200];
 	m2=m*m;
 	m3=m2*m;
 	m4=m2*m2;
@@ -69,8 +68,7 @@ void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P
 	}
 	else{
 		if(z<0.0){
-			sprintf(message,"___z=%g,m=%g,T=%g ___\n",z,m,T);
-			CLog::Fatal(message);
+			CLog::Fatal("---z="+to_string(z)+",m="+to_string(m)+",T="+to_string(T));
 		}
 		t2=T*T;
 		t3=t2*T;
@@ -87,7 +85,6 @@ void MSU_EOS::freegascalc_onespecies(double T,double m,double &epsilon,double &P
 }
 
 double MSU_EOS::Getp4overE3(double T,double m,double dens){
-	char message[200];
 	double K2,z,J=0.0,nfact,sign;
 	double p4overE3=0.0;
 	const int nmax=50;
@@ -95,8 +92,7 @@ double MSU_EOS::Getp4overE3(double T,double m,double dens){
 	int n;
 	z=m/T;
 	if(z<0 || z!=z){
-		sprintf(message,"K0(z<0)\n, z=%g\n",z);
-		CLog::Fatal(message);
+		CLog::Fatal("K0(z<0), z="+to_string(z)+"\n");
 	}
 	if(z<50.0){
 		G[0]=gsl_sf_gamma_inc(5,z)*pow(z,-5);

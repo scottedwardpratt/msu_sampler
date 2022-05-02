@@ -21,7 +21,7 @@ find_package(GSL 1.15 REQUIRED)
 find_package(Eigen3 REQUIRED)
 include_directories(SYSTEM ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${GITHOME_MSU}/commonutils/software/include ${GITHOME_MSU}/msu_sampler/software/include)
 
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../software/lib ${GITHOME_MSU}/commonutils/software/lib)
+link_directories(${GITHOME_MSU}/msu_sampler/software/lib ${GITHOME_MSU}/commonutils/software/lib)
 
 set(SOURCE_FILES ./samplertest.cc)
 SET_SOURCE_FILES_PROPERTIES(
