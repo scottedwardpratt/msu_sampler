@@ -223,8 +223,6 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		rhoB=0.0;
 		epsilonf=-1.0; // not used
 
-		if(ux>0.4 && ux<0.43 && uy>0.4 && uy<0.43)
-			printf("ux=%g, uy=%g, dOmega0=%g dOmegaX=%g, dOmegaY=%g\n",ux,uy,dOmega0,dOmegaX,dOmegaY);
 		udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
 		if(udotdOmega >= 0.0) {
 			//if(Tdec >0.15)
