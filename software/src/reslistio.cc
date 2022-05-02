@@ -44,6 +44,7 @@ void CresList::ReadResInfo(){
 		resinfo->minmass=resinfo->mass;
 		if(resinfo->width<MIN_DECAY_WIDTH){
 			resinfo->decay=false;
+			decayinfo=NULL;
 		}
 		else{
 			resinfo->decay=true;
@@ -110,6 +111,10 @@ void CresList::ReadResInfo(){
 			aresinfo->name="Anti-"+s;
 			aresinfo->ires=ires;
 			ires+=1;
+			if(aresinfo->decay)
+				adecayinfo=new CdecayInfo();
+			else
+				adecayinfo=NULL;
 
 			aresinfo->branchlist.clear();
 			for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) { //reads into map values: will access for decays when done creating resonances
