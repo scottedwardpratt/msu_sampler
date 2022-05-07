@@ -69,9 +69,16 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		uz = utau * sh_eta + ueta * ch_eta;
 
 		dOmega0 = tau * ch_eta * dOmegaTau - sh_eta * dOmegaEta;
+		
+		//For Music
 		dOmegaX = -tau * dOmegaX;
 		dOmegaY = -tau * dOmegaY;
 		dOmegaZ = tau * sh_eta * dOmegaTau - ch_eta * dOmegaEta;
+		/*
+		dOmegaX = tau * dOmegaX;
+		dOmegaY = tau * dOmegaY;
+		dOmegaZ = -tau * sh_eta * dOmegaTau + ch_eta * dOmegaEta;
+		*/
 
 		udotdOmega = dOmega0 * u0 - dOmegaX * ux - dOmegaY * uy - dOmegaZ * uz;
  
@@ -177,8 +184,8 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 	double PIbulk __attribute__((unused)), Pdec __attribute__((unused));
 	double qmu0,qmu1,qmu2,qmu3;
 	double rhoB;
-	char dummy[200];
-	//double netvolume=0.0;
+	char dummy[300];
+	double netvolume=0.0;
 
 	if(parmap->getB("SAMPLER_BJORKEN_2D",true)){
 		ETAMAX_ratio=2.0*parmap->getD("SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
@@ -197,7 +204,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		CLog::Fatal(message);
 	}
 	fscanf(fptr,"%lf",&Tdec);
-	fgets(dummy,200,fptr);	fgets(dummy,200,fptr);
+	fgets(dummy,300,fptr);	fgets(dummy,300,fptr);
 	while(!feof(fptr)){
 		elem=new Chyper();
 		// read from binary file
@@ -216,6 +223,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		pitildexx=readstuff[8];
 		pitildexy=readstuff[9];
 		pitildeyy=readstuff[10];
+		//pitildexx=pitildexy=pitildeyy=0.0;
 
 		muB=muS=muC=0.0;
 		PIbulk=0.0;
@@ -225,8 +233,8 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 		udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
 		if(udotdOmega >= 0.0) {
-			//if(Tdec >0.15)
-				//netvolume+=udotdOmega;
+			if(Tdec >0.15)
+				netvolume+=udotdOmega;
 			elem->tau=tau;
 			elem->dOmega[0]=dOmega0; 
 			elem->dOmega[1]=dOmegaX; 
@@ -276,7 +284,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		}
 	}
 	nelements=ielement;
-	//printf("netvolume=%g\n",netvolume);
+	printf("netvolume=%g\n",netvolume);
 }
 
 

@@ -239,9 +239,9 @@ void Csampler::GetP(Chyper *hyper,double T,CresInfo *resinfo,FourVector &p){
 		nhatnorm=sqrt(dOmegaTilde[1]*dOmegaTilde[1]+dOmegaTilde[2]*dOmegaTilde[2]);
 		nhat[1]=dOmegaTilde[1]/nhatnorm;
 		nhat[2]=dOmegaTilde[2]/nhatnorm;
-		nhatdotp=nhat[1]*p[1]+nhat[2]*p[2];
-		p[1]-=2.0*nhat[1]*nhatdotp;
-		p[2]-=2.0*nhat[2]*nhatdotp;
+		nhatdotp=nhat[1]*ptilde[1]+nhat[2]*ptilde[2];
+		ptilde[1]-=2.0*nhat[1]*nhatdotp;
+		ptilde[2]-=2.0*nhat[2]*nhatdotp;
 	}
 	Misc::Boost(hyper->u,ptilde,p);
 }
