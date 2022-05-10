@@ -60,7 +60,7 @@ void CresInfo::PrintBranchInfo(){
 void CresInfo::Print(){
 	sprintf(message,"+++++++ ID=%d, M=%g, M_min=%g, %s +++++++++\n",pid,mass,minmass,name.c_str());
 
-	sprintf(message,"Gamma=%g, Degen=%g, Decay=%d\n",width,degen,int(decay));
+	sprintf(message,"Gamma=%g, Degen=%d, Decay=%d\n",width,degen,int(decay));
 	sprintf(message,"Q=%d, B=%d, S=%d, G_parity=%d\n",charge,baryon,strange,G_Parity);
 }
 
@@ -456,3 +456,41 @@ void CresInfo::DecayGetResInfoPtr_minmass(int &nbodies,array<CresInfo *,5> &daug
 		daughterresinfo[ibody]=bptr_minmass->resinfo[ibody];
 	}
 }
+
+void CresInfo::SetBtype(){
+	int s=abs(strange)+abs(charm)+abs(bottom);
+	Btype=-1;
+	if(baryon!=0){
+		if(s==0 && total_isospin==2){
+			Btype=0;
+		}
+		if(s==0 && total_isospin==4){
+			Btype=4;
+		}
+		if(s==1 && total_isospin==1){
+			Btype=3;
+		}
+		if(s==1 && total_isospin==3){
+			if(degen%4==2)
+				Btype=1;
+			else
+				Btype=5;
+		}
+		if(s==2){
+			if(degen%4==2)
+				Btype=2;
+			else
+				Btype=6;
+		}
+		if(s==3)
+			Btype=7;
+	}
+	if(Btype==-1 && baryon!=0){
+		printf("Btype=%d, pid=%d\n",Btype,pid);
+		printf("%s, s=%d, total_isospin=%d\n",name.c_str(),s,total_isospin);
+		printf("charm=%d, bottom=%d\n",charm,bottom);
+		Print();
+		exit(1);
+	}
+}
+

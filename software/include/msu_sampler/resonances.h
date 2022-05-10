@@ -36,7 +36,7 @@ public:
 	int ires;
 	long long int count;
 	double mass;
-	double degen;
+	int degen;
 	double width;
 	double minmass;
 	string name;
@@ -46,6 +46,7 @@ public:
 	int baryon;
 	int bottom;
 	int charm;
+	int total_isospin;
 	int q[3];
 	int up,down;
 	int G_Parity;

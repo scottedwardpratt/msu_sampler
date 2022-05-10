@@ -18,7 +18,6 @@ void CresList::ReadResInfo(){
 	FILE *resinfofile;
 	char cname[200],dummy[200];
 	CdecayInfoMap decaymap;
-	double gisospin;
 	int dummy_int;
 	CresInfoMap::iterator iter;
 	CdecayInfoMap::iterator diter;
@@ -40,7 +39,7 @@ void CresList::ReadResInfo(){
 		resinfo->pid=pid;
 
 		//main reading
-		fscanf(resinfofile, " %s %lf %lf %lf %d %d %d %d %lf %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&gisospin,&resinfo->charge,&resinfo->nchannels);
+		fscanf(resinfofile, "%s %lf %lf %d %d %d %d %d %d %d %d", cname,&resinfo->mass,&resinfo->width,&resinfo->degen,&resinfo->baryon,&resinfo->strange,&resinfo->charm,&resinfo->bottom,&resinfo->total_isospin,&resinfo->charge,&resinfo->nchannels);
 		resinfo->minmass=resinfo->mass;
 		if(resinfo->width<MIN_DECAY_WIDTH){
 			resinfo->decay=false;
@@ -57,7 +56,7 @@ void CresList::ReadResInfo(){
 		//reads into map values: will access for decays when done creating resonances
 		for (ichannel=0; ichannel<resinfo->nchannels; ichannel++){
 			if(resinfo->decay){
-				fscanf(resinfofile, " %d %d %lf %d %d %d %d %d %d", 
+				fscanf(resinfofile, "%d %d %lf %d %d %d %d %d %d", 
 					&dummy_int,&decayinfo->Nparts[ichannel],&decayinfo->branchratio[ichannel],&decayinfo->products[ichannel][0],
 					&decayinfo->products[ichannel][1],&decayinfo->products[ichannel][2],&decayinfo->products[ichannel][3],
 					&decayinfo->products[ichannel][4],&decayinfo->d_L[ichannel]);
@@ -78,6 +77,9 @@ void CresList::ReadResInfo(){
 		if(resinfo->pid!=22){ //copied from old pid
 			resinfo->ires=ires;
 			ires+=1;
+		}
+		if(resinfo->baryon!=0){
+			resinfo->SetBtype();
 		}
 
 		resinfo->branchlist.clear();
