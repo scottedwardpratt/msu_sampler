@@ -232,7 +232,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		epsilonf=-1.0; // not used
 
 		udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
-		if(udotdOmega >= 0.0) {
+		//if(udotdOmega >= 0.0) {
 			if(Tdec >0.15)
 				netvolume+=udotdOmega;
 			elem->tau=tau;
@@ -281,7 +281,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 			hyperlist.push_back(elem);
 			ielement+=1;
 
-		}
+		//}
 	}
 	nelements=ielement;
 	printf("netvolume=%g\n",netvolume);
