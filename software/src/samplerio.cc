@@ -111,8 +111,8 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
         qmu0 = qmu_tau*ch_eta + qmu_eta*sh_eta;
         qmu3 = qmu_tau*sh_eta + qmu_eta*ch_eta;
 
-		if(parmap->getB("SAMPLER_BJORKEN_2D",false)){
-			double ETAMAX_ratio=parmap->getD("SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
+		if(parmap->getB("MSU_SAMPLER_BJORKEN_2D",false)){
+			double ETAMAX_ratio=parmap->getD("MSU_SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
 			dOmega0*=ETAMAX_ratio;
 			dOmegaX*=ETAMAX_ratio;
 			dOmegaY*=ETAMAX_ratio;
@@ -187,8 +187,8 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 	char dummy[300];
 	//double netvolume=0.0;
 
-	if(parmap->getB("SAMPLER_BJORKEN_2D",true)){
-		ETAMAX_ratio=2.0*parmap->getD("SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
+	if(parmap->getB("MSU_SAMPLER_BJORKEN_2D",true)){
+		ETAMAX_ratio=2.0*parmap->getD("MSU_SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
 	}
 	else{
 		ETAMAX_ratio=1.0;

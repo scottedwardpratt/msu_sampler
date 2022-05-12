@@ -13,28 +13,28 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	reslist=new CresList(parmap);
 	partlist=new CpartList(parmap,reslist);
 	NEVENTS=0;
-	RESWIDTH_ALPHA=parmap->getD("SAMPLER_RESWIDTH_ALPHA",0.5);
+	RESWIDTH_ALPHA=parmap->getD("MSU_SAMPLER_RESWIDTH_ALPHA",0.5);
 	TFmax=0.250;
-	DELTF=parmap->getD("SAMPLER_DELTF",0.001);
+	DELTF=parmap->getD("MSU_SAMPLER_DELTF",0.001);
 	NTF=lrint(TFmax/DELTF);
-	NSIGMAF=parmap->getD("SAMPLER_NSIGMAF",1);
+	NSIGMAF=parmap->getD("MSU_SAMPLER_NSIGMAF",1);
 	if(NSIGMAF<1)
 		NSIGMAF=1;
-	SIGMAFmin=parmap->getD("SAMPLER_SIGMAFMIN",93.0);
-	SIGMAFmax=parmap->getD("SAMPLER_SIGMAFMAX",93.0);
-	SETMU0=parmap->getB("SAMPLER_SETMU0",false);
-	CALCMU=parmap->getB("SAMPLER_CALCMU",false);
-	FINDT=parmap->getB("SAMPLER_FINDT", false);
-	NEVENTS_TOT=parmap->getLongI("SAMPLER_NEVENTS_TOT",1);
+	SIGMAFmin=parmap->getD("MSU_SAMPLER_SIGMAFMIN",93.0);
+	SIGMAFmax=parmap->getD("MSU_SAMPLER_SIGMAFMAX",93.0);
+	SETMU0=parmap->getB("MSU_SAMPLER_SETMU0",false);
+	CALCMU=parmap->getB("MSU_SAMPLER_CALCMU",false);
+	FINDT=parmap->getB("MSU_SAMPLER_FINDT", false);
+	NEVENTS_TOT=parmap->getLongI("MSU_SAMPLER_NEVENTS_TOT",1);
 	NEVENTS=0; // running count of events
 	DELSIGMAF=(SIGMAFmax-SIGMAFmin)/double(NSIGMAF);
 	if(NSIGMAF==0)
 		DELSIGMAF=0.0;
-	MEANFIELD=parmap->getS("SAMPLER_MEANFIELD","simple");
+	MEANFIELD=parmap->getS("MSU_SAMPLER_MEANFIELD","simple");
 	if(MEANFIELD=="simple")
 		meanfield=new CmeanField_Simple(parmap);
 	else{
-		sprintf(message,"Don't recognize SAMPLER_MEANFIELD from parameter map=%s\n",MEANFIELD.c_str());
+		sprintf(message,"Don't recognize MSU_SAMPLER_MEANFIELD from parameter map=%s\n",MEANFIELD.c_str());
 		CLog::Info(message);
 	}
 	Csampler::randy=randy;
@@ -43,14 +43,14 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	Csampler::reslist=reslist;
 	Csampler::parmap=parmap;
 	Csampler::CALCMU=CALCMU;
-	Csampler::bose_corr=parmap->getB("SAMPLER_BOSE_CORR",false);
-	Csampler::n_bose_corr=parmap->getI("SAMPLER_N_BOSE_CORR",1);
-	Csampler::BJORKEN_2D=parmap->getB("SAMPLER_BJORKEN_2D",false);
-	Csampler::BJORKEN_YMAX=parmap->getD("SAMPLER_BJORKEN_YMAX",1.0);
-	Csampler::USE_POLE_MASS=parmap->getB("SAMPLER_USE_POLE_MASS",false);
-	Csampler::INCLUDE_BULK_VISCOSITY=parmap->getB("SAMPLER_INCLUDE_BULK_VISCOSITY",false);
-	Csampler::INCLUDE_SHEAR_VISCOSITY=parmap->getB("SAMPLER_INCLUDE_SHEAR_VISCOSITY",false);
-	Csampler::NSAMPLE=parmap->getI("SAMPLER_NSAMPLE",1);
+	Csampler::bose_corr=parmap->getB("MSU_SAMPLER_BOSE_CORR",false);
+	Csampler::n_bose_corr=parmap->getI("MSU_SAMPLER_N_BOSE_CORR",1);
+	Csampler::BJORKEN_2D=parmap->getB("MSU_SAMPLER_BJORKEN_2D",false);
+	Csampler::BJORKEN_YMAX=parmap->getD("MSU_SAMPLER_BJORKEN_YMAX",1.0);
+	Csampler::USE_POLE_MASS=parmap->getB("MSU_SAMPLER_USE_POLE_MASS",false);
+	Csampler::INCLUDE_BULK_VISCOSITY=parmap->getB("MSU_SAMPLER_INCLUDE_BULK_VISCOSITY",false);
+	Csampler::INCLUDE_SHEAR_VISCOSITY=parmap->getB("MSU_SAMPLER_INCLUDE_SHEAR_VISCOSITY",false);
+	Csampler::NSAMPLE=parmap->getI("MSU_SAMPLER_NSAMPLE",1);
 	int it,isigma;
 	hyperlist.clear();
 	sampler.resize(NTF+1);
@@ -84,7 +84,7 @@ CmasterSampler::~CmasterSampler(){
 int CmasterSampler::MakeEvent(){
 	int np,nparts=0;
 	Chyper *hyper;
-	Csampler *samplerptr=nullptr,*sampler_findT=nullptr;
+	Csampler *samplerptr=nullptr,*MSU_SAMPLER_findT=nullptr;
 	//double Omega0Sum=0.0;
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
@@ -94,9 +94,9 @@ int CmasterSampler::MakeEvent(){
 		hyper=*it;
 		if(hyper->firstcall){
 			if(FINDT){
-				if(sampler_findT==nullptr)
-					sampler_findT=new Csampler(0.140,hyper->sigma);
-				sampler_findT->GetTfMuNH(hyper);
+				if(MSU_SAMPLER_findT==nullptr)
+					MSU_SAMPLER_findT=new Csampler(0.140,hyper->sigma);
+				MSU_SAMPLER_findT->GetTfMuNH(hyper);
 				CALCMU=false;
 			}
 			samplerptr=ChooseSampler(hyper);
@@ -114,8 +114,8 @@ int CmasterSampler::MakeEvent(){
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
 	}
-	if(sampler_findT!=nullptr)
-		delete sampler_findT;
+	if(MSU_SAMPLER_findT!=nullptr)
+		delete MSU_SAMPLER_findT;
 	NEVENTS+=1;
 	return nparts;
 }

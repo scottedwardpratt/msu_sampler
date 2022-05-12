@@ -44,8 +44,8 @@ void CresList::CalcMinMasses(){
 
 CresList::CresList(CparameterMap* parmap_in){
 	parmap=parmap_in;
-	CresInfo::NSPECTRAL=parmap->getI("SAMPLER_NSPECTRAL",100);
-	CresInfo::SFDIRNAME=parmap->getS("SAMPLER_SFDIRNAME","../local/resinfo/spectralfunctions");
+	CresInfo::NSPECTRAL=parmap->getI("MSU_SAMPLER_NSPECTRAL",100);
+	CresInfo::SFDIRNAME=parmap->getS("MSU_SAMPLER_SFDIRNAME","../local/resinfo/spectralfunctions");
 	//RESONANCE_DECAYS=parmap->getB("RESONANCE_DECAYS",true);
 	ReadResInfo();
 	//CalcSpectralFunctions();
