@@ -51,6 +51,9 @@ void CresList::ReadResInfo(){
 		}
 		cname[int(strlen(cname))-1]='\0';
 		resinfo->name=cname;
+		resinfo->q[0]=resinfo->baryon+resinfo->charge;
+		resinfo->q[1]=2.0*resinfo->baryon+resinfo->strange-resinfo->charge;
+		resinfo->q[2]=-resinfo->strange;
 
 		//decay reading
 		//reads into map values: will access for decays when done creating resonances
@@ -166,7 +169,6 @@ void CresList::ReadResInfo(){
 			decayinfo=(decaymap.find(motherpid))->second; //decaymap[motherpid];
 			bmax=0.0;
 			for(ichannel=0; ichannel<resinfo->nchannels; ichannel++) {
-				resinfo->Print();
 				nbodies=decayinfo->Nparts[ichannel];
 				bptr=new CbranchInfo();
 				bptr->resinfo.clear();
@@ -205,7 +207,7 @@ void CresList::ReadResInfo(){
 				if(nophotons){
 					ires1=bptr->resinfo[0]->ires;
 					ires2=bptr->resinfo[1]->ires;
-					bptr->resinfo[0]->Print();
+					//bptr->resinfo[0]->Print();
 					if(ires1>ires2){
 						iresflip=ires1; ires1=ires2; ires2=iresflip;
 					}

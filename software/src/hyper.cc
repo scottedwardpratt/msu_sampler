@@ -66,3 +66,33 @@ void Chyper::CalcBiggestpitilde(){
 			biggestpitilde=V(alpha);
 	}
 }
+
+void Chyper::Copy(Chyper *oldhyper){
+	sigma=oldhyper->sigma;
+	rhoB=oldhyper->rhoB;
+	rhoI=oldhyper->rhoI;
+	rhoS=oldhyper->rhoS;
+	tau=oldhyper->tau;
+	eta=oldhyper->eta;
+	muB=oldhyper->muB;
+	muI=oldhyper->muI;
+	muS=oldhyper->muS;
+	nhadrons=oldhyper->nhadrons;
+	Rshear=oldhyper->Rshear;
+	Rbulk=oldhyper->Rbulk;
+	epsilon=oldhyper->epsilon;
+	P=oldhyper->P;
+	dedT=oldhyper->dedT;
+	biggestpitilde=oldhyper->biggestpitilde;
+	udotdOmega=oldhyper->udotdOmega;
+	PItilde=oldhyper->PItilde;
+	for(int alpha=0;alpha<4;alpha++){
+		u[alpha]=oldhyper->u[alpha];
+		r[alpha]=oldhyper->r[alpha];
+		qmu[alpha]=oldhyper->qmu[alpha];
+		dOmega[alpha]=oldhyper->dOmega[alpha];
+		for(int beta=0;beta<4;beta++){
+			pitilde[alpha][beta]=oldhyper->pitilde[alpha][beta];
+		}
+	}
+}

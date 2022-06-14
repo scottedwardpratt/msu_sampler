@@ -59,9 +59,9 @@ void CresInfo::PrintBranchInfo(){
 
 void CresInfo::Print(){
 	sprintf(message,"+++++++ ID=%d, M=%g, M_min=%g, %s +++++++++\n",pid,mass,minmass,name.c_str());
-
-	sprintf(message,"Gamma=%g, Degen=%d, Decay=%d\n",width,degen,int(decay));
-	sprintf(message,"Q=%d, B=%d, S=%d, G_parity=%d\n",charge,baryon,strange,G_Parity);
+	sprintf(message,"%sGamma=%g, Degen=%d, Decay=%d\n",message,width,degen,int(decay));
+	sprintf(message,"%sQ=%d, B=%d, S=%d, G_parity=%d\n",message,charge,baryon,strange,G_Parity);
+	CLog::Info(message);
 }
 
 void CresInfo::CalcMinMass(){
@@ -304,7 +304,7 @@ double CresInfo::GenerateMassFromSF(double netprob){
 	map<double,double>::iterator it0,it1,it2;
 	double E,E1,E2;
 	double p1,p2;
-	if(!decay)
+	if(!decay || width<0.001)
 		E=mass;
 	else{
 		it1=sfmassmap.lower_bound(netprob);
@@ -402,7 +402,7 @@ void CresInfo::DecayGetResInfoPtr(int &nbodies,array<CresInfo *,5> &daughterresi
 		ibranch++;
 		if(bsum>1.00000001){
 			Print();
-			sprintf(message,"In DecayGetResInfo: bsum too large, = %g\n",bsum);
+			sprintf(message,"In DecayGetResInfoPtr: bsum too large, = %g\n",bsum);
 			CLog::Fatal(message);
 		}
 	}while(bsum<r);
@@ -430,6 +430,7 @@ void CresInfo::DecayGetResInfoPtr(double mothermass,int &nbodies,array<CresInfo 
 		Print();
 		sprintf(message,"branchlist.size()=%d\n",int(branchlist.size()));
 		CLog::Info(message);
+		CLog::Info("pid="+to_string(pid)+"\n");
 		sprintf(message,"In DecayGetResInfo: bsum too small, = %15.7e\n",bsum);
 		CLog::Fatal(message);
 	}
@@ -486,11 +487,12 @@ void CresInfo::SetBtype(){
 			Btype=7;
 	}
 	if(Btype==-1 && baryon!=0){
-		printf("Btype=%d, pid=%d\n",Btype,pid);
-		printf("%s, s=%d, total_isospin=%d\n",name.c_str(),s,total_isospin);
-		printf("charm=%d, bottom=%d\n",charm,bottom);
+		sprintf(message,"Btype=%d, pid=%d\n",Btype,pid);
+		sprintf(message,"%s%s=%d, total_isospin=%d\n",message,name.c_str(),s,total_isospin);
+		sprintf(message,"%scharm=%d, bottom=%d\n",message,charm,bottom);
+		CLog::Info(message);
 		Print();
-		exit(1);
+		exit(1);		
 	}
 }
 

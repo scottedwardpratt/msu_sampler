@@ -59,8 +59,10 @@ void Csampler::CalcDensitiesMu0(){
 	CresInfo *resinfo;
 	CresMassMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
-	int ires;
+	int ires,a,b;
 	nhadrons0=P0=epsilon0=0.0;
+	chi0.setZero();
+	sigma0.setZero();
 
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
 		resinfo=rpos->second;
@@ -77,6 +79,12 @@ void Csampler::CalcDensitiesMu0(){
 			p4overE30+=p4overE3i;
 			if(resinfo->decay)
 				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
+			for(a=0;a<3;a++){
+				for(b=0;b<3;b++){
+					chi0(a,b)+=densi*resinfo->q[a]*resinfo->q[b];
+					sigma0(a,b)+=Ji*resinfo->q[a]*resinfo->q[b];
+				}
+			}
 		}
 	}
 	if(bose_corr){
@@ -88,8 +96,16 @@ void Csampler::CalcDensitiesMu0(){
 			epsilon0+=3.0*pibose_epsilon0[nbose];
 			P0+=3.0*pibose_P0[nbose];
 			p4overE30+=3.0*p4overE3i;
+			Ji=3*MSU_EOS::GetJi(Tf/double(nbose),0.138,pibose_dens0[nbose]);
+			for(a=0;a<3;a++){
+				for(b=0;b<3;b++){
+					chi0(a,b)+=pibose_dens0[nbose]*resinfo->q[a]*resinfo->q[b];
+					sigma0(a,b)+=Ji*resinfo->q[a]*resinfo->q[b];
+				}
+			}
 		}
 	}
+	chiinv0=sigma0.inverse();
 }
 
 // Calculates factors (depend only on T) used for Newton's method to get muB, muI, muS from rhoB, rhoI, rhoS

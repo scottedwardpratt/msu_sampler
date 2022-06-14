@@ -19,8 +19,7 @@ class Chyper{
 public:
 	Chyper();
 	//~Chyper();
-		double T0; // T0 is read-in temperature, samplerptr->T is used to make parts;
-		//Csampler *sampler;
+		double T0;
 		int firstcall;
 		double sigma,rhoB,rhoI,rhoS;
 		double muB,muI,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
@@ -32,16 +31,18 @@ public:
 		double tau,eta; // Bjorken tau and spatial rapidity
 		FourTensor pitilde; // shear tensor
 		double biggestpitilde; // largest eigenvalue
-		void CalcBiggestpitilde();
 		double PItilde; // bulk tensor correction
+		bool Rvisc_calculated;
+		bool epsilon_calculated;
+		
+		void CalcBiggestpitilde();
 		double GetEntropyDensity();
 		void SetSampler(Csampler *samplerptr);
 		//double pixx,pixy,pixz,piyy,piyz,pizz;
 		void FillOutShearTensor(double &pixx,double &pixy,double &pixz,double &piyy,double &piyz,double &pizz);
 		void Print2D();  // prints out info for 2D element (Bjorken symm)
 		void Print();    // prints out info for 3D element
-		bool Rvisc_calculated;
-		bool epsilon_calculated;
+		void Copy(Chyper *oldhyper);
 		Csampler *sampler;
 		static char *message;
 	};
