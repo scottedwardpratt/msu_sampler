@@ -54,7 +54,7 @@ void CresList::ReadResInfo(){
 		resinfo->q[0]=resinfo->baryon+resinfo->charge;
 		resinfo->q[1]=2.0*resinfo->baryon+resinfo->strange-resinfo->charge;
 		resinfo->q[2]=-resinfo->strange;
-
+		
 		//decay reading
 		//reads into map values: will access for decays when done creating resonances
 		for (ichannel=0; ichannel<resinfo->nchannels; ichannel++){
@@ -110,6 +110,9 @@ void CresList::ReadResInfo(){
 			aresinfo->charge=-resinfo->charge;
 			aresinfo->decay=resinfo->decay;
 			aresinfo->nchannels=resinfo->nchannels;
+			aresinfo->q[0]=-resinfo->q[0];
+			aresinfo->q[1]=-resinfo->q[1];
+			aresinfo->q[2]=-resinfo->q[2];
 			cname[int(strlen(cname))-1]='\0';
 			string s(cname);
 			aresinfo->name="Anti-"+s;
