@@ -1,11 +1,11 @@
 #ifndef __SAMPLER_H__
 #define __SAMPLER_H__
 #include <Eigen/Dense>
-#include "msu_sampler/resonances.h"
+#include "msu_eos/resonances.h"
 #include "msu_sampler/part.h"
 #include "msu_sampler/classdefs.h"
 #include "msu_sampler/master.h"
-#include "msu_sampler/eos.h"
+#include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
 using namespace std;
 

@@ -2,7 +2,7 @@
 #define __SAMPLER_MEANFIELD_H__
 
 #include "msu_sampler/classdefs.h"
-#include "msu_sampler/resonances.h"
+#include "msu_eos/resonances.h"
 #include "msu_commonutils/parametermap.h"
 
 class CmeanField{

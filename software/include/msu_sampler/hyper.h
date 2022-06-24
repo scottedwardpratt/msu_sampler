@@ -4,7 +4,7 @@
 #include "classdefs.h"
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
-#include "msu_sampler/eos.h"
+#include "msu_eos/eos.h"
 #include "msu_commonutils/misc.h"
 using namespace std;
 

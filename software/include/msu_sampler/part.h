@@ -2,9 +2,9 @@
 #define __PART_H__
 #include "msu_commonutils/commondefs.h"
 #include "msu_commonutils/misc.h"
-#include "msu_sampler/resonances.h"
+#include "msu_eos/resonances.h"
 #include "msu_sampler/classdefs.h"
-#include "msu_sampler/eos.h"
+#include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
 using namespace std;
 
