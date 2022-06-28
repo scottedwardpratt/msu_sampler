@@ -54,8 +54,8 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		if (std::abs(u_milne_sqr - 1.0) > 1.e-6) {
 			sprintf(message,"Warning at reading from MUSIC output: "
 				"u_Milne (u_eta multiplied by tau) = %9.6f %9.6f %9.6f %9.6f"
-					", u^2 == 1 is not fulfilled with error %12.8f.\n",
-			utau, ux, uy, ueta, std::abs(u_milne_sqr - 1.0));
+				", u^2 == 1 is not fulfilled with error %12.8f.\n",
+				utau, ux, uy, ueta, std::abs(u_milne_sqr - 1.0));
 			CLog::Info(message);
 		}
 		//udotdOmega_music = tau * (dOmegaTau * utau +
@@ -81,7 +81,7 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		*/
 
 		udotdOmega = dOmega0 * u0 - dOmegaX * ux - dOmegaY * uy - dOmegaZ * uz;
- 
+
 		epsilonf = array[12]*HBARC_GEV; //was labeled Edec--guessed this was epsilon
 		Tdec = array[13]*HBARC_GEV;
 		muB  = array[14]*HBARC_GEV/Tdec;
@@ -99,7 +99,7 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		pivisc[2][2]=array[25]*HBARC_GEV;
 		pivisc[2][3]=pivisc[3][2]=array[26]*HBARC_GEV; // /tau;
 		pivisc[3][3]=array[27]*HBARC_GEV; // /(tau*tau);
-        TransformPiTotz(pivisc, ch_eta, sh_eta);
+		TransformPiTotz(pivisc, ch_eta, sh_eta);
 		
 		PIbulk = array[28]*HBARC_GEV;   // GeV/fm^3
 		rhoB = array[29];  // 1/fm^3
@@ -108,8 +108,8 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		qmu1 = array[31];
 		qmu2 = array[32];
 		qmu_eta = array[33];
-        qmu0 = qmu_tau*ch_eta + qmu_eta*sh_eta;
-        qmu3 = qmu_tau*sh_eta + qmu_eta*ch_eta;
+		qmu0 = qmu_tau*ch_eta + qmu_eta*sh_eta;
+		qmu3 = qmu_tau*sh_eta + qmu_eta*ch_eta;
 
 		if(parmap->getB("MSU_SAMPLER_BJORKEN_2D",false)){
 			double ETAMAX_ratio=parmap->getD("MSU_SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
@@ -196,7 +196,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 	nelements=0;
 	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/OSU/alice_cent0_5/hyper.txt"));
-	sprintf(message,"opening %s\n",filename.c_str());
+	sprintf(message,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
 	if (fptr==NULL) {
@@ -204,10 +204,10 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		CLog::Fatal(message);
 	}
 	fscanf(fptr,"%lf",&Tdec);
+	Tdec=0.155;
 	fgets(dummy,300,fptr);	fgets(dummy,300,fptr);
 	while(!feof(fptr)){
 		elem=new Chyper();
-		// read from binary file
 		double readstuff[11];
 		for(int iread=0;iread<11;iread++)
 			fscanf(fptr,"%lf",&readstuff[iread]);
@@ -235,56 +235,53 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		//if(udotdOmega >= 0.0) {
 			//if(Tdec >0.15)
 				//netvolume+=udotdOmega;
-			elem->tau=tau;
-			elem->dOmega[0]=dOmega0; 
-			elem->dOmega[1]=dOmegaX; 
-			elem->dOmega[2]=dOmegaY; 
-			elem->dOmega[3]=0.0;
+		elem->tau=tau;
+		elem->dOmega[0]=dOmega0; 
+		elem->dOmega[1]=dOmegaX; 
+		elem->dOmega[2]=dOmegaY; 
+		elem->dOmega[3]=0.0;
 
-			elem->udotdOmega=udotdOmega;
+		elem->udotdOmega=udotdOmega;
 
-			elem->r[0]=tau;
-			elem->r[1]=x;
-			elem->r[2]=y;
-			elem->r[3]=0.0;
+		elem->r[0]=tau;
+		elem->r[1]=x;
+		elem->r[2]=y;
+		elem->r[3]=0.0;
 
-			elem->u[0]=u0;
-			elem->u[1]=ux;
-			elem->u[2]=uy;
-			elem->u[3]=0.0;
+		elem->u[0]=u0;
+		elem->u[1]=ux;
+		elem->u[2]=uy;
+		elem->u[3]=0.0;
 
-			elem->pitilde[0][0]=elem->pitilde[0][1]=elem->pitilde[0][2]=elem->pitilde[0][3]=0.0;
-			elem->pitilde[3][0]=elem->pitilde[3][1]=elem->pitilde[3][2]=0.0;
-			elem->pitilde[1][0]=elem->pitilde[1][3]=0.0;
-			elem->pitilde[2][0]=elem->pitilde[2][3]=0.0;
-			elem->pitilde[1][1]=pitildexx;
-			elem->pitilde[2][2]=pitildeyy;
-			elem->pitilde[1][2]=elem->pitilde[2][1]=pitildexy;
-			elem->pitilde[3][3]=-pitildexx-pitildeyy;
-			
-			elem->muB=muB+0.5*muC;
-			elem->muS=muS+0.5*muC;
-			elem->muI=muC;
-			
-			elem->epsilon=epsilonf;
-			elem->T0=Tdec;
-			elem->rhoB=0.0;
-			elem->rhoS=0.0;
-			elem->rhoI=0.0;
+		elem->pitilde[0][0]=elem->pitilde[0][1]=elem->pitilde[0][2]=elem->pitilde[0][3]=0.0;
+		elem->pitilde[3][0]=elem->pitilde[3][1]=elem->pitilde[3][2]=0.0;
+		elem->pitilde[1][0]=elem->pitilde[1][3]=0.0;
+		elem->pitilde[2][0]=elem->pitilde[2][3]=0.0;
+		elem->pitilde[1][1]=pitildexx;
+		elem->pitilde[2][2]=pitildeyy;
+		elem->pitilde[1][2]=elem->pitilde[2][1]=pitildexy;
+		elem->pitilde[3][3]=-pitildexx-pitildeyy;
 
-			elem->qmu[0]=qmu0;
-			elem->qmu[1]=qmu1;
-			elem->qmu[2]=qmu2;
-			elem->qmu[3]=qmu3;
-			elem->rhoB=rhoB;
+		elem->muB=muB+0.5*muC;
+		elem->muS=muS+0.5*muC;
+		elem->muI=muC;
 
-			hyperlist.push_back(elem);
-			ielement+=1;
+		elem->epsilon=epsilonf;
+		elem->T0=Tdec;
+		elem->rhoB=0.0;
+		elem->rhoS=0.0;
+		elem->rhoI=0.0;
 
-		//}
+		elem->qmu[0]=qmu0;
+		elem->qmu[1]=qmu1;
+		elem->qmu[2]=qmu2;
+		elem->qmu[3]=qmu3;
+		elem->rhoB=rhoB;
+
+		hyperlist.push_back(elem);
+		ielement+=1;
 	}
 	nelements=ielement;
-	//printf("netvolume=%g\n",netvolume);
 }
 
 

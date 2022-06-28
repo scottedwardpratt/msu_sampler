@@ -24,6 +24,7 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	FIRSTCALL=true;
 	Tf=Tfset;
 	sigmaf=sigmafset;
+	printf("making sampler, T=%g, sigma=%g\n",Tf,sigmaf);
 	if(!bose_corr)
 		n_bose_corr=1;
 	int nres=reslist->resmap.size();
