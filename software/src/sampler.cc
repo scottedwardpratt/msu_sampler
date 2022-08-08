@@ -106,7 +106,7 @@ void Csampler::CalcDensitiesMu0(){
 			}
 		}
 	}
-	chiinv0=sigma0.inverse();
+	chiinv0=chi0.inverse();
 }
 
 // Calculates factors (depend only on T) used for Newton's method to get muB, muI, muS from rhoB, rhoI, rhoS
