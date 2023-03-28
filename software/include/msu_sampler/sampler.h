@@ -37,7 +37,7 @@ public:
 	void GetPars(CparameterMap *parmapset);
 	void CalcLambdaMu0(); // Calculates lambda which is used for viscous corrections with mu=0
 	double CalcLambdaF(Chyper *hyper);
-	double CalcLambdaF(double muB,double muI,double muS,double Pf); //  calculates lambda with mu !=0
+	double CalcLambdaF(double muB,double muII,double muS,double Pf); //  calculates lambda with mu !=0
 	void CalcDensitiesF();
 	void CalcDensitiesMu0();
 	double totvol;
@@ -83,12 +83,14 @@ public:
 
 	void GetNHMu0(); // Calculates above quantities
 	void GetMuNH(Chyper *hyper);
-	void GetMuNH(double rhoBtarget,double rhoItarget,double rhoStarget,double &muB,double &muI,double &muS);
+	void GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons);
 	void CalcNHadronsEpsilonP(Chyper *hyper);
-	void CalcNHadronsEpsilonP(double muB,double muI,double muS,double &nhadronsf,double &epsilonf,double &Pf);
+	void CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nhadronsf,double &epsilonf,double &Pf);
 	void GetTfMuNH(Chyper *hyper);
-	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoItarget,double rhoStarget,double &muB,double &muI,double &muS);
-	void GetEpsilonRhoDerivatives(double muB,double muI,double muS,double &epsilon,double &rhoB,double &rhoI,double &rhoS,Eigen::MatrixXd &A);
+	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
+	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);
+	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
+	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
 	int MakeParts(Chyper *hyper);
 	void CalcRvisc(Chyper *hyper);
 	void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);
@@ -97,6 +99,8 @@ public:
 	void GetP(Chyper *hyper,double T,CresInfo *resinfo,FourVector &p);
 	void GetPInFluidFrame(double m,Chyper *hyper,double T,FourVector &p);
 	void CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap);
+	void CalcChi(Chyper *hyper);
+	void CalcChiSlow(Chyper *hyper);
 
 	static Crandy *randy;
 	static CresList *reslist;

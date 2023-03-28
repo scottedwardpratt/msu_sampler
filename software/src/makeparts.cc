@@ -11,7 +11,7 @@ int Csampler::MakeParts(Chyper *hyper){
 	int nparts=0,dnparts,ires,nbose;
 	CresInfo *resinfo;
 	double udotdOmega=hyper->udotdOmega;
-	double dN,dNtot=0,dNtotprime=0,mutot=0,I3;
+	double dN,dNtot=0,dNtotprime=0,mutot=0,II3;
 	double dNcheck=0.0;
 	CresMassMap::iterator iter;
 	
@@ -29,17 +29,17 @@ int Csampler::MakeParts(Chyper *hyper){
 			resinfo=iter->second;
 			if(resinfo->pid!=22){
 				ires=resinfo->ires;
-				I3=0.5*(2.0*resinfo->charge-resinfo->baryon-resinfo->strange);
-				mutot=hyper->muB*resinfo->baryon+hyper->muI*I3+hyper->muS*resinfo->strange;
+				II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
+				mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
 				mutot=mutot*hyper->T0/Tf;
 				dN=NSAMPLE*exp(mutot)*density0i[ires]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				if(dNtotprime<-0.0001){
-					sprintf(message,"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
+					snprintf(message,CLog::CHARLENGTH,"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
 					ires,dNtotprime,mutot,dNcheck,dNtot);
 					CLog::Info(message);
-					sprintf(message,"nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
+					snprintf(message,CLog::CHARLENGTH,"nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
 					CLog::Fatal(message);
 				}
 				dnparts=CheckResInVolume(dN,Tf,resinfo,hyper);
@@ -54,7 +54,7 @@ int Csampler::MakeParts(Chyper *hyper){
 			for(nbose=2;nbose<=n_bose_corr;nbose++){
 				resinfo=reslist->GetResInfoPtr(211);
 				ires=resinfo->ires;
-				mutot=nbose*hyper->muI*hyper->T0/Tf;
+				mutot=2.0*nbose*hyper->muII*hyper->T0/Tf;
 				dN=NSAMPLE*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
@@ -77,7 +77,7 @@ int Csampler::MakeParts(Chyper *hyper){
 				}
 				resinfo=reslist->GetResInfoPtr(-211);
 				ires=resinfo->ires;
-				mutot=-nbose*hyper->muI*hyper->T0/Tf;
+				mutot=-2.0*nbose*hyper->muII*hyper->T0/Tf;
 				dN=exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
@@ -91,7 +91,7 @@ int Csampler::MakeParts(Chyper *hyper){
 		}
 		NoMoreParts:
 		if(dNcheck>dNtot*1.01){
-			sprintf(message,"Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
+			snprintf(message,CLog::CHARLENGTH,"Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
 			dNcheck,dNtot,dNtotprime,Tf);
 			CLog::Fatal(message);
 		}
@@ -112,7 +112,7 @@ int Csampler::CheckResInVolume(double dN,double T,CresInfo *resinfo,Chyper *hype
 		GetP(hyper,T,resinfo,p);
 		if(BJORKEN_2D){
 			if(fabs(hyper->u[3])>0.01){
-				sprintf(message,"BJORKEN_2D set, but u_z=%g\n",hyper->u[3]);
+				snprintf(message,CLog::CHARLENGTH,"BJORKEN_2D set, but u_z=%g\n",hyper->u[3]);
 				CLog::Fatal(message);
 			}
 			eta=BJORKEN_YMAX*(1.0-randy->ran());
@@ -195,7 +195,7 @@ void Csampler::ShearScale(Chyper *hyper,double mass,FourVector &pnoshear,FourVec
 			}
 		}
 		if(R>Rmax){
-			sprintf(message,"R=%g, pmag=%g, Rmax=%g, biggestpitilde=%g, Rshear=%g\n",R,pmag,Rmax,hyper->biggestpitilde,hyper->Rshear);
+			snprintf(message,CLog::CHARLENGTH,"R=%g, pmag=%g, Rmax=%g, biggestpitilde=%g, Rshear=%g\n",R,pmag,Rmax,hyper->biggestpitilde,hyper->Rshear);
 			CLog::Info(message);
 		}
 	};

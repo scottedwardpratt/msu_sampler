@@ -7,8 +7,9 @@ project(rhocount CXX)
 project(sheartest CXX)
 project(bulktest CXX)
 
-add_custom_target(extern_msu_sampler COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/msu_sampler/software)
 add_custom_target(extern_msu_commonutils COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/commonutils/software)
+add_custom_target(extern_msu_sampler COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/msu_sampler/software)
+add_custom_target(extern_msu_eos COMMAND make WORKING_DIRECTORY ${GITHOME_MSU}/msu_eos/software)
 
 #include(${CMAKE_CURRENT_SOURCE_DIR}/../software/CMakeLists.txt)
 
@@ -19,9 +20,9 @@ message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(GSL 1.15 REQUIRED)
 find_package(Eigen3 REQUIRED)
-include_directories(SYSTEM ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${GITHOME_MSU}/commonutils/software/include ${GITHOME_MSU}/msu_sampler/software/include)
+include_directories(SYSTEM ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${GITHOME_MSU}/commonutils/software/include ${GITHOME_MSU}/msu_sampler/software/include ${GITHOME_MSU}/msu_eos/software/include)
 
-link_directories(${GITHOME_MSU}/msu_sampler/software/lib ${GITHOME_MSU}/commonutils/software/lib)
+link_directories(${GITHOME_MSU}/msu_sampler/software/lib ${GITHOME_MSU}/commonutils/software/lib ${GITHOME_MSU}/msu_eos/software/lib)
 
 set(SOURCE_FILES ./samplertest.cc)
 SET_SOURCE_FILES_PROPERTIES(
@@ -56,8 +57,6 @@ SET_SOURCE_FILES_PROPERTIES(
 )
 add_executable(sheartest ${SOURCE_FILES})
 
-
-
 add_dependencies(samplertest extern_msu_sampler)
 add_dependencies(samplertest_hydro extern_msu_sampler)
 add_dependencies(rhocount extern_msu_sampler)
@@ -65,8 +64,9 @@ add_dependencies(sheartest extern_msu_sampler)
 add_dependencies(bulktest extern_msu_sampler)
 find_library(${GITHOME_MSU}/msu_sampler/software/lib msu_sampler)
 find_library(${GITHOME_MSU}/commonutils/software/lib msu_commonutils)
-target_link_libraries(samplertest msu_sampler msu_commonutils ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
-target_link_libraries(samplertest_hydro msu_sampler msu_commonutils ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
+find_library(${GITHOME_MSU}/msu_eos/software/lib msu_eos)
+target_link_libraries(samplertest msu_sampler msu_commonutils msu_eos ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
+target_link_libraries(samplertest_hydro msu_sampler msu_commonutils msu_eos ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 target_link_libraries(rhocount msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 target_link_libraries(sheartest msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 target_link_libraries(bulktest msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})

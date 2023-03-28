@@ -21,8 +21,8 @@ public:
 	//~Chyper();
 		double T0;
 		int firstcall;
-		double sigma,rhoB,rhoI,rhoS;
-		double muB,muI,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
+		double sigma,rhoB,rhoII,rhoS;
+		double muB,muII,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
 		FourVector dOmega; // hyper volume
 		double udotdOmega; // dot product of u and dOmega
 		FourVector u;  // collective velocity
@@ -34,6 +34,7 @@ public:
 		double PItilde; // bulk tensor correction
 		bool Rvisc_calculated;
 		bool epsilon_calculated;
+		Eigen::Matrix4d chi,chiinv;
 		
 		void CalcBiggestpitilde();
 		double GetEntropyDensity();

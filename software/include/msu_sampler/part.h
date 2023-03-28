@@ -1,9 +1,10 @@
 #ifndef __PART_H__
 #define __PART_H__
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/hyper.h"
 #include "msu_commonutils/commondefs.h"
 #include "msu_commonutils/misc.h"
 #include "msu_eos/resonances.h"
-#include "msu_sampler/classdefs.h"
 #include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
 using namespace std;
@@ -21,8 +22,11 @@ public:
 	Cpart();
 	~Cpart();
 	int pid;
+	CresInfo *resinfo;
 	double msquared;
 	FourVector p,r;
+	double EQWeight;
+	Eigen::VectorXd EQWeightVec;
 	void Print();
 	double GetMass();
 	void AddPart(int pid,FourVector &p,FourVector &r);
@@ -31,6 +35,7 @@ public:
 	void Boost(FourVector &u);
 	void BoostP(FourVector &u);
 	void BoostR(FourVector &u);
+	void SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget);
 	static char *message;
 };
 
@@ -53,6 +58,8 @@ public:
 		double SumEnergy();
 		double SumEnergy(int pid);
 		void SumSETensor();
+		void IncrementEQTot(Eigen::VectorXd &EQtot);
+		void SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget);
 		void AddPart(int pidset,FourVector &pset,FourVector &rset);
 		static CresList *reslist;
 		static char *message;

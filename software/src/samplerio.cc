@@ -23,11 +23,11 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 
 	nelements=0;
 	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/BEST/surface_2D.dat"));
-	sprintf(message,"opening %s\n",filename.c_str());
+	snprintf(message,CLog::CHARLENGTH,"opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"rb");
 	if (fptr==NULL) {
-		sprintf(message,"Can't open hyper info file\n");
+		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
 
@@ -52,7 +52,7 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 		
 		const double u_milne_sqr = utau * utau - ux * ux - uy * uy - ueta * ueta;
 		if (std::abs(u_milne_sqr - 1.0) > 1.e-6) {
-			sprintf(message,"Warning at reading from MUSIC output: "
+			snprintf(message,CLog::CHARLENGTH,"Warning at reading from MUSIC output: "
 				"u_Milne (u_eta multiplied by tau) = %9.6f %9.6f %9.6f %9.6f"
 				", u^2 == 1 is not fulfilled with error %12.8f.\n",
 				utau, ux, uy, ueta, std::abs(u_milne_sqr - 1.0));
@@ -141,13 +141,13 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 
 			elem->muB=muB+0.5*muC;
 			elem->muS=muS+0.5*muC;
-			elem->muI=muC;
+			elem->muII=muC;
 			
 			elem->epsilon=epsilonf;
 			elem->T0=Tdec;
 			elem->rhoB=rhoB;
 			elem->rhoS=0.0;
-			elem->rhoI=0.0;
+			elem->rhoII=0.0;
 
 			elem->qmu[0]=qmu0;
 			elem->qmu[1]=qmu1;
@@ -162,9 +162,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 	}
 	nelements=ielement;
 }
-
-#include "msu_sampler/master.h"
-#include "msu_commonutils/constants.h"
 
 //#define __TEST_PITILDE_TRACE__
 
@@ -196,16 +193,16 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 	nelements=0;
 	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/OSU/alice_cent0_5/hyper.txt"));
-	sprintf(message,"Opening %s\n",filename.c_str());
+	snprintf(message,CLog::CHARLENGTH,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
 	if (fptr==NULL) {
-		sprintf(message,"Can't open hyper info file\n");
+		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
 	fscanf(fptr,"%lf",&Tdec);
 	Tdec=0.155;
-	fgets(dummy,300,fptr);	fgets(dummy,300,fptr);
+	fgets(dummy,CLog::CHARLENGTH,fptr);	fgets(dummy,CLog::CHARLENGTH,fptr);
 	while(!feof(fptr)){
 		elem=new Chyper();
 		double readstuff[11];
@@ -264,13 +261,13 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 		elem->muB=muB+0.5*muC;
 		elem->muS=muS+0.5*muC;
-		elem->muI=muC;
+		elem->muII=muC;
 
 		elem->epsilon=epsilonf;
 		elem->T0=Tdec;
 		elem->rhoB=0.0;
 		elem->rhoS=0.0;
-		elem->rhoI=0.0;
+		elem->rhoII=0.0;
 
 		elem->qmu[0]=qmu0;
 		elem->qmu[1]=qmu1;

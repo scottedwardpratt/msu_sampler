@@ -7,7 +7,7 @@ using namespace std;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
-	message=new char[200];
+	message=new char[CLog::CHARLENGTH];
 	parmap=parmapin;
 	randy=new Crandy(-1234);
 	reslist=new CresList(parmap);
@@ -34,7 +34,7 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	if(MEANFIELD=="simple")
 		meanfield=new CmeanField_Simple(parmap);
 	else{
-		sprintf(message,"Don't recognize MSU_SAMPLER_MEANFIELD from parameter map=%s\n",MEANFIELD.c_str());
+		snprintf(message,CLog::CHARLENGTH,"Don't recognize MSU_SAMPLER_MEANFIELD from parameter map=%s\n",MEANFIELD.c_str());
 		CLog::Info(message);
 	}
 	Csampler::randy=randy;
@@ -132,9 +132,9 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 		it=0;
 	if(it>=NTF){
 		it=NTF-1;
-		sprintf(message,"WARNING in CmasterSampler::ChooseSampler\n");
+		snprintf(message,CLog::CHARLENGTH,"WARNING in CmasterSampler::ChooseSampler\n");
 		CLog::Info(message);
-		sprintf(message,"your temperature, T=%g, is higher than TFmax=%g\n",T,TFmax);
+		snprintf(message,CLog::CHARLENGTH,"your temperature, T=%g, is higher than TFmax=%g\n",T,TFmax);
 		CLog::Info(message);
 	}
 	if(NSIGMAF==0){
@@ -152,7 +152,7 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 			isigma=NSIGMAF-1;
 	}
 	if(sampler[it][isigma]==nullptr){
-		sprintf(message,"making Csampler object, DELTF=%g, it=%d, Tf-T0=%g\n",DELTF,it,it*DELTF-hyper->T0);
+		snprintf(message,CLog::CHARLENGTH,"making Csampler object, DELTF=%g, it=%d, Tf-T0=%g\n",DELTF,it,it*DELTF-hyper->T0);
 		CLog::Info(message);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
 	}
@@ -191,18 +191,18 @@ void CmasterSampler::GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVecto
 	for(alpha=1;alpha<4;alpha++){
 		trace-=pivisc[alpha][alpha];
 	}
-	sprintf(message,"-----------------------------\n");
+	snprintf(message,CLog::CHARLENGTH,"-----------------------------\n");
 	CLog::Info(message);
-	sprintf(message,"before, trace=%g, pi_00=%g=?%g, u=(%g,%g,%g,%g)\n",trace,picontract/(u[0]*u[0]),pivisc[0][0],u[0],u[1],u[2],u[3]);
+	snprintf(message,"before, trace=%g, pi_00=%g=?%g, u=(%g,%g,%g,%g)\n",trace,picontract/(u[0]*u[0]),pivisc[0][0],u[0],u[1],u[2],u[3]);
 	CLog::Info(message);
 	CLog::Info(message);
-	sprintf(message,"pivisc=\n");
+	snprintf(message,CLog::CHARLENGTH,"pivisc=\n");
 	for(alpha=1;alpha<4;alpha++){
 		for(beta=1;beta<4;beta++){
-			sprintf(message,"%10.7f ",pivisc[alpha][beta]);
+			snprintf(message,CLog::CHARLENGTH,"%10.7f ",pivisc[alpha][beta]);
 			CLog::Info(message);
 		}
-		sprintf(message,"\n");
+		snprintf(message,CLog::CHARLENGTH,"\n");
 
 	}
 #endif
@@ -219,7 +219,7 @@ void CmasterSampler::GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVecto
 	for(alpha=1;alpha<4;alpha++){
 		trace-=pitilde[alpha][alpha];
 	}
-	sprintf(message,"after, trace=%g\n",trace);
+	snprintf(message,CLog::CHARLENGTH,"after, trace=%g\n",trace);
 	CLog::Info(message);
 	if(fabs(picontract)>0.1)
 		Misc::Pause();

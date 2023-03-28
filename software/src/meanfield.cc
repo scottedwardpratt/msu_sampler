@@ -5,9 +5,9 @@ CmeanField::CmeanField(){
 }
 
 CmeanField_Simple::CmeanField_Simple(CparameterMap *parmap) : CmeanField(){
-	char message[200];
+	char message[CLog::CHARLENGTH];
 	if(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")!="NO_MF_DESCRIPTION"){
-		sprintf(message,"MF_DESCRIPTION=%s\n",(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")).c_str());
+		snprintf(message,CLog::CHARLENGTH,"MF_DESCRIPTION=%s\n",(parmap->getS("MF_DESCRIPTION","NO_MF_DESCRIPTION")).c_str());
 		CLog::Info(message);
 	}
 }

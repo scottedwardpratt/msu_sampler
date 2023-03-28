@@ -5,7 +5,7 @@ using namespace std;
 int main(){
 	double T0=0.150,V0=2.0;
 	long long int npartstot=0,iprint=0,nprint,ievent;
-	int nparts,nhyper=100000;
+	int nparts,nhyper=1000;
 	CparameterMap parmap;
 	parmap.ReadParsFromFile("parameters.txt");
 	CmasterSampler ms(&parmap);
@@ -27,9 +27,9 @@ int main(){
 			hyper->sigma=0.093;
 			hyper->rhoB=0.0;
 			hyper->rhoS=0.0;
-			hyper->rhoI=0.0;
+			hyper->rhoII=0.0;
 			hyper->epsilon=0.3;
-			hyper->muB=hyper->muS=hyper->muI=0.0;
+			hyper->muB=hyper->muS=hyper->muII=0.0;
 			//hyper->muB=0.0502531705905960349327493288057178011854/hyper->T0;  //exp(2*muB/T)=2
 			hyper->u[1]=hyper->u[2]=hyper->u[3]=0.0;
 			//hyper->u[1]=sqrt(3.0);
