@@ -307,7 +307,7 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 
 	//3D Newton's Method
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
-	double rhoB,rhoS,rhoII;
+	double rhoB,rhoS,rhoII=0.0;
 
 	double drhoB_dmuB,drhoB_dmuS,drhoB_dmuII;
 	double drhoII_dmuS,drhoII_dmuII;
@@ -335,6 +335,7 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 								+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(xI*xI+xxI*xxI)
 									+0.25*nh0_b1i3s0*(xB+xxB)*(xI*xI*xI+xxI*xxI*xxI)
 										+0.5*nh0_b2i0s0*(xB*xB+xxB*xxB);
+		printf("XXXXXXXX ---nhadrons=%g, muII=%g, rhoII=%g\n",nhadrons,mu[1],rhoII);
 		
 		rhoB=0.5*nh0_b1i0s1*(xB*xxS-xxB*xS)
 			+0.5*nh0_b1i0s3*(xB*xxS*xxS*xxS-xxB*xS*xS*xS)
@@ -363,6 +364,9 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 					+0.25*nh0_b1i1s2*(xB*xxS*xxS+xxB*xS*xS)*(xI-xxI)
 						+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(2*xI*xI-2*xxI*xxI)
 							+0.25*nh0_b1i3s0*(xB+xxB)*(3*xI*xI*xI-3*xxI*xxI*xxI);
+		
+		printf("XXXXXXXX ---nhadrons=%g, muII=%g, rhoII=%g\n",nhadrons,mu[1],rhoII);
+		
 		drhoII_dmuII=0.5*nh0_b0i2s0*(4*xI*xI+4*xxI*xxI)
 			+0.25*nh0_b0i1s1*(xI+xxI)*(xS+xxS)
 				+0.25*nh0_b1i1s0*(xB+xxB)*(xI+xxI)
@@ -410,10 +414,11 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 		}
 		mu[0]+=dmu[0]; mu[1]+=dmu[1]; mu[2]+=dmu[2];
 
-	}while(fabs(drho[0])>1.0E-8 || fabs(drho[1])>1.0E-8 || fabs(drho[2])>1.0E-8);
+	}while(fabs(drho[0])>1.0E-10 || fabs(drho[1])>1.0E-10 || fabs(drho[2])>1.0E-10);
 	muB=mu[0];
 	muII=mu[1];
 	muS=mu[2];
+	printf("QQQQQQQ muII=%g, muB=%g, muS=%g, rhoII=%g, drho=(%g,%g,%g)\n",muII,muB,muS,rhoII,drho[0],drho[1],drho[2]);
 }
 
 // Same as above, but also calculates T, also uses epsilon (uses GetEpsilonRhoDerivatives to get factors )
@@ -554,8 +559,6 @@ void Csampler::GetEpsilonRhoDerivatives(double muB,double muII,double muS,double
 					+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(2*xI*xI-2*xxI*xxI)
 						+0.25*nh0_b1i3s0*(xB+xxB)*(3*xI*xI*xI-3*xxI*xxI*xxI);
 	
-	printf("ZZZZZZZZZZZ rhoII=%g\n",rhoII);
-
 	drhoII_dT=de_dmuII/(Tf*Tf);
 
 	drhoII_dmuB=drhoB_dmuII;
@@ -775,6 +778,7 @@ void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nh
 			}
 		}
 	}
+	printf("check aaa, nhadronsf=%g\n",nhadronsf);
 }
 
 void Csampler::CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap){

@@ -74,9 +74,9 @@ void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
 	EQWeightVec[4]=(hyper->chiinv(1,0)*p[0] +hyper->chiinv(1,1)*B
 		+hyper->chiinv(1,2)*II +hyper->chiinv(1,3)*S)*nhadrons;
 	EQWeightVec[5]=(hyper->chiinv(2,0)*p[0] +hyper->chiinv(2,1)*B
-		 +hyper->chiinv(2,2)*II +hyper->chiinv(2,3)*S)*hyper->nhadrons;
+		 +hyper->chiinv(2,2)*II +hyper->chiinv(2,3)*S)*nhadrons;
 	EQWeightVec[6]=(hyper->chiinv(3,0)*p[0] +hyper->chiinv(3,1)*B
-		 +hyper->chiinv(3,2)*II +hyper->chiinv(3,3)*S)*hyper->nhadrons;
+		 +hyper->chiinv(3,2)*II +hyper->chiinv(3,3)*S)*nhadrons;
 	EQWeight=0.0;
 	for(int i=0;i<7;i++)
 		EQWeight+=EQWeightVec(i)*EQTarget(i);

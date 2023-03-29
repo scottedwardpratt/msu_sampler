@@ -22,6 +22,24 @@ int Csampler::MakeParts(Chyper *hyper){
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
 	
+	double nfcheck=0.0;
+	for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+		resinfo=iter->second;
+		if(resinfo->pid!=22){
+			ires=resinfo->ires;
+			II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
+			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
+			mutot=mutot*hyper->T0/Tf;
+			nfcheck+=exp(mutot)*density0i[ires];
+		}
+	}
+	printf("------ nfcheck=%g, T0/TF=%g\n",nfcheck,hyper->T0/Tf);
+	printf("muII=%g, muB=%g, muS=%g\n",hyper->muII,hyper->muS,hyper->muB);
+	
+	
+	
+	
+	
 	totvol+=udotdOmega;
 	if(randy->test_threshold(dNtot)){
 		dNcheck=0.0;
