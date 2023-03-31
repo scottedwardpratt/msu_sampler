@@ -106,8 +106,9 @@ int CmasterSampler::MakeEvent(){
 				samplerptr->CalcDensitiesMu0();
 				samplerptr->FIRSTCALL=false;
 			}
-			if(CALCMU)
+			if(CALCMU){
 				samplerptr->GetMuNH(hyper);
+			}
 			hyper->firstcall=false;
 			samplerptr->CalcNHadronsEpsilonP(hyper);
 		}

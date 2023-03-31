@@ -82,12 +82,22 @@ void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
 		EQWeight+=EQWeightVec(i)*EQTarget(i);
 }
 
+void Cpart::Copy(Cpart *oldpart){
+	int alpha;
+	for(alpha=0;alpha<4;alpha++){
+		p[alpha]=oldpart->p[alpha];
+		r[alpha]=oldpart->r[alpha];
+	}
+	pid=oldpart->pid;
+	resinfo=oldpart->resinfo;
+	msquared=oldpart->msquared;
+	EQWeightVec=oldpart->EQWeightVec;
+}
+
 
 /////////////////
 /////////////////
 /////////////////
-
-
 
 CpartList::CpartList(CparameterMap *parmap,CresList *reslist_in){
 	nparts_blocksize=parmap->getI("MSU_SAMPLER_NPARTS_BLOCKSIZE",2000);

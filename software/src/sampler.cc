@@ -68,7 +68,7 @@ void Csampler::CalcDensitiesMu0(){
 		resinfo=rpos->second;
 		if(resinfo->pid!=22){
 			// note this does not change mass due to sigma!=93 MeV
-			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji);
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,USE_POLE_MASS);
 			ires=resinfo->ires;
 			density0i[ires]=densi;
 			epsilon0i[ires]=epsiloni;
@@ -77,7 +77,7 @@ void Csampler::CalcDensitiesMu0(){
 			epsilon0+=epsiloni;
 			P0+=Pi;
 			p4overE30+=p4overE3i;
-			if(resinfo->decay)
+			if(resinfo->decay && !USE_POLE_MASS)
 				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
 			for(a=0;a<3;a++){
 				for(b=0;b<3;b++){
@@ -160,7 +160,7 @@ void Csampler::GetNHMu0(){
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();++rpos){
 		resinfo=rpos->second;
 		if(resinfo->pid!=22){
-			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji);
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,USE_POLE_MASS);
 			m2=resinfo->mass*resinfo->mass;
 
 			B=resinfo->baryon;
@@ -335,7 +335,6 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 								+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(xI*xI+xxI*xxI)
 									+0.25*nh0_b1i3s0*(xB+xxB)*(xI*xI*xI+xxI*xxI*xxI)
 										+0.5*nh0_b2i0s0*(xB*xB+xxB*xxB);
-		printf("XXXXXXXX ---nhadrons=%g, muII=%g, rhoII=%g\n",nhadrons,mu[1],rhoII);
 		
 		rhoB=0.5*nh0_b1i0s1*(xB*xxS-xxB*xS)
 			+0.5*nh0_b1i0s3*(xB*xxS*xxS*xxS-xxB*xS*xS*xS)
@@ -364,8 +363,6 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 					+0.25*nh0_b1i1s2*(xB*xxS*xxS+xxB*xS*xS)*(xI-xxI)
 						+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(2*xI*xI-2*xxI*xxI)
 							+0.25*nh0_b1i3s0*(xB+xxB)*(3*xI*xI*xI-3*xxI*xxI*xxI);
-		
-		printf("XXXXXXXX ---nhadrons=%g, muII=%g, rhoII=%g\n",nhadrons,mu[1],rhoII);
 		
 		drhoII_dmuII=0.5*nh0_b0i2s0*(4*xI*xI+4*xxI*xxI)
 			+0.25*nh0_b0i1s1*(xI+xxI)*(xS+xxS)
@@ -418,7 +415,6 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 	muB=mu[0];
 	muII=mu[1];
 	muS=mu[2];
-	printf("QQQQQQQ muII=%g, muB=%g, muS=%g, rhoII=%g, drho=(%g,%g,%g)\n",muII,muB,muS,rhoII,drho[0],drho[1],drho[2]);
 }
 
 // Same as above, but also calculates T, also uses epsilon (uses GetEpsilonRhoDerivatives to get factors )
@@ -750,6 +746,7 @@ void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nh
 		xxI=1.0/xI;
 		xxS=1.0/xS;
 		xbose=exp(muII);
+		
 		nhadronsf=nh0_b0i0s0+0.5*nh0_b0i2s0*(xI*xI+xxI*xxI)
 			+0.25*nh0_b0i1s1*(xI+xxI)*(xS+xxS)
 				+0.5*nh0_b1i0s1*(xB*xxS+xxB*xS)
@@ -759,6 +756,7 @@ void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nh
 								+0.25*nh0_b1i2s1*(xB*xxS+xxB*xS)*(xI*xI+xxI*xxI)
 									+0.25*nh0_b1i3s0*(xB+xxB)*(xI*xI*xI+xxI*xxI*xxI)
 										+0.5*nh0_b2i0s0*(xB*xB+xxB*xxB);
+		
 		Pf=nhadronsf*Tf;
 		epsilonf=eh0_b0i0s0+0.5*eh0_b0i2s0*(xI*xI+xxI*xxI)
 			+0.25*eh0_b0i1s1*(xI+xxI)*(xS+xxS)
@@ -778,7 +776,6 @@ void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nh
 			}
 		}
 	}
-	printf("check aaa, nhadronsf=%g\n",nhadronsf);
 }
 
 void Csampler::CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap){

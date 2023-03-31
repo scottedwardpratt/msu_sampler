@@ -8,12 +8,13 @@
 using namespace std;
 
 int Csampler::MakeParts(Chyper *hyper){
-	int nparts=0,dnparts,ires,nbose;
+	int nparts=0,dnparts,ires,nbose,II3;
 	CresInfo *resinfo;
 	double udotdOmega=hyper->udotdOmega;
-	double dN,dNtot=0,dNtotprime=0,mutot=0,II3;
+	double dN,dNtot=0,dNtotprime=0,mutot=0;
 	double dNcheck=0.0;
-	CresMassMap::iterator iter;
+	CresInfoMap::iterator iter;
+	int nres[700]={0};
 	
 	if(mastersampler->SETMU0)
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
@@ -22,28 +23,21 @@ int Csampler::MakeParts(Chyper *hyper){
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
 	
-	double nfcheck=0.0;
-	for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+	for(iter=reslist->resmap.begin();iter!=reslist->resmap.end();++iter){
 		resinfo=iter->second;
 		if(resinfo->pid!=22){
 			ires=resinfo->ires;
+			nres[ires]+=1;
 			II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
 			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
-			mutot=mutot*hyper->T0/Tf;
-			nfcheck+=exp(mutot)*density0i[ires];
+			//mutot=mutot*hyper->T0/Tf;
 		}
 	}
-	printf("------ nfcheck=%g, T0/TF=%g\n",nfcheck,hyper->T0/Tf);
-	printf("muII=%g, muB=%g, muS=%g\n",hyper->muII,hyper->muS,hyper->muB);
-	
-	
-	
-	
-	
+
 	totvol+=udotdOmega;
 	if(randy->test_threshold(dNtot)){
 		dNcheck=0.0;
-		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+		for(iter=reslist->resmap.begin();iter!=reslist->resmap.end();++iter){
 			resinfo=iter->second;
 			if(resinfo->pid!=22){
 				ires=resinfo->ires;
