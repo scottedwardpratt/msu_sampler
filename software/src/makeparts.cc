@@ -13,8 +13,7 @@ int Csampler::MakeParts(Chyper *hyper){
 	double udotdOmega=hyper->udotdOmega;
 	double dN,dNtot=0,dNtotprime=0,mutot=0;
 	double dNcheck=0.0;
-	CresInfoMap::iterator iter;
-	int nres[700]={0};
+	CresMassMap::iterator iter;
 	
 	if(mastersampler->SETMU0)
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
@@ -22,22 +21,12 @@ int Csampler::MakeParts(Chyper *hyper){
 		dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
-	
-	for(iter=reslist->resmap.begin();iter!=reslist->resmap.end();++iter){
-		resinfo=iter->second;
-		if(resinfo->pid!=22){
-			ires=resinfo->ires;
-			nres[ires]+=1;
-			II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
-			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
-			//mutot=mutot*hyper->T0/Tf;
-		}
-	}
+
 
 	totvol+=udotdOmega;
 	if(randy->test_threshold(dNtot)){
 		dNcheck=0.0;
-		for(iter=reslist->resmap.begin();iter!=reslist->resmap.end();++iter){
+		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
 			resinfo=iter->second;
 			if(resinfo->pid!=22){
 				ires=resinfo->ires;

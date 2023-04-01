@@ -86,6 +86,7 @@ public:
 	void GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons);
 	void CalcNHadronsEpsilonP(Chyper *hyper);
 	void CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nhadronsf,double &epsilonf,double &Pf);
+	void CalcNHadrons(Chyper *hyper);
 	void GetTfMuNH(Chyper *hyper);
 	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
 	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);

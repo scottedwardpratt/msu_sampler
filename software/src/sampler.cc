@@ -260,6 +260,25 @@ void Csampler::GetNHMu0(){
 	forMU0_calculated=true;
 }
 
+void Csampler::CalcNHadrons(Chyper *hyper){
+	int ires,II3;
+	CresInfo *resinfo;
+	double mutot=0;
+	CresMassMap::iterator iter;
+	
+	double nhadrons=0.0;
+	for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+		resinfo=iter->second;
+		if(resinfo->pid!=22){
+			ires=resinfo->ires;
+			II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
+			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
+			nhadrons+=density0i[ires]*exp(mutot);
+		}
+	}
+	hyper->nhadrons=nhadrons;
+}
+
 /*
 double Csampler::CalcLambdaF(double muB,double muII,double muS,double Pf){
 	int ires=0,nbose;
