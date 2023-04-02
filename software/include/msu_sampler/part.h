@@ -36,6 +36,7 @@ public:
 	void Boost(FourVector &u);
 	void BoostP(FourVector &u);
 	void BoostR(FourVector &u);
+	void SetEQWeightVec(Chyper *hyper);
 	void SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget);
 	void Copy(Cpart *oldpart);
 	static char *message;

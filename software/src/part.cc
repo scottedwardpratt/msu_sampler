@@ -82,6 +82,26 @@ void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
 		EQWeight+=EQWeightVec(i)*EQTarget(i);
 }
 
+void Cpart::SetEQWeightVec(Chyper *hyper){
+	int B=resinfo->baryon,S=resinfo->strange,II=resinfo->q[0]-resinfo->q[1];
+	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
+	double nhadrons=hyper->nhadrons;
+	EQWeightVec.resize(7);
+	EQWeightVec[0]=(hyper->chiinv(0,0)*p[0] +hyper->chiinv(0,1)*B
+		 +hyper->chiinv(0,2)*II +hyper->chiinv(0,3)*S)*nhadrons;
+	
+	EQWeightVec[1]=chipinv*p[1]*nhadrons;
+	EQWeightVec[2]=chipinv*p[2]*nhadrons;
+	EQWeightVec[3]=chipinv*p[3]*nhadrons;
+	
+	EQWeightVec[4]=(hyper->chiinv(1,0)*p[0] +hyper->chiinv(1,1)*B
+		+hyper->chiinv(1,2)*II +hyper->chiinv(1,3)*S)*nhadrons;
+	EQWeightVec[5]=(hyper->chiinv(2,0)*p[0] +hyper->chiinv(2,1)*B
+		 +hyper->chiinv(2,2)*II +hyper->chiinv(2,3)*S)*nhadrons;
+	EQWeightVec[6]=(hyper->chiinv(3,0)*p[0] +hyper->chiinv(3,1)*B
+		 +hyper->chiinv(3,2)*II +hyper->chiinv(3,3)*S)*nhadrons;
+}
+
 void Cpart::Copy(Cpart *oldpart){
 	int alpha;
 	for(alpha=0;alpha<4;alpha++){
