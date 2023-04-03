@@ -59,29 +59,6 @@ void Cpart::BoostR(FourVector &u){
 		r[alpha]=rprime[alpha];
 }
 
-void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
-	int B=resinfo->baryon,S=resinfo->strange,II=resinfo->q[0]-resinfo->q[1];
-	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
-	double nhadrons=hyper->nhadrons;
-	EQWeightVec.resize(7);
-	EQWeightVec[0]=(hyper->chiinv(0,0)*p[0] +hyper->chiinv(0,1)*B
-		 +hyper->chiinv(0,2)*II +hyper->chiinv(0,3)*S)*nhadrons;
-	
-	EQWeightVec[1]=chipinv*p[1]*nhadrons;
-	EQWeightVec[2]=chipinv*p[2]*nhadrons;
-	EQWeightVec[3]=chipinv*p[3]*nhadrons;
-	
-	EQWeightVec[4]=(hyper->chiinv(1,0)*p[0] +hyper->chiinv(1,1)*B
-		+hyper->chiinv(1,2)*II +hyper->chiinv(1,3)*S)*nhadrons;
-	EQWeightVec[5]=(hyper->chiinv(2,0)*p[0] +hyper->chiinv(2,1)*B
-		 +hyper->chiinv(2,2)*II +hyper->chiinv(2,3)*S)*nhadrons;
-	EQWeightVec[6]=(hyper->chiinv(3,0)*p[0] +hyper->chiinv(3,1)*B
-		 +hyper->chiinv(3,2)*II +hyper->chiinv(3,3)*S)*nhadrons;
-	EQWeight=0.0;
-	for(int i=0;i<7;i++)
-		EQWeight+=EQWeightVec(i)*EQTarget(i);
-}
-
 void Cpart::SetEQWeightVec(Chyper *hyper){
 	int B=resinfo->baryon,S=resinfo->strange,II=resinfo->q[0]-resinfo->q[1];
 	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
@@ -256,28 +233,41 @@ void CpartList::SumSETensor(){
 	}
 }
 
-
-void CpartList::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
+void CpartList::SetEQWeightVec(Chyper *hyper){
 	//int II,nparts=partvec.size();
-	int i;
 	for(int ipart=0;ipart<nparts;ipart++){
-		for(i=0;i<7;i++)
-		partvec[ipart].SetEQWeight(hyper,EQTarget);
+		partvec[ipart].SetEQWeightVec(hyper);
 	}
 }
 
-void CpartList::IncrementEQTot(Eigen::VectorXd &EQtot){
+void CpartList::TestEQWeights(Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
 	CresInfo *resinfo;
+	double EQWeight;
 	//int II,nparts=partvec.size();
+	printf("howdy\n");
+	for(int i=0;i<7;i++){
+		printf("%10g, %10g\n",EQtot[i],EQTarget[i]);
+	}
 	for(int ipart=0;ipart<nparts;ipart++){
 		resinfo=partvec[ipart].resinfo;
 		int II=resinfo->q[0]-resinfo->q[1];
-		EQtot[0]+=partvec[ipart].EQWeight*partvec[ipart].p[0];
-		EQtot[1]+=partvec[ipart].EQWeight*partvec[ipart].p[1];
-		EQtot[2]+=partvec[ipart].EQWeight*partvec[ipart].p[2];
-		EQtot[3]+=partvec[ipart].EQWeight*partvec[ipart].p[3];
-		EQtot[4]+=partvec[ipart].EQWeight*partvec[ipart].resinfo->baryon;
-		EQtot[5]+=partvec[ipart].EQWeight*II;
-		EQtot[6]+=partvec[ipart].EQWeight*resinfo->strange;
+		EQWeight=partvec[ipart].EQWeightVec.dot(EQTarget);
+		if(resinfo->pid==22){
+			printf("ipart=%d, EQWeight=%g\n",ipart,EQWeight);
+			printf("p=(%g,%g,%g,%g), pid=%d\n",partvec[ipart].p[0],partvec[ipart].p[1],partvec[ipart].p[2],partvec[ipart].p[2],resinfo->pid);
+		}
+		EQtot[0]+=EQWeight*partvec[ipart].p[0];
+		EQtot[1]+=EQWeight*partvec[ipart].p[1];
+		EQtot[2]+=EQWeight*partvec[ipart].p[2];
+		EQtot[3]+=EQWeight*partvec[ipart].p[3];
+		EQtot[4]+=EQWeight*partvec[ipart].resinfo->baryon;
+		EQtot[5]+=EQWeight*II;
+		EQtot[6]+=EQWeight*resinfo->strange;
 	}
+	for(int i=0;i<7;i++){
+		printf("%10g ",EQtot[i]);
+	}
+	printf("\n------\n");
+	printf("adios\n");
+	Misc::Pause();
 }
