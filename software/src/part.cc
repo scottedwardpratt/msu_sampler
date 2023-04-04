@@ -243,19 +243,13 @@ void CpartList::SetEQWeightVec(Chyper *hyper){
 void CpartList::TestEQWeights(Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
 	CresInfo *resinfo;
 	double EQWeight;
+	int II;
 	//int II,nparts=partvec.size();
-	printf("howdy\n");
-	for(int i=0;i<7;i++){
-		printf("%10g, %10g\n",EQtot[i],EQTarget[i]);
-	}
 	for(int ipart=0;ipart<nparts;ipart++){
 		resinfo=partvec[ipart].resinfo;
-		int II=resinfo->q[0]-resinfo->q[1];
+		II=resinfo->q[0]-resinfo->q[1];
 		EQWeight=partvec[ipart].EQWeightVec.dot(EQTarget);
-		if(resinfo->pid==22){
-			printf("ipart=%d, EQWeight=%g\n",ipart,EQWeight);
-			printf("p=(%g,%g,%g,%g), pid=%d\n",partvec[ipart].p[0],partvec[ipart].p[1],partvec[ipart].p[2],partvec[ipart].p[2],resinfo->pid);
-		}
+	
 		EQtot[0]+=EQWeight*partvec[ipart].p[0];
 		EQtot[1]+=EQWeight*partvec[ipart].p[1];
 		EQtot[2]+=EQWeight*partvec[ipart].p[2];
@@ -264,10 +258,4 @@ void CpartList::TestEQWeights(Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
 		EQtot[5]+=EQWeight*II;
 		EQtot[6]+=EQWeight*resinfo->strange;
 	}
-	for(int i=0;i<7;i++){
-		printf("%10g ",EQtot[i]);
-	}
-	printf("\n------\n");
-	printf("adios\n");
-	Misc::Pause();
 }
