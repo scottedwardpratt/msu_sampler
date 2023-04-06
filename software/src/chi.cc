@@ -5,6 +5,7 @@
 void Csampler::CalcChi(Chyper *hyper){
 	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi);
 		hyper->chiinv=(hyper->chi).inverse();
+		cout << hyper->chi << endl;
 }
 
 void Csampler::CalcChiSlow(Chyper *hyper){
@@ -204,6 +205,8 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 		}
 	}
 	
+	printf("de_dT=%g, Tf=%g\n",de_dT,Tf);
+	
 	chi(0,0)=Tf*Tf*de_dT;
 	chi(0,1)=de_dmuB;
 	chi(0,2)=de_dmuII;
@@ -223,5 +226,7 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 	chi(3,1)=drhoS_dmuB;
 	chi(3,2)=drhoS_dmuII;
 	chi(3,3)=drhoS_dmuS;
+	
+	cout << chi << endl;
 
 }
