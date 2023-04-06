@@ -18,14 +18,19 @@ Chyper::Chyper(){
 }
 
 void Chyper::SetSampler(Csampler *samplerptr){
+	printf("HOWDY\n");
 	sampler=samplerptr;
 }
 
 void Chyper::Print(){
 	CLog::Info("----- hyper info -------\n");
-	CLog::Info("T0="+to_string(T0)+",sampler->TF="+to_string(sampler->Tf)+",sigma="+to_string(sigma)+",rhoB="+to_string(rhoB)+",rhoII="+to_string(rhoII));
-	CLog::Info("muB="+to_string(muB)+",muII="+to_string(muII)+",muS="+to_string(muS));
-	CLog::Info("epsilon="+to_string(epsilon)+",P="+to_string(P)+",s="+to_string(GetEntropyDensity()));
+	printf("T0=%g\n",T0);
+	
+	//CLog::Info("T0="+to_string(T0)+",sampler->Tf="+to_string(sampler->Tf)+", sigma="+to_string(sigma)+" rhoB="+to_string(rhoB)+",rhoII="+to_string(rhoII)+"\n");
+	
+	CLog::Info("muB="+to_string(muB)+",muII="+to_string(muII)+",muS="+to_string(muS)+"\n");
+	CLog::Info("epsilon="+to_string(epsilon)+", P="+to_string(P)+", s="+to_string(GetEntropyDensity())+"\n");
+	
 	snprintf(message,CLog::CHARLENGTH,"dOmega=(%g,%g,%g,%g), udotdOmega=%g\n",dOmega[0],dOmega[1],dOmega[2],dOmega[3],udotdOmega);
 	CLog::Info(message);
 	snprintf(message,CLog::CHARLENGTH,"u=(%g,%g,%g,%g).    tau=%g,eta=%g\n",u[0],u[1],u[2],u[3],tau,eta);

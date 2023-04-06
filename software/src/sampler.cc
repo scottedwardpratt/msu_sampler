@@ -323,6 +323,7 @@ void Csampler::GetMuNH(Chyper *hyper){
 void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons){
 	Eigen::MatrixXd A(3,3);
 	Eigen::VectorXd mu(3),dmu(3),drho(3);
+	printf("double check: %g %g %g  %g %g %g   %g\n",rhoBtarget,rhoIItarget,rhoStarget,muB,muII,muS,nhadrons);
 
 	//3D Newton's Method
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
@@ -429,6 +430,8 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 			dmu[2]=2.0*dmu[2]/dmumag;
 		}
 		mu[0]+=dmu[0]; mu[1]+=dmu[1]; mu[2]+=dmu[2];
+		
+		printf("double check f\n");
 
 	}while(fabs(drho[0])>1.0E-10 || fabs(drho[1])>1.0E-10 || fabs(drho[2])>1.0E-10);
 	muB=mu[0];

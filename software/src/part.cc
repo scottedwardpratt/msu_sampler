@@ -91,6 +91,10 @@ void Cpart::Copy(Cpart *oldpart){
 	EQWeightVec=oldpart->EQWeightVec;
 }
 
+double Cpart::GetRapidity(){
+	return atanh(p[3]/p[0]);
+}
+
 
 /////////////////
 /////////////////

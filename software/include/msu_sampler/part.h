@@ -38,6 +38,7 @@ public:
 	void SetEQWeightVec(Chyper *hyper);
 	void SetEQWeight(Eigen::VectorXd &EQTarget);
 	void Copy(Cpart *oldpart);
+	double GetRapidity();
 	static char *message;
 };
 
