@@ -3,18 +3,19 @@
 #include "msu_commonutils/constants.h"
 
 void Csampler::CalcChi(Chyper *hyper){
-	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi);
-		hyper->chiinv=(hyper->chi).inverse();
-		cout << hyper->chi << endl;
-}
+	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
+		hyper->chi4inv=(hyper->chi4).inverse();
+		hyper->epsilon_calculated=true;
+	}
 
 void Csampler::CalcChiSlow(Chyper *hyper){
-	GetEpsilonRhoChiSlow(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi);
-	hyper->chiinv=(hyper->chi).inverse();
+	GetEpsilonRhoChiSlow(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
+	hyper->chi4inv=(hyper->chi4).inverse();
+	hyper->epsilon_calculated=true;
 }
 
 
-void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi){
+void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
@@ -66,7 +67,7 @@ void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &ep
 	}			
 }
 
-void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi){
+void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi){
 	double xB,xI,xS,xxB,xxI,xxS;
 
 	double drhoB_dT,drhoB_dmuB,drhoB_dmuS,drhoB_dmuII;
@@ -205,8 +206,6 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 		}
 	}
 	
-	printf("de_dT=%g, Tf=%g\n",de_dT,Tf);
-	
 	chi(0,0)=Tf*Tf*de_dT;
 	chi(0,1)=de_dmuB;
 	chi(0,2)=de_dmuII;
@@ -226,7 +225,5 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 	chi(3,1)=drhoS_dmuB;
 	chi(3,2)=drhoS_dmuII;
 	chi(3,3)=drhoS_dmuS;
-	
-	cout << chi << endl;
 
 }

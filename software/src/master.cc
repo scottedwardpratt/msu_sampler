@@ -43,6 +43,7 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	Csampler::reslist=reslist;
 	Csampler::parmap=parmap;
 	Csampler::CALCMU=CALCMU;
+	Csampler::SETMU0=SETMU0;
 	Csampler::bose_corr=parmap->getB("MSU_SAMPLER_BOSE_CORR",false);
 	Csampler::n_bose_corr=parmap->getI("MSU_SAMPLER_N_BOSE_CORR",1);
 	Csampler::BJORKEN_2D=parmap->getB("MSU_SAMPLER_BJORKEN_2D",false);
@@ -89,7 +90,6 @@ int CmasterSampler::MakeEvent(){
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
 
-
 	for(it=hyperlist.begin();it!=hyperlist.end();it++){
 		hyper=*it;
 		if(hyper->firstcall){
@@ -100,7 +100,7 @@ int CmasterSampler::MakeEvent(){
 				CALCMU=false;
 			}
 			samplerptr=ChooseSampler(hyper);
-			hyper->SetSampler(samplerptr);
+			hyper->sampler=samplerptr;
 			if(samplerptr->FIRSTCALL){
 				samplerptr->GetNHMu0();
 				samplerptr->CalcDensitiesMu0();
@@ -108,11 +108,14 @@ int CmasterSampler::MakeEvent(){
 			}
 			if(CALCMU){
 				samplerptr->GetMuNH(hyper);
+				samplerptr->CalcNHadronsEpsilonP(hyper);
 				samplerptr->CalcNHadrons(hyper);
 			}
 			hyper->firstcall=false;
-			samplerptr->CalcNHadronsEpsilonP(hyper);
+			//samplerptr->CalcNHadronsEpsilonP(hyper);
+			samplerptr->CalcNHadrons(hyper);
 		}
+		hyper->sampler->partlist=partlist;
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
 	}

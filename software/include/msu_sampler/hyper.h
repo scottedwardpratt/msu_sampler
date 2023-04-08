@@ -14,38 +14,38 @@ class CbulkQuantities;
 	// ------------------------
 	// Information about hyper-surface element
 	//
-	// ------------------------
+// ------------------------
 class Chyper{
 public:
 	Chyper();
 	//~Chyper();
-		double T0;
-		int firstcall;
-		double sigma,rhoB,rhoII,rhoS;
-		double muB,muII,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
-		FourVector dOmega; // hyper volume
-		double udotdOmega; // dot product of u and dOmega
-		FourVector u;  // collective velocity
-		FourVector r; // position
-		FourVector qmu; // not used, but read in from Chun's hydro
-		double tau,eta; // Bjorken tau and spatial rapidity
-		FourTensor pitilde; // shear tensor
-		double biggestpitilde; // largest eigenvalue
-		double PItilde; // bulk tensor correction
-		bool Rvisc_calculated;
-		bool epsilon_calculated;
-		Eigen::Matrix4d chi,chiinv;
+	double T0;
+	int firstcall;
+	double sigma,rhoB,rhoII,rhoS;
+	double muB,muII,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
+	FourVector dOmega; // hyper volume
+	double udotdOmega; // dot product of u and dOmega
+	FourVector u;  // collective velocity
+	FourVector r; // position
+	FourVector qmu; // not used, but read in from Chun's hydro
+	double tau,eta; // Bjorken tau and spatial rapidity
+	FourTensor pitilde; // shear tensor
+	double biggestpitilde; // largest eigenvalue
+	double PItilde; // bulk tensor correction
+	bool Rvisc_calculated;
+	bool epsilon_calculated;
+	Eigen::MatrixXd chi4,chi4inv;
 		
-		void CalcBiggestpitilde();
-		double GetEntropyDensity();
-		void SetSampler(Csampler *samplerptr);
-		//double pixx,pixy,pixz,piyy,piyz,pizz;
-		void FillOutShearTensor(double &pixx,double &pixy,double &pixz,double &piyy,double &piyz,double &pizz);
-		void Print2D();  // prints out info for 2D element (Bjorken symm)
-		void Print();    // prints out info for 3D element
-		void Copy(Chyper *oldhyper);
-		Csampler *sampler;
-		static char *message;
-	};
+	void CalcBiggestpitilde();
+	double GetEntropyDensity();
+	void SetSampler(Csampler *samplerptr);
+	//double pixx,pixy,pixz,piyy,piyz,pizz;
+	void FillOutShearTensor(double &pixx,double &pixy,double &pixz,double &piyy,double &piyz,double &pizz);
+	void Print2D();  // prints out info for 2D element (Bjorken symm)
+	void Print();    // prints out info for 3D element
+	void Copy(Chyper *oldhyper);
+	Csampler *sampler;
+	static char *message;
+};
 
 #endif

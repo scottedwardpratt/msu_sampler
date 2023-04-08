@@ -15,15 +15,12 @@ int Csampler::MakeParts(Chyper *hyper){
 	double dNcheck=0.0;
 	CresMassMap::iterator iter;
 	
-	if(mastersampler->SETMU0)
+	if(SETMU0)
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
 	else
 		dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
-
-
-	totvol+=udotdOmega;
 	if(randy->test_threshold(dNtot)){
 		dNcheck=0.0;
 		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
@@ -40,6 +37,7 @@ int Csampler::MakeParts(Chyper *hyper){
 					snprintf(message,CLog::CHARLENGTH,"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
 					ires,dNtotprime,mutot,dNcheck,dNtot);
 					CLog::Info(message);
+					resinfo->Print();
 					snprintf(message,CLog::CHARLENGTH,"nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
 					CLog::Fatal(message);
 				}
@@ -129,7 +127,7 @@ int Csampler::CheckResInVolume(double dN,double T,CresInfo *resinfo,Chyper *hype
 		}
 		for(alpha=0;alpha<4;alpha++)
 			r[alpha]=hyper->r[alpha];
-		mastersampler->partlist->AddPart(resinfo->pid,p,r);
+		partlist->AddPart(resinfo->pid,p,r);
 		dnparts+=1;
 		randy->increase_threshold();
 	}

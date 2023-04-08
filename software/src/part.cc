@@ -64,19 +64,19 @@ void Cpart::SetEQWeightVec(Chyper *hyper){
 	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
 	double nhadrons=hyper->nhadrons;
 	EQWeightVec.resize(7);
-	EQWeightVec[0]=(hyper->chiinv(0,0)*p[0] +hyper->chiinv(0,1)*B
-		 +hyper->chiinv(0,2)*II +hyper->chiinv(0,3)*S)*nhadrons;
+	EQWeightVec[0]=(hyper->chi4inv(0,0)*p[0] +hyper->chi4inv(0,1)*B
+		 +hyper->chi4inv(0,2)*II +hyper->chi4inv(0,3)*S)*nhadrons;
 	
 	EQWeightVec[1]=chipinv*p[1]*nhadrons;
 	EQWeightVec[2]=chipinv*p[2]*nhadrons;
 	EQWeightVec[3]=chipinv*p[3]*nhadrons;
 	
-	EQWeightVec[4]=(hyper->chiinv(1,0)*p[0] +hyper->chiinv(1,1)*B
-		+hyper->chiinv(1,2)*II +hyper->chiinv(1,3)*S)*nhadrons;
-	EQWeightVec[5]=(hyper->chiinv(2,0)*p[0] +hyper->chiinv(2,1)*B
-		 +hyper->chiinv(2,2)*II +hyper->chiinv(2,3)*S)*nhadrons;
-	EQWeightVec[6]=(hyper->chiinv(3,0)*p[0] +hyper->chiinv(3,1)*B
-		 +hyper->chiinv(3,2)*II +hyper->chiinv(3,3)*S)*nhadrons;
+	EQWeightVec[4]=(hyper->chi4inv(1,0)*p[0] +hyper->chi4inv(1,1)*B
+		+hyper->chi4inv(1,2)*II +hyper->chi4inv(1,3)*S)*nhadrons;
+	EQWeightVec[5]=(hyper->chi4inv(2,0)*p[0] +hyper->chi4inv(2,1)*B
+		 +hyper->chi4inv(2,2)*II +hyper->chi4inv(2,3)*S)*nhadrons;
+	EQWeightVec[6]=(hyper->chi4inv(3,0)*p[0] +hyper->chi4inv(3,1)*B
+		 +hyper->chi4inv(3,2)*II +hyper->chi4inv(3,3)*S)*nhadrons;
 }
 
 void Cpart::Copy(Cpart *oldpart){
@@ -94,7 +94,6 @@ void Cpart::Copy(Cpart *oldpart){
 double Cpart::GetRapidity(){
 	return atanh(p[3]/p[0]);
 }
-
 
 /////////////////
 /////////////////
@@ -238,7 +237,6 @@ void CpartList::SumSETensor(){
 }
 
 void CpartList::SetEQWeightVec(Chyper *hyper){
-	//int II,nparts=partvec.size();
 	for(int ipart=0;ipart<nparts;ipart++){
 		partvec[ipart].SetEQWeightVec(hyper);
 	}

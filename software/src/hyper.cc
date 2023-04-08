@@ -11,14 +11,16 @@ Chyper::Chyper(){
 	firstcall=true;
 	int alpha,beta;
 	sigma=0.093;
+	sampler=nullptr;
 	for(alpha=0;alpha<4;alpha++){
 		for(beta=0;beta<4;beta++)
 			pitilde[alpha][beta]=0.0;
 	}
+	chi4.resize(4,4);
+	chi4inv.resize(4,4);
 }
 
 void Chyper::SetSampler(Csampler *samplerptr){
-	printf("HOWDY\n");
 	sampler=samplerptr;
 }
 

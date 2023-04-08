@@ -29,6 +29,7 @@ public:
 	vector<map<double,double>> sfdens0imap;
 	bool FIRSTCALL;
 	int ntest;
+	CpartList *partlist;
 
 	double GenerateThermalMass(CresInfo *resinfo);
 	void GetDensPMax(CresInfo *resinfo,double &densi,double &epsiloni,double &Pi,double &dedti,double &p4overE3);
@@ -90,8 +91,8 @@ public:
 	void GetTfMuNH(Chyper *hyper);
 	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
 	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);
-	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
-	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
+	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi);
+	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi);
 	int MakeParts(Chyper *hyper);
 	void CalcRvisc(Chyper *hyper);
 	void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);
@@ -117,6 +118,7 @@ public:
 	static bool INCLUDE_SHEAR_VISCOSITY;
 	static int NSAMPLE;
 	static char *message;
+	static bool SETMU0;
 };
 
 

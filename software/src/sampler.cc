@@ -8,7 +8,8 @@ Crandy* Csampler::randy=NULL;
 CresList *Csampler::reslist=NULL;
 CparameterMap *Csampler::parmap=NULL;
 CmasterSampler *Csampler::mastersampler=NULL;
-bool Csampler::CALCMU=false;
+bool Csampler::CALCMU=true;
+bool Csampler::SETMU0=false;
 int Csampler::n_bose_corr=1;
 bool Csampler::bose_corr=false;
 bool Csampler::BJORKEN_2D=false;
@@ -22,6 +23,7 @@ char *Csampler::message=new char[300];
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){
 	FIRSTCALL=true;
+	SETMU0=false;
 	Tf=Tfset;
 	sigmaf=sigmafset;
 	if(!bose_corr)
@@ -323,7 +325,6 @@ void Csampler::GetMuNH(Chyper *hyper){
 void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons){
 	Eigen::MatrixXd A(3,3);
 	Eigen::VectorXd mu(3),dmu(3),drho(3);
-	printf("double check: %g %g %g  %g %g %g   %g\n",rhoBtarget,rhoIItarget,rhoStarget,muB,muII,muS,nhadrons);
 
 	//3D Newton's Method
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
@@ -421,7 +422,6 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 		A(1,1)=drhoII_dmuII;
 		A(1,2)=A(2,1)=drhoII_dmuS;
 		A(2,2)=drhoS_dmuS;
-		//cout << A << endl;
 		dmu=A.colPivHouseholderQr().solve(drho);
 		dmumag=sqrt(dmu[0]*dmu[0]+dmu[1]*dmu[1]+dmu[2]*dmu[2]);
 		if(dmumag>2.0){
@@ -431,8 +431,6 @@ void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,do
 		}
 		mu[0]+=dmu[0]; mu[1]+=dmu[1]; mu[2]+=dmu[2];
 		
-		printf("double check f\n");
-
 	}while(fabs(drho[0])>1.0E-10 || fabs(drho[1])>1.0E-10 || fabs(drho[2])>1.0E-10);
 	muB=mu[0];
 	muII=mu[1];
@@ -750,12 +748,14 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 // gets nhadrons, epsilon and P
 void Csampler::CalcNHadronsEpsilonP(Chyper *hyper){
 	CalcNHadronsEpsilonP(hyper->muB*hyper->T0/Tf,hyper->muII*hyper->T0/Tf,hyper->muS*hyper->T0/Tf,hyper->nhadrons,hyper->epsilon,hyper->P);
+	hyper->epsilon_calculated=true;
+	printf("?? nhadrons=%g\n",hyper->nhadrons);
 }
 
 void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nhadronsf,double &epsilonf,double &Pf){
 	double xB,xI,xS,xxB,xxI,xxS,xbose;
 	int nbose;
-	if(mastersampler->SETMU0){
+	if(SETMU0){
 		nhadronsf=nhadrons0;
 		epsilonf=epsilon0;
 		Pf=P0;
