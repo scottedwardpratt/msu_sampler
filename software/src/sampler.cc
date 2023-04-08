@@ -749,7 +749,6 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 void Csampler::CalcNHadronsEpsilonP(Chyper *hyper){
 	CalcNHadronsEpsilonP(hyper->muB*hyper->T0/Tf,hyper->muII*hyper->T0/Tf,hyper->muS*hyper->T0/Tf,hyper->nhadrons,hyper->epsilon,hyper->P);
 	hyper->epsilon_calculated=true;
-	printf("?? nhadrons=%g\n",hyper->nhadrons);
 }
 
 void Csampler::CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nhadronsf,double &epsilonf,double &Pf){

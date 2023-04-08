@@ -26,7 +26,7 @@ void Chyper::SetSampler(Csampler *samplerptr){
 
 void Chyper::Print(){
 	CLog::Info("----- hyper info -------\n");
-	printf("T0=%g\n",T0);
+	CLog::Info("T0="+to_string(T0)+"\n");
 	
 	//CLog::Info("T0="+to_string(T0)+",sampler->Tf="+to_string(sampler->Tf)+", sigma="+to_string(sigma)+" rhoB="+to_string(rhoB)+",rhoII="+to_string(rhoII)+"\n");
 	
