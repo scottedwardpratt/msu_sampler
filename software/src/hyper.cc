@@ -16,8 +16,10 @@ Chyper::Chyper(){
 		for(beta=0;beta<4;beta++)
 			pitilde[alpha][beta]=0.0;
 	}
-	chi4.resize(4,4);
-	chi4inv.resize(4,4);
+	//chi4.resize(4,4);
+	//chi4inv.resize(4,4);
+	chi4BQS.resize(4,4);
+	chi4BQSinv.resize(4,4);
 }
 
 void Chyper::SetSampler(Csampler *samplerptr){

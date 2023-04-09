@@ -93,6 +93,7 @@ public:
 	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);
 	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi);
 	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi);
+	void GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi4BQS);
 	int MakeParts(Chyper *hyper);
 	void CalcRvisc(Chyper *hyper);
 	void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);
@@ -103,6 +104,7 @@ public:
 	void CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap);
 	void CalcChi(Chyper *hyper);
 	void CalcChiSlow(Chyper *hyper);
+	void CalcChi4BQS(Chyper *hyper);
 
 	static Crandy *randy;
 	static CresList *reslist;

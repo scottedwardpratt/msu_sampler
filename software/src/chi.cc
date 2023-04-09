@@ -14,6 +14,12 @@ void Csampler::CalcChiSlow(Chyper *hyper){
 	hyper->epsilon_calculated=true;
 }
 
+void Csampler::CalcChi4BQS(Chyper *hyper){
+	GetEpsilonRhoChi4BQS(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->P,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->nhadrons,hyper->chi4BQS);
+	hyper->chi4BQSinv=(hyper->chi4BQS).inverse();
+	hyper->epsilon_calculated=true;
+}
+
 
 void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi){
 	CresInfo *resinfo;
@@ -50,8 +56,7 @@ void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &ep
 			chi(0,1)+=epsiloni*B*x;
 			chi(0,2)+=epsiloni*II*x;
 			chi(0,3)+=epsiloni*S*x;
-			if(resinfo->baryon>0)
-				chi(1,2)+=densi*B*II*x;
+			chi(1,2)+=densi*B*II*x;
 			chi(1,3)+=densi*B*S*x;
 			chi(2,3)+=densi*II*S*x;
 		}
@@ -223,4 +228,53 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 	chi(3,2)=drhoS_dmuII;
 	chi(3,3)=drhoS_dmuS;
 
+}
+
+void Csampler::GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi4BQS){
+	CresInfo *resinfo;
+	CresInfoMap::iterator rpos;
+	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
+	double x;
+	int B,S,II,Q;
+	int a,b;
+	rhoII=rhoB=rhoS=0.0;
+	epsilon=P=rhoB=rhoII=rhoS=nhadrons=0.0;
+	for(a=0;a<4;a++){
+		for(b=0;b<4;b++)
+			chi4BQS(a,b)=0.0;
+	}
+	for(rpos=reslist->resmap.begin();rpos!=reslist->resmap.end();++rpos){
+		resinfo=rpos->second;
+		if(resinfo->pid!=22){
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,true);
+			B=resinfo->baryon;
+			S=resinfo->strange;
+			Q=resinfo->charge;
+			II=resinfo->q[0]-resinfo->q[1];
+			x=exp(muB*B+muII*II+muS*S);
+			rhoB+=B*densi*x;
+			rhoII+=II*densi*x;
+			rhoS+=S*densi*x;
+			nhadrons+=densi*x;
+			epsilon+=epsiloni*x;
+			P+=Pi*x;
+			
+			chi4BQS(0,0)+=Tf*Tf*dedti*x;
+			chi4BQS(1,1)+=densi*B*B*x;
+			chi4BQS(2,2)+=densi*Q*Q*x;
+			chi4BQS(3,3)+=densi*S*S*x;
+			chi4BQS(0,1)+=epsiloni*B*x;
+			chi4BQS(0,2)+=epsiloni*Q*x;
+			chi4BQS(0,3)+=epsiloni*S*x;
+			chi4BQS(1,2)+=densi*B*Q*x;
+			chi4BQS(1,3)+=densi*B*S*x;
+			chi4BQS(2,3)+=densi*Q*S*x;
+		}
+		chi4BQS(1,0)=chi4BQS(0,1);
+		chi4BQS(2,0)=chi4BQS(0,2);
+		chi4BQS(3,0)=chi4BQS(0,3);
+		chi4BQS(2,1)=chi4BQS(1,2);
+		chi4BQS(3,1)=chi4BQS(1,3);
+		chi4BQS(3,2)=chi4BQS(2,3);
+	}			
 }

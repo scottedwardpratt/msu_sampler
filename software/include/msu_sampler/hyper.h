@@ -21,7 +21,7 @@ public:
 	//~Chyper();
 	double T0;
 	int firstcall;
-	double sigma,rhoB,rhoII,rhoS;
+	double sigma,rhoB,rhoII,rhoS,rhoQ;
 	double muB,muII,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
 	FourVector dOmega; // hyper volume
 	double udotdOmega; // dot product of u and dOmega
@@ -34,7 +34,7 @@ public:
 	double PItilde; // bulk tensor correction
 	bool Rvisc_calculated;
 	bool epsilon_calculated;
-	Eigen::MatrixXd chi4,chi4inv;
+	Eigen::MatrixXd chi4,chi4inv,chi4BQS,chi4BQSinv;
 		
 	void CalcBiggestpitilde();
 	double GetEntropyDensity();
