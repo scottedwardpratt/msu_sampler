@@ -9,21 +9,21 @@ void Csampler::CalcChi(Chyper *hyper){
 	}
 
 void Csampler::CalcChiSlow(Chyper *hyper){
-	GetEpsilonRhoChiSlow(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
+	GetEpsilonRhoChiSlow(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->P,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->nhadrons,hyper->chi4);
 	hyper->chi4inv=(hyper->chi4).inverse();
 	hyper->epsilon_calculated=true;
 }
 
 
-void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi){
+void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
 	double x;
-	int B,S,II,Q;
+	int B,S,II;
 	int a,b;
 	rhoII=rhoB=rhoS=0.0;
-	epsilon=rhoB=rhoII=rhoS=0.0;
+	epsilon=P=rhoB=rhoII=rhoS=nhadrons=0.0;
 	for(a=0;a<4;a++){
 		for(b=0;b<4;b++)
 			chi(a,b)=0.0;
@@ -34,18 +34,15 @@ void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &ep
 			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,true);
 			B=resinfo->baryon;
 			S=resinfo->strange;
-			Q=resinfo->charge;
-			II=2*Q-B-S-resinfo->charm; // II is 2*I3
-			if(II!=resinfo->q[0]-resinfo->q[1]){
-				resinfo->Print();
-				//exit(1);
-			}
-			muII=0.0;
+			II=resinfo->q[0]-resinfo->q[1];
 			x=exp(muB*B+muII*II+muS*S);
 			rhoB+=B*densi*x;
 			rhoII+=II*densi*x;
 			rhoS+=S*densi*x;
+			nhadrons+=densi*x;
 			epsilon+=epsiloni*x;
+			P+=Pi*x;
+			
 			chi(0,0)+=Tf*Tf*dedti*x;
 			chi(1,1)+=densi*B*B*x;
 			chi(2,2)+=densi*II*II*x;

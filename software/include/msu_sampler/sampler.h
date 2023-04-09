@@ -92,7 +92,7 @@ public:
 	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
 	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);
 	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi);
-	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi);
+	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi);
 	int MakeParts(Chyper *hyper);
 	void CalcRvisc(Chyper *hyper);
 	void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);
