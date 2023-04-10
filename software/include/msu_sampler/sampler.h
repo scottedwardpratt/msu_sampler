@@ -34,6 +34,7 @@ public:
 	double GenerateThermalMass(CresInfo *resinfo);
 	void GetDensPMax(CresInfo *resinfo,double &densi,double &epsiloni,double &Pi,double &dedti,double &p4overE3);
 	Csampler(double Tfset,double sigmafset); // Constructor
+	Csampler(double Tfset,double sigmafset,CparameterMap *parmap,CresList *reslist,Crandy *randy); // Constructor
 	~Csampler();
 	void GetPars(CparameterMap *parmapset);
 	void CalcLambdaMu0(); // Calculates lambda which is used for viscous corrections with mu=0

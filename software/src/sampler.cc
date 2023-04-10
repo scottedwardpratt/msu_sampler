@@ -26,6 +26,7 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	SETMU0=false;
 	Tf=Tfset;
 	sigmaf=sigmafset;
+	bose_corr=false;
 	if(!bose_corr)
 		n_bose_corr=1;
 	int nres=reslist->resmap.size();
@@ -35,6 +36,39 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	epsilon0i.resize(nres);
 	P0i.resize(nres);
 	sfdens0imap.resize(nres);
+	if(bose_corr){
+		pibose_P0.resize(n_bose_corr+1);
+		pibose_epsilon0.resize(n_bose_corr+1);
+		pibose_dedt0.resize(n_bose_corr+1);
+		pibose_dens0.resize(n_bose_corr+1);
+	}
+	forMU0_calculated=false;
+}
+
+Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresList *reslist_set,Crandy *randy_set){
+	parmap=parmap_set;
+	reslist=reslist_set;
+	randy=randy_set;
+	Tf=Tfset;
+	sigmaf=sigmafset;
+	bose_corr=parmap->getB("MSU_SAMPLER_BOSE_CORR",false);
+	USE_POLE_MASS=parmap->getB("MSU_SAMPLER_USE_POLE_MASS",true);
+	CALCMU=parmap->getB("MSU_SAMPLER_CALCMU",true);
+	SETMU0=parmap->getB("MSU_SAMPLER_SETMU0",false);
+	mastersampler=nullptr;
+	
+	FIRSTCALL=true;
+	
+	if(!bose_corr)
+		n_bose_corr=1;
+	int nres=reslist->resmap.size();
+	if(reslist->GetResInfoPtr(22)->pid==22)
+		nres-=1;
+	density0i.resize(nres);
+	epsilon0i.resize(nres);
+	P0i.resize(nres);
+	if(!USE_POLE_MASS)
+		sfdens0imap.resize(nres);
 	if(bose_corr){
 		pibose_P0.resize(n_bose_corr+1);
 		pibose_epsilon0.resize(n_bose_corr+1);
