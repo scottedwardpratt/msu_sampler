@@ -1,13 +1,14 @@
 #ifndef __MASTER_SAMPLER_H__
 #define __MASTER_SAMPLER_H__
 #include <list>
-#include "classdefs.h"
-#include "meanfield.h"
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/meanfield.h"
 #include "msu_commonutils/parametermap.h"
 #include "msu_commonutils/randy.h"
 #include "msu_commonutils/misc.h"
 #include "msu_eos/resonances.h"
 #include "msu_sampler/hyper.h"
+#include "msu_sampler/part.h"
 #include "msu_sampler/sampler.h"
 #include "msu_eos/eos.h"
 using namespace std;

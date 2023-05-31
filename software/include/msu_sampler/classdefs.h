@@ -10,6 +10,7 @@ using namespace std;
 // -----------------------
 
 class Cpart;
+class CpartList;
 class CresList;
 class CresInfo;
 class CbranchInfo;
