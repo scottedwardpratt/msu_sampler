@@ -107,7 +107,6 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 								+0.25*dedth0_b1i3s0*(xB+xxB)*(xI*xI*xI+xxI*xxI*xxI)
 									+0.5*dedth0_b2i0s0*(xB*xB+xxB*xxB);
 
-
 	de_dmuB=0.5*eh0_b1i0s1*(xB*xxS-xxB*xS)
 		+0.5*eh0_b1i0s3*(xB*xxS*xxS*xxS-xxB*xS*xS*xS)
 			+0.25*eh0_b1i1s0*(xB-xxB)*(xI+xxI)
