@@ -653,22 +653,22 @@ void Csampler::GetEpsilonRhoDerivatives(double muB,double muII,double muS,double
 		}
 	}
 
-	A(0,0)=de_dT;
+	A(0,0)=Tf*Tf*de_dT;
 	A(0,1)=de_dmuB;
 	A(0,2)=de_dmuII;
 	A(0,3)=de_dmuS;
 
-	A(1,0)=drhoB_dT;
+	A(1,0)=Tf*Tf*drhoB_dT;
 	A(1,1)=drhoB_dmuB;
 	A(1,2)=drhoB_dmuII;
 	A(1,3)=drhoB_dmuS;
 
-	A(2,0)=drhoII_dT;
+	A(2,0)=Tf*Tf*drhoII_dT;
 	A(2,1)=drhoII_dmuB;
 	A(2,2)=drhoII_dmuII;
 	A(2,3)=drhoII_dmuS;
 
-	A(3,0)=drhoS_dT;
+	A(3,0)=Tf*Tf*drhoS_dT;
 	A(3,1)=drhoS_dmuB;
 	A(3,2)=drhoS_dmuII;
 	A(3,3)=drhoS_dmuS;
