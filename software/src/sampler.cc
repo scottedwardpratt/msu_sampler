@@ -489,7 +489,7 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarg
 	int ntries=0;
 	do{
 		ntries+=1;
-		if(ntries>30000){
+		if(ntries>30){
 			snprintf(message,CLog::CHARLENGTH,"FAILURE, ntries=%d\n",ntries);
 			CLog::Fatal(message);
 		}
@@ -499,7 +499,9 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarg
 		GetEpsilonRhoDerivatives(muB,muII,muS,epsilon,rhoB,rhoII,rhoS,A);
 		for(int i=0;i<4;i++){
 			A(i,1)=A(i,1)/cmb;
+			A(i,0)=A(i,0)/(Tf*Tf);
 		}
+		
 		drho[0]=epsilontarget-epsilon;
 		drho[1]=rhoBtarget-rhoB;
 		drho[2]=rhoIItarget-rhoII;
@@ -511,7 +513,7 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarg
 		muB=asinh(smb);
 		muII+=dmu[2];
 		muS+=dmu[3];
-	}while(fabs(drho[0])>1.0E-4 || fabs(drho[1])>1.0E-6 || fabs(drho[2])>1.0E-6 || fabs(drho[3])>1.0E-6);
+	}while(fabs(drho[0])>1.0E-6 || fabs(drho[1])>1.0E-8 || fabs(drho[2])>1.0E-8 || fabs(drho[3])>1.0E-8);
 }
 
 void Csampler::GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A){
