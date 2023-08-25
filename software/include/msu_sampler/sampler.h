@@ -26,7 +26,7 @@ public:
 		// Same but with mu=0
 	double nhadrons0,epsilon0,P0,p4overE30;
 	vector<double> density0i,epsilon0i,P0i;
-	Eigen::Matrix3d chi0,chiinv0,sigma0;
+	Eigen::Matrix<double,3,3> chi0,chiinv0,sigma0;
 	vector<map<double,double>> sfdens0imap;
 	bool FIRSTCALL;
 	int ntest;
