@@ -63,7 +63,6 @@ void Cpart::SetEQWeightVec(Chyper *hyper){
 	int B=resinfo->baryon,S=resinfo->strange,Q=resinfo->charge;
 	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
 	double udotdOmega=hyper->udotdOmega;
-	EQWeightVec.resize(7);
 	EQWeightVec[0]=(hyper->chi4BQSinv(0,0)*p[0] +hyper->chi4BQSinv(0,1)*B
 		 +hyper->chi4BQSinv(0,2)*Q +hyper->chi4BQSinv(0,3)*S)/udotdOmega;
 	
@@ -244,7 +243,7 @@ void CpartList::SetEQWeightVec(Chyper *hyper){
 	}
 }
 
-void CpartList::TestEQWeights(Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
+void CpartList::TestEQWeights(Eigen::Vector<double,7> &EQtot,Eigen::Vector<double,7> &EQTarget){
 	CresInfo *resinfo;
 	double EQWeight;
 	for(int ipart=0;ipart<nparts;ipart++){

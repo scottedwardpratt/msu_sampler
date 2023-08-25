@@ -25,7 +25,7 @@ public:
 	CresInfo *resinfo;
 	double msquared;
 	FourVector p,r;
-	Eigen::VectorXd EQWeightVec;
+	Eigen::Vector<double,7> EQWeightVec;
 
 	void Print();
 	double GetMass();
@@ -36,7 +36,7 @@ public:
 	void BoostP(FourVector &u);
 	void BoostR(FourVector &u);
 	void SetEQWeightVec(Chyper *hyper);
-	void SetEQWeight(Eigen::VectorXd &EQTarget);
+	void SetEQWeight(Eigen::Vector<double,7> &EQTarget);
 	void Copy(Cpart *oldpart);
 	double GetRapidity();
 	static char *message;
@@ -61,7 +61,7 @@ public:
 	double SumEnergy();
 	double SumEnergy(int pid);
 	void SumSETensor();
-	void TestEQWeights(Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget);
+	void TestEQWeights(Eigen::Vector<double,7> &EQtot,Eigen::Vector<double,7> &EQTarget);
 	void SetEQWeightVec(Chyper *hyper); 
 	void AddPart(int pidset,FourVector &pset,FourVector &rset);
 	static CresList *reslist;

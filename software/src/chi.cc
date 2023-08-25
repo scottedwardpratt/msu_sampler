@@ -21,7 +21,7 @@ void Csampler::CalcChi4BQS(Chyper *hyper){
 }
 
 
-void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi){
+void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
@@ -69,7 +69,7 @@ void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &ep
 	}			
 }
 
-void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &chi){
+void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix<double,4,4> &chi){
 	double xB,xI,xS,xxB,xxI,xxS;
 
 	double drhoB_dT,drhoB_dmuB,drhoB_dmuS,drhoB_dmuII;
@@ -229,7 +229,7 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 
 }
 
-void Csampler::GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::MatrixXd &chi4BQS,double &dedT){
+void Csampler::GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi4BQS,double &dedT){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;

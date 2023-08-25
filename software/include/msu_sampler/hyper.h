@@ -34,7 +34,7 @@ public:
 	double PItilde; // bulk tensor correction
 	bool Rvisc_calculated;
 	bool epsilon_calculated;
-	Eigen::MatrixXd chi4,chi4inv,chi4BQS,chi4BQSinv;
+	Eigen::Matrix<double,4,4> chi4,chi4inv,chi4BQS,chi4BQSinv;
 		
 	void CalcBiggestpitilde();
 	double GetEntropyDensity();

@@ -55,15 +55,14 @@ double Chyper::GetEntropyDensity(){
 
 void Chyper::CalcBiggestpitilde(){
 	int alpha,beta;
-	Eigen::MatrixXd A(3,3);
-	Eigen::VectorXd V(3);
+	Eigen::Matrix<double,3,3> A;
+	Eigen::Vector<double,3> V;
 	A(0,0)=0.0;
 	for(alpha=1;alpha<4;alpha++){
 		for(beta=1;beta<4;beta++)
 			A(alpha-1,beta-1)=pitilde[alpha][beta];
 	}
-	//Eigen::SelfAdjointEigenSolver<MatrixXd> es(A);
-	Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(A);
+	Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,3,3>> es(A);
 	cout << A << endl;
 	cout << es.eigenvalues() << endl;
 	V=es.eigenvalues();

@@ -357,8 +357,8 @@ void Csampler::GetMuNH(Chyper *hyper){
 }
 
 void Csampler::GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons){
-	Eigen::MatrixXd A(3,3);
-	Eigen::VectorXd mu(3),dmu(3),drho(3);
+	Eigen::Matrix<double,3,3> A;
+	Eigen::Vector<double,3> mu,dmu,drho;
    
 	//3D Newton's Method
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
@@ -483,8 +483,8 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarg
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
 	double epsilon,rhoB,rhoS,rhoII=0;
 	GetNHMu0();
-	Eigen::MatrixXd A(4,4);
-	Eigen::VectorXd dmu(4),drho(4);
+	Eigen::Matrix<double,4,4> A;
+	Eigen::Vector<double,4> dmu,drho;
 	double cmb,smb;
 	int ntries=0;
 	do{
@@ -516,7 +516,7 @@ void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarg
 	}while(fabs(drho[0])>1.0E-6 || fabs(drho[1])>1.0E-8 || fabs(drho[2])>1.0E-8 || fabs(drho[3])>1.0E-8);
 }
 
-void Csampler::GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A){
+void Csampler::GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix<double,4,4> &A){
 	double xB,xI,xS,xxB,xxI,xxS;
 
 	double drhoB_dT,drhoB_dmuB,drhoB_dmuS,drhoB_dmuII;
