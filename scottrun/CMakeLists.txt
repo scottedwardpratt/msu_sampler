@@ -70,3 +70,19 @@ target_link_libraries(samplertest_hydro msu_sampler msu_commonutils msu_eos ${GS
 target_link_libraries(rhocount msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 target_link_libraries(sheartest msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
 target_link_libraries(bulktest msu_sampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
+
+##############################################
+set(SOURCE_FILES ./bugtest.cc)
+SET_SOURCE_FILES_PROPERTIES(
+      bugtest.cc PROPERTIES OBJECT_DEPENDS
+    ../software/lib/libmsu_sampler.a
+ )
+add_executable(bugtest ${SOURCE_FILES})
+add_dependencies(bugtest extern_msu_sampler)
+add_dependencies(bulktest extern_msu_sampler)
+find_library(${GITHOME_MSU}/msu_sampler/software/lib msu_sampler)
+find_library(${GITHOME_MSU}/commonutils/software/lib msu_commonutils)
+find_library(${GITHOME_MSU}/msu_eos/software/lib msu_eos)
+target_link_libraries(bugtest msu_sampler msu_commonutils msu_eos ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY})
+
+

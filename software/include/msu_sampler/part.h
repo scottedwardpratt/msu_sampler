@@ -1,5 +1,5 @@
-#ifndef __PART_H__
-#define __PART_H__
+#ifndef __SAMPLER_PART_H__
+#define __SAMPLER_PART_H__
 #include "msu_sampler/classdefs.h"
 #include "msu_sampler/hyper.h"
 #include "msu_commonutils/commondefs.h"

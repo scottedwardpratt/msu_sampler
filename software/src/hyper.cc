@@ -1,17 +1,19 @@
-#include "msu_sampler/hyper.h"
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <iostream>
+#include "msu_sampler/hyper.h"
 #include "msu_sampler/sampler.h"
 char *Chyper::message=new char[CLog::CHARLENGTH];
 
 Chyper::Chyper(){
+	printf("howdy boss\n");
 	muB=muII=muS=0.0;
 	Rvisc_calculated=false;
 	firstcall=true;
 	int alpha,beta;
 	sigma=0.093;
-	sampler=nullptr;
+	sampler=NULL;
+	printf("howdy\n");
 	for(alpha=0;alpha<4;alpha++){
 		for(beta=0;beta<4;beta++)
 			pitilde[alpha][beta]=0.0;
