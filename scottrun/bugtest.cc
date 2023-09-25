@@ -13,11 +13,12 @@ int main(){
 	
 	printf("check A\n");
 	
-	Chyper *hyper1=new Chyper();
+	Chyper hyper1;//=new Chyper();
 	
-	printf("check AA\n");
 	
-	Chyper *hyper2=new Chyper();
+	printf("check AA, hyper1.sigma=%g\n",hyper1.sigma);
+	
+	Chyper hyper2;
 	
 	printf("SUCCESS!!!!!!!!!!!!!!!\n");
 	

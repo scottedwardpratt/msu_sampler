@@ -19,6 +19,7 @@ int Csampler::MakeParts(Chyper *hyper){
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
 	else
 		dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
+	
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
 	if(randy->test_threshold(dNtot)){

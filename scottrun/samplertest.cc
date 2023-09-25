@@ -14,8 +14,6 @@ int main(){
 	ms.randy->reset(time(NULL));
 	nprint=ms.NEVENTS_TOT/10;
 	
-	Chyper *hyper1=new Chyper();
-
 	// This makes a dummy hyper element for testing
 	Chyper *hyper;
 	list<Chyper *>::iterator it_hyper;

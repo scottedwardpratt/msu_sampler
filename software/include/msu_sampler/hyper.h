@@ -8,8 +8,8 @@
 #include "msu_commonutils/misc.h"
 using namespace std;
 
-class Csampler;
-class CbulkQuantities;
+//class Csampler;
+//class CbulkQuantities;
 
 	// ------------------------
 	// Information about hyper-surface element
@@ -17,7 +17,7 @@ class CbulkQuantities;
 // ------------------------
 class Chyper{
 public:
-	Chyper();
+	//Chyper();
 	//~Chyper();
 	double T0;
 	int firstcall;
@@ -35,7 +35,7 @@ public:
 	bool Rvisc_calculated;
 	bool epsilon_calculated;
 	Eigen::Matrix<double,4,4> chi4,chi4inv,chi4BQS,chi4BQSinv;
-		
+			
 	void CalcBiggestpitilde();
 	double GetEntropyDensity();
 	void SetSampler(Csampler *samplerptr);
@@ -44,6 +44,7 @@ public:
 	void Print2D();  // prints out info for 2D element (Bjorken symm)
 	void Print();    // prints out info for 3D element
 	void Copy(Chyper *oldhyper);
+	void Init();
 	Csampler *sampler;
 	static char *message;
 };

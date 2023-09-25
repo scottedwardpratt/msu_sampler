@@ -101,6 +101,7 @@ int CmasterSampler::MakeEvent(){
 			}
 			samplerptr=ChooseSampler(hyper);
 			hyper->sampler=samplerptr;
+			hyper->SetSampler(samplerptr);
 			if(samplerptr->FIRSTCALL){
 				samplerptr->GetNHMu0();
 				samplerptr->CalcDensitiesMu0();
