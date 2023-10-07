@@ -1,5 +1,6 @@
 #include "msu_sampler/master.h"
 #include "msu_commonutils/constants.h"
+using namespace NMSUPratt;
 
 //#define __TEST_PITILDE_TRACE__
 

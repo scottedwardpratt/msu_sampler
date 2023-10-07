@@ -6,6 +6,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace NMSUPratt;
 
 int Csampler::MakeParts(Chyper *hyper){
 	int nparts=0,dnparts,ires,nbose,II3;

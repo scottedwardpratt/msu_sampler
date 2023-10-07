@@ -1,4 +1,5 @@
 #include "msu_sampler/meanfield.h"
+using namespace NMSUPratt;
 
 CmeanField::CmeanField(){
 	//

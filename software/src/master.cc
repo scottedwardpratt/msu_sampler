@@ -4,6 +4,7 @@
 //#define __TEST_PITILDE_TRACE__
 
 using namespace std;
+using namespace NMSUPratt;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){

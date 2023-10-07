@@ -3,6 +3,7 @@
 #include "msu_commonutils/constants.h"
 
 using namespace std;
+using namespace NMSUPratt;
 
 Crandy* Csampler::randy=NULL;
 CresList *Csampler::reslist=NULL;

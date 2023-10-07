@@ -1,4 +1,5 @@
 #include "msu_sampler/part.h"
+using namespace NMSUPratt;
 
 CresList *CpartList::reslist=NULL;
 char *Cpart::message=new char[CLog::CHARLENGTH];

@@ -9,14 +9,18 @@ using namespace std;
 // This is a list of class names and typedefs used throughout
 // -----------------------
 
-class Cpart;
-class CpartList;
-class CresList;
-class CresInfo;
-class CbranchInfo;
-class Chyper;
-class CmasterSampler;
-class CmeanField;
-class CdecayInfo;
+namespace NMSUPratt{
+	
+	class Cpart;
+	class CpartList;
+	class CresList;
+	class CresInfo;
+	class CbranchInfo;
+	class Chyper;
+	class CmasterSampler;
+	class CmeanField;
+	class CdecayInfo;
+
+}
 
 #endif

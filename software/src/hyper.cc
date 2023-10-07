@@ -3,6 +3,7 @@
 #include <iostream>
 #include "msu_commonutils/log.h"
 #include "msu_sampler/hyper.h"
+using namespace NMSUPratt;
 //#include "msu_sampler/sampler.h"
 char *Chyper::message=new char[CLog::CHARLENGTH];
 

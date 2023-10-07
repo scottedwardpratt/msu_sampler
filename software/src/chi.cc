@@ -1,6 +1,7 @@
 #include "msu_sampler/sampler.h"
 #include "msu_commonutils/sf.h"
 #include "msu_commonutils/constants.h"
+using namespace NMSUPratt;
 
 void Csampler::CalcChi(Chyper *hyper){
 	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
