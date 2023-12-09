@@ -181,7 +181,7 @@ void CmasterSampler::ClearHyperList(){
 	hyperlist.clear();
 }
 
-void CmasterSampler::GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVector &u){
+void CmasterSampler::GetPitilde(FourTensor &pivisc,vector<vector<double>> &pitilde,FourVector &u){
 	int alpha,beta;
 	double picontract=0.0;
 	double pivec[4]={0.0};
