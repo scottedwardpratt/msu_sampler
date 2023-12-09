@@ -21,14 +21,12 @@ void Chyper::Init(){
 	dOmega[3]=0.0;
 	//printf("hmmmm\n");
 	
-	pitilde.resize(4);	
 	for(alpha=0;alpha<4;alpha++){
-		pitilde[alpha].resize(4);
 		for(beta=0;beta<4;beta++)
 			pitilde[alpha][beta]=0.0;
 	}
 	
-	printf("adios\n");
+	//printf("adios\n");
 }
 
 void Chyper::SetSampler(Csampler *samplerptr){

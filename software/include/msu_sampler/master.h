@@ -58,7 +58,7 @@ namespace NMSUPratt{
 		Csampler* ChooseSampler(Chyper *hyper);
 		void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);
 		void MakeDummyHyper(int nhyper);
-		void GetPitilde(FourTensor &pivisc,vector<vector<double>> &pitilde,FourVector &u);
+		void GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVector &u);
 		static CmeanField *meanfield;
 		void TransformPiTotz(FourTensor &piMline, const double cosh_eta,
 		const double sinh_eta);

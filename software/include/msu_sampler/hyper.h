@@ -30,7 +30,7 @@ namespace NMSUPratt{
 		FourVector r; // position
 		FourVector qmu; // not used, but read in from Chun's hydro
 		double tau,eta; // Bjorken tau and spatial rapidity
-		vector<vector<double>> pitilde; // shear tensor
+		FourTensor pitilde; // shear tensor
 		double biggestpitilde; // largest eigenvalue
 		double PItilde; // bulk tensor correction
 		bool Rvisc_calculated;

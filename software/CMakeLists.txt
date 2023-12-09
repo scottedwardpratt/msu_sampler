@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 set(GITHOME_MSU $ENV{GITHOME_MSU})
 project(msu_sampler CXX C)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -std=c++17 -mfpmath=sse")
 message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS})
 
