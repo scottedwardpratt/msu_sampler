@@ -276,6 +276,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 		elem->qmu[3]=qmu3;
 		elem->rhoB=rhoB;
 
+		elem->firstcall=true;
 		hyperlist.push_back(elem);
 		ielement+=1;
 	}

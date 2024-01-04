@@ -8,7 +8,6 @@ using namespace NMSUPratt;
 char *Chyper::message=new char[CLog::CHARLENGTH];
 
 void Chyper::Init(){
-	//printf("howdy\n");
 	muB=muII=muS=0.0;
 	Rvisc_calculated=false;
 	firstcall=true;
@@ -19,14 +18,12 @@ void Chyper::Init(){
 	dOmega[1]=0.0;
 	dOmega[2]=0.0;
 	dOmega[3]=0.0;
-	//printf("hmmmm\n");
 	
 	for(alpha=0;alpha<4;alpha++){
 		for(beta=0;beta<4;beta++)
 			pitilde[alpha][beta]=0.0;
 	}
 	
-	//printf("adios\n");
 }
 
 void Chyper::SetSampler(Csampler *samplerptr){
