@@ -105,10 +105,7 @@ int CmasterSampler::MakeEvent(){
 			hyper->SetSampler(samplerptr);
 			if(samplerptr->FIRSTCALL){
 				samplerptr->GetNHMu0();
-				printf("XXXXX check about to call CalcDensitiesMu0\n");
 				samplerptr->CalcDensitiesMu0();
-				printf("XXX chi0=\n");
-				printf("XXX chiinv0=\n");
 				cout << samplerptr->chiinv0 << endl;
 				samplerptr->CalcNHadronsEpsilonP(hyper);
 				samplerptr->FIRSTCALL=false;
