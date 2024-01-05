@@ -1,11 +1,9 @@
 #include "msu_sampler/master.h"
 #include "msu_commonutils/constants.h"
-using namespace NMSUPratt;
-
 //#define __TEST_PITILDE_TRACE__
 
 using namespace std;
-
+using namespace NMSUPratt;
 
 void CmasterSampler::ReadHyper_BEST_Binary3D(){
 	string filename;
@@ -165,8 +163,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 }
 
 //#define __TEST_PITILDE_TRACE__
-
-using namespace std;
 
 
 void CmasterSampler::ReadHyper_OSU_2D(){

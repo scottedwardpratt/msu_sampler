@@ -99,6 +99,7 @@ void Csampler::CalcDensitiesMu0(){
 	int ires,a,b;
 	nhadrons0=P0=epsilon0=0.0;
 	chi0.setZero();
+	chiinv0.setZero();
 	sigma0.setZero();
 
 	for(rpos=reslist->massmap.begin();rpos!=reslist->massmap.end();rpos++){
@@ -136,6 +137,7 @@ void Csampler::CalcDensitiesMu0(){
 			Ji=3*MSU_EOS::GetJi(Tf/double(nbose),0.138,pibose_dens0[nbose]);
 		}
 	}
+	chiinv0=chi0.inverse();
 }
 
 // Calculates factors (depend only on T) used for Newton's method to get muB, muII, muS from rhoB, rhoII, rhoS
