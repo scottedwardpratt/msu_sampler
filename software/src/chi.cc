@@ -3,6 +3,50 @@
 #include "msu_commonutils/constants.h"
 using namespace NMSUPratt;
 
+void Csampler::CalcChiWithFugacity(Chyper *hyper){
+	CresInfo *resinfo;
+	CresInfoMap::iterator rpos;
+	double Pi,epsiloni,densi,dedti,p4overE3i,Ji;
+	double x;
+	int B,S,II,fugacity;
+	int a,b;
+	double f_u=hyper->fugacity_u;
+	double f_d=hyper->fugacity_d;
+	double f_s=hyper->fugacity_s;
+	for(a=0;a<3;a++){
+		for(b=0;b<3;b++){
+			hyper->chi(a,b)=0.0;
+		}
+	}
+	
+	for(rpos=reslist->resmap.begin();rpos!=reslist->resmap.end();++rpos){
+		resinfo=rpos->second;
+		if(resinfo->pid!=22){
+			fugacity=f_u*resinfo->Nu+f_d*resinfo->Nd+f_s*resinfo->Ns;
+			if(resinfo->baryon==0 && (resinfo->Nu+resinfo->Nd+resinfo->Ns!=2)){
+				CLog::Info("quark numbers do not add up\n");
+				resinfo->Print();
+			}
+			if(abs(resinfo->baryon)==1 && (resinfo->Nu+resinfo->Nd+resinfo->Ns!=3)){
+				CLog::Info("quark numbers do not add up\n");
+				resinfo->Print();
+			}
+			
+			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,true);
+			B=resinfo->baryon;
+			S=resinfo->strange;
+			II=resinfo->q[0]-resinfo->q[1];
+			x=fugacity*exp(hyper->muB*B+hyper->muII*II+hyper->muS*S);
+			for(a=0;a<3;a++){
+				for(b=0;b<3;b++){
+					hyper->chi(a,b)+=x*densi*resinfo->q[a]*resinfo->q[b];
+				}
+			}
+		}
+	}
+	hyper->chiinv=hyper->chi.inverse();
+}
+
 void Csampler::CalcChi(Chyper *hyper){
 	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
 		hyper->chi4inv=(hyper->chi4).inverse();

@@ -84,6 +84,9 @@ namespace NMSUPratt{
 		double m2densh0_b1i1s0,m2densh0_b1i1s2;
 		double m2densh0_b1i2s1,m2densh0_b1i3s0;
 		double m2densh0_b2i0s0;
+		// these are  used for mu=0, but with quark fugacities
+		double nuu,ndd,nss,nud,nus,nds,nuuu,nddd,nsss;
+		double nuud,nuus,nudd,nuss,ndds,ndss,nuds;
 
 		void GetNHMu0(); // Calculates above quantities
 		void GetMuNH(Chyper *hyper);
@@ -93,6 +96,7 @@ namespace NMSUPratt{
 		void CalcNHadrons(Chyper *hyper);
 		void GetTfMuNH(Chyper *hyper);
 		void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
+		void GetNabc0(); // quantities used for sampling with mu=0 but with quark fugacities
 		void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix<double,4,4> &A);
 		void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix<double,4,4> &chi4);
 		void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi4);
@@ -106,6 +110,7 @@ namespace NMSUPratt{
 		void GetPInFluidFrame(double m,Chyper *hyper,double T,FourVector &p);
 		void CalcSFDensMap(CresInfo *resinfo,double T,map<double,double> &sfdensmap);
 		void CalcChi(Chyper *hyper);
+		void CalcChiWithFugacity(Chyper *hyper);
 		void CalcChiSlow(Chyper *hyper);
 		void CalcChi4BQS(Chyper *hyper);
 

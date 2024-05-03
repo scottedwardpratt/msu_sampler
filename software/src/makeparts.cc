@@ -12,9 +12,13 @@ int Csampler::MakeParts(Chyper *hyper){
 	int nparts=0,dnparts,ires,nbose,II3;
 	CresInfo *resinfo;
 	double udotdOmega=hyper->udotdOmega;
-	double dN,dNtot=0,dNtotprime=0,mutot=0;
+	double dN,dNtot=0,dNtotprime=0,mutot=0,fugacity;
 	double dNcheck=0.0;
 	CresMassMap::iterator iter;
+	double fugacity_u=hyper->fugacity_u;
+	double fugacity_d=hyper->fugacity_d;
+	double fugacity_s=hyper->fugacity_s;
+	
 	
 	if(SETMU0)
 		dNtot=dNtotprime=udotdOmega*nhadrons0;
@@ -32,7 +36,8 @@ int Csampler::MakeParts(Chyper *hyper){
 				II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
 				mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
 				mutot=mutot*hyper->T0/Tf;
-				dN=NSAMPLE*exp(mutot)*density0i[ires]*udotdOmega;
+				fugacity=pow(fugacity_u,abs(resinfo->Nu))*pow(fugacity_d,abs(resinfo->Nd))*pow(fugacity_s,abs(resinfo->Ns));
+				dN=NSAMPLE*fugacity*exp(mutot)*density0i[ires]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				if(dNtotprime<-0.0001){
@@ -52,11 +57,13 @@ int Csampler::MakeParts(Chyper *hyper){
 			}
 		}
 		if(bose_corr){
+			fugacity=fugacity_u*fugacity_d;
+			
 			for(nbose=2;nbose<=n_bose_corr;nbose++){
 				resinfo=reslist->GetResInfoPtr(211);
 				ires=resinfo->ires;
 				mutot=2.0*nbose*hyper->muII*hyper->T0/Tf;
-				dN=NSAMPLE*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
+				dN=NSAMPLE*pow(fugacity,nbose)*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				dnparts=CheckResInVolume(dN,Tf/double(nbose),resinfo,hyper);
@@ -65,10 +72,13 @@ int Csampler::MakeParts(Chyper *hyper){
 					randy->increment_netprob(dNtotprime);
 					goto NoMoreParts;
 				}
+			}
+			
+			for(nbose=2;nbose<=n_bose_corr;nbose++){	
 				resinfo=reslist->GetResInfoPtr(111);
 				ires=resinfo->ires;
 				mutot=0.0;
-				dN=pibose_dens0[nbose]*udotdOmega;
+				dN=NSAMPLE*pow(fugacity,nbose)*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNtotprime-=dN;
 				dnparts=CheckResInVolume(dN,Tf/double(nbose),resinfo,hyper);
 				nparts+=dnparts;
@@ -76,10 +86,13 @@ int Csampler::MakeParts(Chyper *hyper){
 					randy->increment_netprob(dNtotprime);
 					goto NoMoreParts;
 				}
+			}
+				
+			for(nbose=2;nbose<=n_bose_corr;nbose++){
 				resinfo=reslist->GetResInfoPtr(-211);
 				ires=resinfo->ires;
 				mutot=-2.0*nbose*hyper->muII*hyper->T0/Tf;
-				dN=exp(mutot)*pibose_dens0[nbose]*udotdOmega;
+				dN=NSAMPLE*pow(fugacity,nbose)*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				dnparts=CheckResInVolume(dN,Tf/double(nbose),resinfo,hyper);
@@ -91,6 +104,7 @@ int Csampler::MakeParts(Chyper *hyper){
 			}
 		}
 		NoMoreParts:
+		
 		if(dNcheck>dNtot*1.01){
 			snprintf(message,CLog::CHARLENGTH,"Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
 			dNcheck,dNtot,dNtotprime,Tf);

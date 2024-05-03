@@ -9,6 +9,7 @@ char *Chyper::message=new char[CLog::CHARLENGTH];
 
 void Chyper::Init(){
 	muB=muII=muS=0.0;
+	fugacity_u=fugacity_d=fugacity_s=1.0;
 	Rvisc_calculated=false;
 	firstcall=true;
 	int alpha,beta;
@@ -89,6 +90,9 @@ void Chyper::Copy(Chyper *oldhyper){
 	muB=oldhyper->muB;
 	muII=oldhyper->muII;
 	muS=oldhyper->muS;
+	fugacity_u=oldhyper->fugacity_u;
+	fugacity_d=oldhyper->fugacity_d;
+	fugacity_s=oldhyper->fugacity_s;
 	nhadrons=oldhyper->nhadrons;
 	Rshear=oldhyper->Rshear;
 	Rbulk=oldhyper->Rbulk;

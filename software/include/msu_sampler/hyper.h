@@ -24,6 +24,7 @@ namespace NMSUPratt{
 		int firstcall;
 		double sigma,rhoB,rhoII,rhoS,rhoQ;
 		double muB,muII,muS,nhadrons,Rshear,Rbulk,RTbulk,epsilon,P,dedT;
+		double fugacity_u,fugacity_d,fugacity_s;
 		FourVector dOmega; // hyper volume
 		double udotdOmega; // dot product of u and dOmega
 		FourVector u;  // collective velocity
@@ -35,6 +36,7 @@ namespace NMSUPratt{
 		double PItilde; // bulk tensor correction
 		bool Rvisc_calculated;
 		bool epsilon_calculated;
+		Eigen::Matrix<double,3,3> chi,chiinv,sigma0;
 		Eigen::Matrix<double,4,4> chi4,chi4inv,chi4BQS,chi4BQSinv;
 			
 		void CalcBiggestpitilde();

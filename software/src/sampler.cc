@@ -301,9 +301,13 @@ void Csampler::GetNHMu0(){
 
 void Csampler::CalcNHadrons(Chyper *hyper){
 	int ires,II3;
+	double fugacity=1.0;
 	CresInfo *resinfo;
 	double mutot=0;
 	CresMassMap::iterator iter;
+	double fugacity_u=hyper->fugacity_u;
+	double fugacity_d=hyper->fugacity_d;
+	double fugacity_s=hyper->fugacity_s;
 	
 	double nhadrons=0.0;
 	for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
@@ -312,7 +316,8 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 			ires=resinfo->ires;
 			II3=2.0*resinfo->charge-resinfo->baryon-resinfo->strange;
 			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
-			nhadrons+=density0i[ires]*exp(mutot);
+			fugacity=pow(fugacity_u,abs(resinfo->Nu))*pow(fugacity_d,abs(resinfo->Nd))*pow(fugacity_s,abs(resinfo->Ns));
+			nhadrons+=fugacity*density0i[ires]*exp(mutot);
 		}
 	}
 	hyper->nhadrons=nhadrons;
