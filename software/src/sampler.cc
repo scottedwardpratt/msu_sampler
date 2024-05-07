@@ -292,6 +292,7 @@ void Csampler::GetNHMu0(){
 			}
 			else{
 				snprintf(message,CLog::CHARLENGTH,"NO BIS Match!!!! B=%d, II=%d, S=%d\n",B,II,S);
+				resinfo->Print();
 				CLog::Fatal(message);
 			}
 		}

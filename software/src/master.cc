@@ -27,6 +27,9 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	CALCMU=parmap->getB("MSU_SAMPLER_CALCMU",false);
 	FINDT=parmap->getB("MSU_SAMPLER_FINDT", false);
 	NEVENTS_TOT=parmap->getLongI("MSU_SAMPLER_NEVENTS_TOT",1);
+	FUGACITY_TAU0=parmap->getD("MESH_TAU0",0.6);
+	FUGACITY_TAU_EQ=parmap->getD("FUGACITY_TAU_EQ",0.5);
+	FUGACITY_GAMMA_0=parmap->getD("FUGACITY_GAMMA_0",0.5);
 	NEVENTS=0; // running count of events
 	DELSIGMAF=(SIGMAFmax-SIGMAFmin)/double(NSIGMAF);
 	if(NSIGMAF==0)
@@ -90,7 +93,11 @@ int CmasterSampler::MakeEvent(){
 	//double Omega0Sum=0.0;
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
+	printf("check in\n");
+	randy->reset(1234);
+	printf("rantest=%g\n",randy->ran());
 	
+	long long int nhyper=0;
 	for(it=hyperlist.begin();it!=hyperlist.end();it++){
 		hyper=*it;
 		if(hyper->firstcall){
@@ -101,7 +108,6 @@ int CmasterSampler::MakeEvent(){
 				CALCMU=false;
 			}
 			samplerptr=ChooseSampler(hyper);
-			hyper->sampler=samplerptr;
 			hyper->SetSampler(samplerptr);
 			if(samplerptr->FIRSTCALL){
 				samplerptr->GetNHMu0();
@@ -118,14 +124,18 @@ int CmasterSampler::MakeEvent(){
 			hyper->firstcall=false;
 			//samplerptr->CalcNHadronsEpsilonP(hyper);
 			samplerptr->CalcNHadrons(hyper);
+			samplerptr->CalcChiWithFugacity(hyper);
+			samplerptr->partlist=partlist;
 		}
-		hyper->sampler->partlist=partlist;
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
+		nhyper+=1;
 	}
+	printf("---- ready to check out, made %d parts\n",nparts);
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
 	NEVENTS+=1;
+	printf("nhyper=%lld\n",nhyper);
 	return nparts;
 }
 

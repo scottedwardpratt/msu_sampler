@@ -41,6 +41,7 @@ namespace NMSUPratt{
 		double SIGMAFmin,SIGMAFmax;
 		int NTF,NSIGMAF;
 		double DELTF,DELSIGMAF;
+		double FUGACITY_TAU0,FUGACITY_GAMMA_0,FUGACITY_TAU_EQ;
 		bool SETMU0,CALCMU;
 		double RESWIDTH_ALPHA;
 		double YMAX; // only for 2D sampler
@@ -54,6 +55,7 @@ namespace NMSUPratt{
 
 		void ReadHyper_BEST_Binary3D();
 		void ReadHyper_OSU_2D();
+		void ReadHyper_Duke_2D();
 		int MakeEvent(); // returns number of parts
 		Csampler* ChooseSampler(Chyper *hyper);
 		void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);

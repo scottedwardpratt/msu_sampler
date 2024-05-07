@@ -19,11 +19,7 @@ int Csampler::MakeParts(Chyper *hyper){
 	double fugacity_d=hyper->fugacity_d;
 	double fugacity_s=hyper->fugacity_s;
 	
-	
-	if(SETMU0)
-		dNtot=dNtotprime=udotdOmega*nhadrons0;
-	else
-		dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
+	dNtot=dNtotprime=udotdOmega*hyper->nhadrons;
 	
 	dNtot*=NSAMPLE;
 	dNtotprime*=NSAMPLE;
@@ -57,6 +53,7 @@ int Csampler::MakeParts(Chyper *hyper){
 			}
 		}
 		if(bose_corr){
+			CLog::Fatal("BOSE corrections not tested!!\n");
 			fugacity=fugacity_u*fugacity_d;
 			
 			for(nbose=2;nbose<=n_bose_corr;nbose++){
@@ -105,7 +102,7 @@ int Csampler::MakeParts(Chyper *hyper){
 		}
 		NoMoreParts:
 		
-		if(dNcheck>dNtot*1.01){
+		if(dNcheck>dNtot*1.002){
 			snprintf(message,CLog::CHARLENGTH,"Inside Csampler::MakeParts dNcheck=%g > dNtot=%g, dNtotprime=%g, T=%g\n",
 			dNcheck,dNtot,dNtotprime,Tf);
 			CLog::Fatal(message);

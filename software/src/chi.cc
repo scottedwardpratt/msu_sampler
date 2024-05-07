@@ -26,10 +26,12 @@ void Csampler::CalcChiWithFugacity(Chyper *hyper){
 			if(resinfo->baryon==0 && (resinfo->Nu+resinfo->Nd+resinfo->Ns!=2)){
 				CLog::Info("quark numbers do not add up\n");
 				resinfo->Print();
+				exit(1);
 			}
 			if(abs(resinfo->baryon)==1 && (resinfo->Nu+resinfo->Nd+resinfo->Ns!=3)){
 				CLog::Info("quark numbers do not add up\n");
 				resinfo->Print();
+				exit(1);
 			}
 			
 			MSU_EOS::GetEpsilonPDens_OneSpecies(Tf,resinfo,epsiloni,Pi,densi,dedti,p4overE3i,Ji,true);
