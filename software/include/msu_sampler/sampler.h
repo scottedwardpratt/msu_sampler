@@ -127,7 +127,6 @@ namespace NMSUPratt{
 		static bool INCLUDE_BULK_VISCOSITY;
 		static bool INCLUDE_SHEAR_VISCOSITY;
 		static int NSAMPLE;
-		static char *message;
 		static bool SETMU0;
 	};
 

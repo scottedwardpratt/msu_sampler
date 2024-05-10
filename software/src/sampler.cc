@@ -19,7 +19,6 @@ bool Csampler::USE_POLE_MASS=false;
 bool Csampler::INCLUDE_BULK_VISCOSITY=false;
 bool Csampler::INCLUDE_SHEAR_VISCOSITY=false;
 int Csampler::NSAMPLE=1;
-char *Csampler::message=new char[300];
 
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){
@@ -80,10 +79,14 @@ Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresL
 }
 
 // Destructor
+
 Csampler::~Csampler(){
 	density0i.clear();
 	epsilon0i.clear();
 	P0i.clear();
+	for(unsigned int i=0;i<sfdens0imap.size();i++){
+		sfdens0imap[i].clear();
+	}
 	sfdens0imap.clear();
 	pibose_dens0.clear();
 	pibose_P0.clear();
@@ -142,6 +145,7 @@ void Csampler::CalcDensitiesMu0(){
 
 // Calculates factors (depend only on T) used for Newton's method to get muB, muII, muS from rhoB, rhoII, rhoS
 void Csampler::GetNHMu0(){
+	char message[CLog::CHARLENGTH];
 	CresInfo *resinfo;
 	CresMassMap::iterator rpos;
 	double Pi,epsiloni,densi,dedti,p4overE3i,Ji,m2;
@@ -490,6 +494,7 @@ void Csampler::GetTfMuNH(Chyper *hyper){
 void Csampler::GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS){
 	//4D Newton's Method
 	// Here rhoII refers to rho_u-rho_d = 2*I3 and mu[1]=muII/2
+	char message[CLog::CHARLENGTH];
 	double epsilon,rhoB,rhoS,rhoII=0;
 	GetNHMu0();
 	Eigen::Matrix<double,4,4> A;
@@ -756,6 +761,7 @@ void Csampler::CalcRvisc(Chyper *hyper){
 
 // For sampling, generates mass of resonances (uses GetDensPMax below)
 double Csampler::GenerateThermalMass(CresInfo *resinfo){
+	char message[CLog::CHARLENGTH];
 	map<double,double>::iterator it1,it2;
 	double E = 0.0, E1 = 0.0, E2 = 0.0;
 	int ires=resinfo->ires;

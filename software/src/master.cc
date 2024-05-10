@@ -72,12 +72,11 @@ CmasterSampler::~CmasterSampler(){
 		delete p;
 	hyperlist.clear();
 
-	Csampler *sampleri;
 	int iT,isigma;
-	for(iT=0;iT<NTF;iT++){
+	for(iT=0;iT<=NTF;iT++){
 		for(isigma=0;isigma<NSIGMAF;isigma++){
-			sampleri=sampler[iT][isigma];
-			delete sampleri;
+			if(sampler[iT][isigma]!=nullptr)
+				delete sampler[iT][isigma];
 		}
 		sampler[iT].clear();
 	}

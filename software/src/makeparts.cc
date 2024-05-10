@@ -9,6 +9,7 @@ using namespace std;
 using namespace NMSUPratt;
 
 int Csampler::MakeParts(Chyper *hyper){
+	char message[CLog::CHARLENGTH];
 	int nparts=0,dnparts,ires,nbose,II3;
 	CresInfo *resinfo;
 	double udotdOmega=hyper->udotdOmega;
@@ -116,6 +117,7 @@ int Csampler::MakeParts(Chyper *hyper){
 }
 
 int Csampler::CheckResInVolume(double dN,double T,CresInfo *resinfo,Chyper *hyper){
+	char message[CLog::CHARLENGTH];
 	int dnparts=0,alpha;
 	double eta;
 	FourVector p,r,ubj,ptilde,rtilde;
@@ -179,6 +181,7 @@ void Csampler::BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVecto
 }
 
 void Csampler::ShearScale(Chyper *hyper,double mass,FourVector &pnoshear,FourVector &p){
+	char message[CLog::CHARLENGTH];
 	int alpha,beta;
 	double R,Rmax,pmag,ctheta,stheta,phi;
 	for(alpha=0;alpha<4;alpha++)
