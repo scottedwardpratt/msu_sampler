@@ -68,8 +68,8 @@ void Chyper::CalcBiggestpitilde(){
 			A(alpha-1,beta-1)=pitilde[alpha][beta];
 	}
 	Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,3,3>> es(A);
-	cout << A << endl;
-	cout << es.eigenvalues() << endl;
+	//cout << A << endl;
+	//cout << es.eigenvalues() << endl;
 	V=es.eigenvalues();
 	snprintf(message,CLog::CHARLENGTH,"eigenvalues: %g,%g,%g\n",V(0),V(1),V(2));
 	CLog::Info(message);

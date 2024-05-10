@@ -93,11 +93,7 @@ int CmasterSampler::MakeEvent(){
 	//double Omega0Sum=0.0;
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
-	printf("check in\n");
-	randy->reset(1234);
-	printf("rantest=%g\n",randy->ran());
 	
-	long long int nhyper=0;
 	for(it=hyperlist.begin();it!=hyperlist.end();it++){
 		hyper=*it;
 		if(hyper->firstcall){
@@ -112,7 +108,6 @@ int CmasterSampler::MakeEvent(){
 			if(samplerptr->FIRSTCALL){
 				samplerptr->GetNHMu0();
 				samplerptr->CalcDensitiesMu0();
-				cout << samplerptr->chiinv0 << endl;
 				samplerptr->CalcNHadronsEpsilonP(hyper);
 				samplerptr->FIRSTCALL=false;
 			}
@@ -129,13 +124,10 @@ int CmasterSampler::MakeEvent(){
 		}
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
-		nhyper+=1;
 	}
-	printf("---- ready to check out, made %d parts\n",nparts);
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
 	NEVENTS+=1;
-	printf("nhyper=%lld\n",nhyper);
 	return nparts;
 }
 
