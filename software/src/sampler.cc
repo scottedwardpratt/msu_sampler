@@ -22,8 +22,18 @@ int Csampler::NSAMPLE=1;
 
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){
+	printf("constructing sampler for T=%g\n",Tfset);
+	if(Tfset<mastersampler->TFmin || Tfset>mastersampler->TFmax){
+		CLog::Fatal("Creating sampler object  T out of range, = "+to_string(Tfset)+"\n");
+	}
+	if(Tfset>mastersampler->TFmax)
+		Tfset=mastersampler->TFmax-0.0001;
+	CresInfo *resinfo;
+	CresMassMap::iterator iter;
+	int ires;
 	FIRSTCALL=true;
 	SETMU0=false;
+	SFMapCalculated=false;
 	Tf=Tfset;
 	sigmaf=sigmafset;
 	bose_corr=false;
@@ -43,9 +53,25 @@ Csampler::Csampler(double Tfset,double sigmafset){
 		pibose_dens0.resize(n_bose_corr+1);
 	}
 	forMU0_calculated=false;
+	if(!USE_POLE_MASS){
+		sfdens0imap.resize(nres);
+		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+			resinfo=iter->second;
+			ires=resinfo->ires;
+			sfdens0imap[ires].clear();
+			if(resinfo->decay){
+				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
+			}
+		}
+		SFMapCalculated=true;
+	}
+	printf("finished constructing sampler for T=%g\n",Tfset);
 }
 
 Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresList *reslist_set,Crandy *randy_set){
+	CresInfo *resinfo;
+	CresMassMap::iterator iter;
+	int ires;
 	parmap=parmap_set;
 	reslist=reslist_set;
 	randy=randy_set;
@@ -58,6 +84,7 @@ Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresL
 	mastersampler=nullptr;
 	
 	FIRSTCALL=true;
+	SFMapCalculated=false;
 	
 	if(!bose_corr)
 		n_bose_corr=1;
@@ -67,8 +94,8 @@ Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresL
 	density0i.resize(nres);
 	epsilon0i.resize(nres);
 	P0i.resize(nres);
-	if(!USE_POLE_MASS)
-		sfdens0imap.resize(nres);
+
+	sfdens0imap.resize(nres);
 	if(bose_corr){
 		pibose_P0.resize(n_bose_corr+1);
 		pibose_epsilon0.resize(n_bose_corr+1);
@@ -76,6 +103,18 @@ Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresL
 		pibose_dens0.resize(n_bose_corr+1);
 	}
 	forMU0_calculated=false;
+	if(!USE_POLE_MASS){
+		sfdens0imap.resize(nres);
+		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+			sfdens0imap[ires].clear();
+			resinfo=iter->second;
+			if(resinfo->decay){
+				ires=resinfo->ires;
+				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
+			}
+		}
+		SFMapCalculated=true;
+	}
 }
 
 // Destructor
@@ -141,6 +180,8 @@ void Csampler::CalcDensitiesMu0(){
 		}
 	}
 	chiinv0=chi0.inverse();
+	if(!USE_POLE_MASS)
+		SFMapCalculated=true;
 }
 
 // Calculates factors (depend only on T) used for Newton's method to get muB, muII, muS from rhoB, rhoII, rhoS
@@ -323,9 +364,14 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
 			fugacity=pow(fugacity_u,abs(resinfo->Nu))*pow(fugacity_d,abs(resinfo->Nd))*pow(fugacity_s,abs(resinfo->Ns));
 			nhadrons+=fugacity*density0i[ires]*exp(mutot);
+			if(resinfo->decay && !USE_POLE_MASS)
+				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
 		}
 	}
 	hyper->nhadrons=nhadrons;
+	if(!USE_POLE_MASS)
+		SFMapCalculated=true;
+		
 }
 
 /*
@@ -769,8 +815,12 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 	if(!resinfo->decay)
 		E=resinfo->mass;
 	else{
+		printf("In GenerateThermalMass, ires=%d, Tf=%g\n",ires,Tf);
+		printf("In GenerateThermalMass, pid=%d, sfdens0imap size=%lu, netprob=%g, T=%g\n",
+		resinfo->pid,sfdens0imap[ires].size(),netprob,Tf);
 		it1=sfdens0imap[ires].lower_bound(netprob);
 		if(it1==sfdens0imap[ires].end()){
+			resinfo->Print();
 			snprintf(message,CLog::CHARLENGTH,"it1 already at end of map\n");
 			CLog::Fatal(message);
 		}

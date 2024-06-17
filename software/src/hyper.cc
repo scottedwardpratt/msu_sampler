@@ -102,14 +102,14 @@ void Chyper::Copy(Chyper *oldhyper){
 	biggestpitilde=oldhyper->biggestpitilde;
 	udotdOmega=oldhyper->udotdOmega;
 	PItilde=oldhyper->PItilde;
-	chi=oldhyper->chi;
-	chiinv=oldhyper->chiinv;
+	//chi=oldhyper->chi;
+	//chiinv=oldhyper->chiinv;
 	
-	sigma0=oldhyper->sigma0;
-	chi4=oldhyper->chi4;
-	chi4inv=oldhyper->chi4inv;
-	chi4BQS=oldhyper->chi4BQS;
-	chi4BQSinv=oldhyper->chi4BQSinv;
+	//sigma0=oldhyper->sigma0;
+	//chi4=oldhyper->chi4;
+	//chi4inv=oldhyper->chi4inv;
+	//chi4BQS=oldhyper->chi4BQS;
+	//chi4BQSinv=oldhyper->chi4BQSinv;
 	
 	for(int alpha=0;alpha<4;alpha++){
 		u[alpha]=oldhyper->u[alpha];

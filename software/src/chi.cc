@@ -15,7 +15,7 @@ void Csampler::CalcChiWithFugacity(Chyper *hyper){
 	double f_s=hyper->fugacity_s;
 	for(a=0;a<3;a++){
 		for(b=0;b<3;b++){
-			hyper->chi(a,b)=0.0;
+			chi(a,b)=0.0;
 		}
 	}
 	
@@ -41,33 +41,39 @@ void Csampler::CalcChiWithFugacity(Chyper *hyper){
 			x=fugacity*exp(hyper->muB*B+hyper->muII*II+hyper->muS*S);
 			for(a=0;a<3;a++){
 				for(b=0;b<3;b++){
-					hyper->chi(a,b)+=x*densi*resinfo->q[a]*resinfo->q[b];
+					chi(a,b)+=x*densi*resinfo->q[a]*resinfo->q[b];
 				}
 			}
 		}
 	}
-	hyper->chiinv=hyper->chi.inverse();
+	chiinv=chi.inverse();
 }
 
+/*
 void Csampler::CalcChi(Chyper *hyper){
 	GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
 		hyper->chi4inv=(hyper->chi4).inverse();
 		hyper->epsilon_calculated=true;
 	}
+*/
 
+/*
 void Csampler::CalcChiSlow(Chyper *hyper){
 	GetEpsilonRhoChiSlow(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->P,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->nhadrons,hyper->chi4);
 	hyper->chi4inv=(hyper->chi4).inverse();
 	hyper->epsilon_calculated=true;
 }
+*/
 
+/*
 void Csampler::CalcChi4BQS(Chyper *hyper){
 	GetEpsilonRhoChi4BQS(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->P,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->nhadrons,hyper->chi4BQS,hyper->dedT);
 	hyper->chi4BQSinv=(hyper->chi4BQS).inverse();
 	hyper->epsilon_calculated=true;
 }
+*/
 
-
+/*
 void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
@@ -115,7 +121,9 @@ void Csampler::GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &ep
 		chi(3,2)=chi(2,3);
 	}			
 }
+*/
 
+/*
 void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix<double,4,4> &chi){
 	double xB,xI,xS,xxB,xxI,xxS;
 
@@ -275,7 +283,8 @@ void Csampler::GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilo
 	chi(3,3)=drhoS_dmuS;
 
 }
-
+*/
+/*
 void Csampler::GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi4BQS,double &dedT){
 	CresInfo *resinfo;
 	CresInfoMap::iterator rpos;
@@ -325,3 +334,4 @@ void Csampler::GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &ep
 		chi4BQS(3,2)=chi4BQS(2,3);
 	}
 }
+*/

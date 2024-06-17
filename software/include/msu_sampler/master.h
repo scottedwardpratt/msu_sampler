@@ -36,13 +36,13 @@ namespace NMSUPratt{
 		CparameterMap *parmap;
 		CresList *reslist;
 		Crandy *randy;
-		double TFmax;
+		double TFmax,TFmin;
 		string MEANFIELD;
 		double SIGMAFmin,SIGMAFmax;
 		int NTF,NSIGMAF;
 		double DELTF,DELSIGMAF;
 		double FUGACITY_TAU0,FUGACITY_GAMMA_0,FUGACITY_TAU_EQ;
-		bool SETMU0,CALCMU;
+		bool SETMU0,CALCMU,VARY_FUGACITY;
 		double RESWIDTH_ALPHA;
 		double YMAX; // only for 2D sampler
 		long long int NEVENTS,NEVENTS_TOT;

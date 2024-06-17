@@ -8,6 +8,19 @@
 using namespace std;
 using namespace NMSUPratt;
 
+/*
+int Csampler::MakeParts(vector<double> &Q,Chyper *hyper){
+	int nparts=0;
+	double fugacity_u=hyper->fugacity_u;
+	double fugacity_d=hyper->fugacity_d;
+	double fugacity_s=hyper->fugacity_s;
+	Csampler *sampler=mastersampler->ChooseSampler(hyper);
+	
+	double dNtot;
+	return nparts;
+}
+*/
+
 int Csampler::MakeParts(Chyper *hyper){
 	char message[CLog::CHARLENGTH];
 	int nparts=0,dnparts,ires,nbose,II3;

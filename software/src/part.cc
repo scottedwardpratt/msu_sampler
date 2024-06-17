@@ -60,6 +60,7 @@ void Cpart::BoostR(FourVector &u){
 		r[alpha]=rprime[alpha];
 }
 
+/*
 void Cpart::SetEQWeightVec(Chyper *hyper){
 	int B=resinfo->baryon,S=resinfo->strange,Q=resinfo->charge;
 	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
@@ -80,6 +81,7 @@ void Cpart::SetEQWeightVec(Chyper *hyper){
 	EQWeightVec[6]=(hyper->chi4BQSinv(3,0)*p[0] +hyper->chi4BQSinv(3,1)*B
 		 +hyper->chi4BQSinv(3,2)*Q +hyper->chi4BQSinv(3,3)*S)/udotdOmega;
 }
+*/
 
 void Cpart::Copy(Cpart *oldpart){
 	int alpha;
@@ -238,11 +240,13 @@ void CpartList::SumSETensor(){
 	}
 }
 
+/*
 void CpartList::SetEQWeightVec(Chyper *hyper){
 	for(int ipart=0;ipart<nparts;ipart++){
 		partvec[ipart].SetEQWeightVec(hyper);
 	}
 }
+*/
 
 void CpartList::TestEQWeights(Eigen::Vector<double,7> &EQtot,Eigen::Vector<double,7> &EQTarget){
 	CresInfo *resinfo;

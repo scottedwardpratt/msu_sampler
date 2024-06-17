@@ -288,8 +288,9 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 	double x,y,tau;
 	double udotdOmega,ETAMAX_ratio;
 	double dOmega0,dOmegaX,dOmegaY;
+	double f_u,f_d,f_s,Tf;
 	double epsilonf,pitildexx,pitildexy,pitildeyy;
-	double Tdec,muB,muS,muC;
+	double muB,muS,muC;
 	double PIbulk __attribute__((unused)), Pdec __attribute__((unused));
 	double qmu0,qmu1,qmu2,qmu3;
 	double rhoB;
@@ -312,86 +313,99 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
-	fscanf(fptr,"%lf",&Tdec);
-	Tdec=0.155;
 	fgets(dummy,CLog::CHARLENGTH,fptr);	fgets(dummy,CLog::CHARLENGTH,fptr);
 	while(!feof(fptr)){
-		elem=new Chyper();
-		double readstuff[11];
-		for(int iread=0;iread<11;iread++)
+		double readstuff[15];
+		for(int iread=0;iread<14;iread++)
 			fscanf(fptr,"%lf",&readstuff[iread]);
 		tau=readstuff[0];
-		x=readstuff[1];
-		y=readstuff[2];
-		ux=readstuff[3];
-		uy=readstuff[4];
-		u0=sqrt(1.0+ux*ux+uy*uy);
-		dOmega0=readstuff[5]*ETAMAX_ratio;
-		dOmegaX=readstuff[6]*ETAMAX_ratio;
-		dOmegaY=readstuff[7]*ETAMAX_ratio;
-		pitildexx=readstuff[8];
-		pitildexy=readstuff[9];
-		pitildeyy=readstuff[10];
-		//pitildexx=pitildexy=pitildeyy=0.0;
+		Tf=readstuff[1];
+		if(Tf>=TFmin){
+			f_u=readstuff[2];
+			f_d=readstuff[3];
+			f_s=readstuff[4];
+			x=readstuff[5];
+			y=readstuff[6];
+			ux=readstuff[7];
+			uy=readstuff[8];
+			u0=sqrt(1.0+ux*ux+uy*uy);
+			dOmega0=readstuff[9]*ETAMAX_ratio;
+			dOmegaX=readstuff[10]*ETAMAX_ratio;
+			dOmegaY=readstuff[11]*ETAMAX_ratio;
+			pitildexx=readstuff[12];
+			pitildexy=readstuff[13];
+			pitildeyy=readstuff[14];
+			//pitildexx=pitildexy=pitildeyy=0.0;
 
-		muB=muS=muC=0.0;
-		PIbulk=0.0;
-		qmu0=qmu1=qmu2=qmu3=0.0;
-		rhoB=0.0;
-		epsilonf=-1.0; // not used
+			muB=muS=muC=0.0;
+			PIbulk=0.0;
+			qmu0=qmu1=qmu2=qmu3=0.0;
+			rhoB=0.0;
+			epsilonf=-1.0; // not used
 
-		udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
-		//if(udotdOmega >= 0.0) {
-			//if(Tdec >0.15)
-				//netvolume+=udotdOmega;
-		elem->tau=tau;
-		elem->dOmega[0]=dOmega0; 
-		elem->dOmega[1]=dOmegaX; 
-		elem->dOmega[2]=dOmegaY; 
-		elem->dOmega[3]=0.0;
+			udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
+			elem=new Chyper();
+	
+			elem->tau=tau;
+			elem->dOmega[0]=dOmega0; 
+			elem->dOmega[1]=dOmegaX; 
+			elem->dOmega[2]=dOmegaY; 
+			elem->dOmega[3]=0.0;
 
-		elem->udotdOmega=udotdOmega;
+			elem->udotdOmega=udotdOmega;
 		
 
-		elem->r[0]=tau;
-		elem->r[1]=x;
-		elem->r[2]=y;
-		elem->r[3]=0.0;
-
-		elem->u[0]=u0;
-		elem->u[1]=ux;
-		elem->u[2]=uy;
-		elem->u[3]=0.0;
-
-		elem->pitilde[0][0]=elem->pitilde[0][1]=elem->pitilde[0][2]=elem->pitilde[0][3]=0.0;
-		elem->pitilde[3][0]=elem->pitilde[3][1]=elem->pitilde[3][2]=0.0;
-		elem->pitilde[1][0]=elem->pitilde[1][3]=0.0;
-		elem->pitilde[2][0]=elem->pitilde[2][3]=0.0;
-		elem->pitilde[1][1]=pitildexx;
-		elem->pitilde[2][2]=pitildeyy;
-		elem->pitilde[1][2]=elem->pitilde[2][1]=pitildexy;
-		elem->pitilde[3][3]=-pitildexx-pitildeyy;
-
-		elem->muB=muB+0.5*muC;
-		elem->muS=muS+0.5*muC;
-		elem->muII=muC;
-
-		elem->epsilon=epsilonf;
-		elem->T0=Tdec;
-		elem->rhoB=0.0;
-		elem->rhoS=0.0;
-		elem->rhoII=0.0;
-
-		elem->qmu[0]=qmu0;
-		elem->qmu[1]=qmu1;
-		elem->qmu[2]=qmu2;
-		elem->qmu[3]=qmu3;
-		elem->rhoB=rhoB;
+			elem->r[0]=tau;
+			elem->r[1]=x;
+			elem->r[2]=y;
+			elem->r[3]=0.0;
 		
-		double fugacity_meson,gamma_q;
-		gamma_q=1.0-(1.0-FUGACITY_GAMMA_0)*exp((FUGACITY_TAU0-tau)/FUGACITY_TAU_EQ);
-		fugacity_meson=0.85*gamma_q+0.15;
-		elem->fugacity_u=elem->fugacity_d=elem->fugacity_s=sqrt(fugacity_meson);
+			elem->fugacity_u=f_u;
+			elem->fugacity_d=f_d;
+			elem->fugacity_s=f_s;
+			elem->T0=Tf;
+
+			elem->u[0]=u0;
+			elem->u[1]=ux;
+			elem->u[2]=uy;
+			elem->u[3]=0.0;
+
+			elem->pitilde[0][0]=elem->pitilde[0][1]=elem->pitilde[0][2]=elem->pitilde[0][3]=0.0;
+			elem->pitilde[3][0]=elem->pitilde[3][1]=elem->pitilde[3][2]=0.0;
+			elem->pitilde[1][0]=elem->pitilde[1][3]=0.0;
+			elem->pitilde[2][0]=elem->pitilde[2][3]=0.0;
+			elem->pitilde[1][1]=pitildexx;
+			elem->pitilde[2][2]=pitildeyy;
+			elem->pitilde[1][2]=elem->pitilde[2][1]=pitildexy;
+			elem->pitilde[3][3]=-pitildexx-pitildeyy;
+
+			elem->muB=muB+0.5*muC;
+			elem->muS=muS+0.5*muC;
+			elem->muII=muC;
+
+			elem->epsilon=epsilonf;
+			elem->T0=Tf;
+			elem->rhoB=0.0;
+			elem->rhoS=0.0;
+			elem->rhoII=0.0;
+
+			elem->qmu[0]=qmu0;
+			elem->qmu[1]=qmu1;
+			elem->qmu[2]=qmu2;
+			elem->qmu[3]=qmu3;
+			elem->rhoB=rhoB;
+		
+		
+			if(VARY_FUGACITY){
+				double fugacity_meson,gamma_q;
+				gamma_q=1.0-(1.0-FUGACITY_GAMMA_0)*exp((FUGACITY_TAU0-tau)/FUGACITY_TAU_EQ);
+				fugacity_meson=0.85*gamma_q+0.15;
+				elem->fugacity_u=elem->fugacity_d=elem->fugacity_s=sqrt(fugacity_meson);
+			}
+			else{
+				elem->fugacity_u=elem->fugacity_d=elem->fugacity_s=1.0;
+			}
+		}
 
 		elem->firstcall=true;
 		hyperlist.push_back(elem);

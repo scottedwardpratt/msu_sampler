@@ -15,7 +15,8 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	partlist=new CpartList(parmap,reslist);
 	NEVENTS=0;
 	RESWIDTH_ALPHA=parmap->getD("MSU_SAMPLER_RESWIDTH_ALPHA",0.5);
-	TFmax=0.250;
+	TFmin=parmap->getD("MSU_SAMPLER_TFMIN",0.050);
+	TFmax=parmap->getD("MSU_SAMPLER_TFMAX",0.250);
 	DELTF=parmap->getD("MSU_SAMPLER_DELTF",0.001);
 	NTF=lrint(TFmax/DELTF);
 	NSIGMAF=parmap->getD("MSU_SAMPLER_NSIGMAF",1);
@@ -30,6 +31,7 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	FUGACITY_TAU0=parmap->getD("MESH_TAU0",0.6);
 	FUGACITY_TAU_EQ=parmap->getD("FUGACITY_TAU_EQ",0.5);
 	FUGACITY_GAMMA_0=parmap->getD("FUGACITY_GAMMA_0",0.5);
+	VARY_FUGACITY=parmap->getB("MSU_BOLTZMANN_VARY_FUGACITY",false);
 	NEVENTS=0; // running count of events
 	DELSIGMAF=(SIGMAFmax-SIGMAFmin)/double(NSIGMAF);
 	if(NSIGMAF==0)
@@ -86,6 +88,7 @@ CmasterSampler::~CmasterSampler(){
 }
 
 int CmasterSampler::MakeEvent(){
+	//Eigen::Matrix3d chi,chiinv;
 	int np,nparts=0;
 	Chyper *hyper;
 	Csampler *samplerptr=nullptr,*MSU_SAMPLER_findT=nullptr;
@@ -97,32 +100,64 @@ int CmasterSampler::MakeEvent(){
 		hyper=*it;
 		if(hyper->firstcall){
 			if(FINDT){
-				if(MSU_SAMPLER_findT==nullptr)
+				CLog::Fatal("In MakeEvent, but should not be here\n");
+				if(MSU_SAMPLER_findT==nullptr){
 					MSU_SAMPLER_findT=new Csampler(0.140,hyper->sigma);
+				}
 				MSU_SAMPLER_findT->GetTfMuNH(hyper);
 				CALCMU=false;
 			}
-			samplerptr=ChooseSampler(hyper);
-			hyper->SetSampler(samplerptr);
-			if(samplerptr->FIRSTCALL){
-				samplerptr->GetNHMu0();
-				samplerptr->CalcDensitiesMu0();
-				samplerptr->CalcNHadronsEpsilonP(hyper);
-				samplerptr->FIRSTCALL=false;
-			}
-			if(CALCMU){
+			if(hyper->T0>TFmin-0.00001){
+				printf("calling ChooseSampler, with hyper->T0=%g\n",hyper->T0);
+				samplerptr=ChooseSampler(hyper);
+				hyper->SetSampler(samplerptr);
+				if(samplerptr->FIRSTCALL){
+					samplerptr->GetNHMu0();
+					samplerptr->CalcDensitiesMu0();
+					samplerptr->CalcNHadronsEpsilonP(hyper);
+					samplerptr->FIRSTCALL=false;
+					samplerptr->partlist=partlist;
+					if(!VARY_FUGACITY && SETMU0){
+						samplerptr->CalcDensitiesMu0();
+						//hyper->chi=samplerptr->chi0;
+						//hyper->chiinv=samplerptr->chiinv0;
+						//hyper->sigma0=samplerptr->sigma0;
+						//samplerptr->CalcNHadrons(hyper);
+						//samplerptr->CalcChiWithFugacity(hyper);
+					}
+				}
+				else{
+					if(VARY_FUGACITY || !SETMU0){
+						if(CALCMU){
+							samplerptr->GetMuNH(hyper);
+						}
+						samplerptr->CalcNHadrons(hyper);
+						//samplerptr->CalcChiWithFugacity(hyper);
+					}
+					else{
+						hyper->nhadrons=samplerptr->nhadrons0;
+						//hyper->chi=samplerptr->chi0;
+						//hyper->chiinv=samplerptr->chiinv0;
+					}
+				}
+				/*if(CALCMU){
+				printf("howdy cc\n");
 				samplerptr->GetMuNH(hyper);
 				samplerptr->CalcNHadronsEpsilonP(hyper);
 				samplerptr->CalcNHadrons(hyper);
+				}*/
+				hyper->firstcall=false;
+				//samplerptr->CalcNHadronsEpsilonP(hyper);
+				if(VARY_FUGACITY){
+					samplerptr->CalcNHadrons(hyper);
+					//samplerptr->CalcChiWithFugacity(hyper);
+				}
+				//samplerptr->partlist=partlist;
+				printf("Making parts with T=%g\n",hyper->T0);
+				np=hyper->sampler->MakeParts(hyper);
+				nparts+=np;
 			}
-			hyper->firstcall=false;
-			//samplerptr->CalcNHadronsEpsilonP(hyper);
-			samplerptr->CalcNHadrons(hyper);
-			samplerptr->CalcChiWithFugacity(hyper);
-			samplerptr->partlist=partlist;
 		}
-		np=hyper->sampler->MakeParts(hyper);
-		nparts+=np;
 	}
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
@@ -133,9 +168,12 @@ int CmasterSampler::MakeEvent(){
 Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 	double T,sigma,del;
 	int it,isigma;
+	if(hyper->T0>TFmax)
+		hyper->T0=TFmax-0.0001;
 	T=hyper->T0;
 	it=floorl(T/DELTF);
 	del=T-it*DELTF;
+	printf("choosing sampler, T=%g, it=%d\n",T,it);
 	if(randy->ran()<del/DELTF)
 		it+=1;
 	if(it<0)
@@ -166,6 +204,7 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 		CLog::Info(message);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
 	}
+	printf("sampler chosen\n");
 	return sampler[it][isigma];
 }
 

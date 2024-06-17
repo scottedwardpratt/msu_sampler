@@ -28,6 +28,7 @@ namespace NMSUPratt{
 		double nhadrons0,epsilon0,P0,p4overE30;
 		vector<double> density0i,epsilon0i,P0i;
 		Eigen::Matrix<double,3,3> chi0,chiinv0,sigma0;
+		Eigen::Matrix<double,3,3> chi,chiinv;
 		vector<map<double,double>> sfdens0imap;
 		bool FIRSTCALL;
 		int ntest;
@@ -46,7 +47,7 @@ namespace NMSUPratt{
 		void CalcDensitiesMu0();
 		double totvol;
 		vector<double> pibose_dens0,pibose_P0,pibose_epsilon0,pibose_dedt0;
-		bool forMU0_calculated;
+		bool forMU0_calculated,SFMapCalculated;
 		// Including Isospin (i refers to 2*I3)
 		// number densities
 		double nh0_b0i0s0,nh0_b0i2s0,nh0_b0i1s1;
@@ -102,6 +103,7 @@ namespace NMSUPratt{
 		void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi4);
 		void GetEpsilonRhoChi4BQS(double muB,double muII,double muS,double &epsilon,double &P,double &rhoB,double &rhoII,double &rhoS,double &nhadrons,Eigen::Matrix<double,4,4> &chi4BQS,double &dedT);
 		int MakeParts(Chyper *hyper);
+		int MakeParts(vector<double> &Q,Chyper *hyper);
 		void CalcRvisc(Chyper *hyper);
 		void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);
 		void ShearScale(Chyper *hyper,double mass,FourVector &pnoshear,FourVector &p);
