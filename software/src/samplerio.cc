@@ -313,13 +313,15 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
-	fgets(dummy,CLog::CHARLENGTH,fptr);	fgets(dummy,CLog::CHARLENGTH,fptr);
+	fgets(dummy,CLog::CHARLENGTH,fptr);
 	while(!feof(fptr)){
 		double readstuff[15];
-		for(int iread=0;iread<14;iread++)
+		for(int iread=0;iread<15;iread++)
 			fscanf(fptr,"%lf",&readstuff[iread]);
 		tau=readstuff[0];
 		Tf=readstuff[1];
+		printf("reading hyper info, tau=%g, Tf=%g\n",tau,Tf);
+		Misc::Pause();
 		if(Tf>=TFmin){
 			f_u=readstuff[2];
 			f_d=readstuff[3];
@@ -412,6 +414,7 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 		ielement+=1;
 	}
 	nelements=ielement;
+	Misc::Pause();
 }
 
 

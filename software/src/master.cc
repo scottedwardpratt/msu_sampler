@@ -173,12 +173,12 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 	T=hyper->T0;
 	it=floorl(T/DELTF);
 	del=T-it*DELTF;
-	printf("choosing sampler, T=%g, it=%d\n",T,it);
+	//printf("choosing sampler, T=%g, it=%d\n",T,it);
 	if(randy->ran()<del/DELTF)
 		it+=1;
 	if(it<0)
 		it=0;
-	if(it>=NTF){
+	if(it>NTF){
 		it=NTF-1;
 		snprintf(message,CLog::CHARLENGTH,"WARNING in CmasterSampler::ChooseSampler\n");
 		CLog::Info(message);
@@ -204,7 +204,7 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 		CLog::Info(message);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
 	}
-	printf("sampler chosen\n");
+	//printf("sampler chosen\n");
 	return sampler[it][isigma];
 }
 

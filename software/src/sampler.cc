@@ -26,8 +26,10 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	if(Tfset<mastersampler->TFmin || Tfset>mastersampler->TFmax){
 		CLog::Fatal("Creating sampler object  T out of range, = "+to_string(Tfset)+"\n");
 	}
-	if(Tfset>mastersampler->TFmax)
+	if(Tfset>mastersampler->TFmax){
+		CLog::Info("Tf>TFmax, = "+to_string(Tfset)+"\n");
 		Tfset=mastersampler->TFmax-0.0001;
+	}
 	CresInfo *resinfo;
 	CresMassMap::iterator iter;
 	int ires;
