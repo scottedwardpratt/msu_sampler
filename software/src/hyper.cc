@@ -98,6 +98,7 @@ void Chyper::Copy(Chyper *oldhyper){
 	Rbulk=oldhyper->Rbulk;
 	epsilon=oldhyper->epsilon;
 	P=oldhyper->P;
+	T0=oldhyper->T0;
 	dedT=oldhyper->dedT;
 	biggestpitilde=oldhyper->biggestpitilde;
 	udotdOmega=oldhyper->udotdOmega;

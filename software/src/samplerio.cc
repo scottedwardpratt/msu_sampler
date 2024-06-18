@@ -320,8 +320,6 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 			fscanf(fptr,"%lf",&readstuff[iread]);
 		tau=readstuff[0];
 		Tf=readstuff[1];
-		printf("reading hyper info, tau=%g, Tf=%g\n",tau,Tf);
-		Misc::Pause();
 		if(Tf>=TFmin){
 			f_u=readstuff[2];
 			f_d=readstuff[3];
@@ -414,7 +412,6 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 		ielement+=1;
 	}
 	nelements=ielement;
-	Misc::Pause();
 }
 
 
