@@ -280,7 +280,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 	nelements=ielement;
 }
 
-void CmasterSampler::ReadHyper_Duke_2D(){
+void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	string filename;
 	Chyper *elem;
 	int ielement=0;
@@ -305,7 +305,7 @@ void CmasterSampler::ReadHyper_Duke_2D(){
 	}
 
 	nelements=0;
-	filename=parmap->getS("HYPER_INFO_FILE",string("hyperdata/OSU/alice_cent0_5/hyper.txt"));
+	filename="model_output/run"+to_string(run_number)+"/"+qual+"/udsdata/hyper.txt";
 	snprintf(message,CLog::CHARLENGTH,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");

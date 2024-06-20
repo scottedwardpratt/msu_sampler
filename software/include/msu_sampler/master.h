@@ -55,7 +55,7 @@ namespace NMSUPratt{
 
 		void ReadHyper_BEST_Binary3D();
 		void ReadHyper_OSU_2D();
-		void ReadHyper_Duke_2D();
+		void ReadHyper_Duke_2D(int run_number,string qual);
 		int MakeEvent(); // returns number of parts
 		Csampler* ChooseSampler(Chyper *hyper);
 		void ChooseSampler(double Tf,double sigmaf,int &itf,int &isigmaf);

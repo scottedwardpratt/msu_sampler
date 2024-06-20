@@ -108,7 +108,7 @@ int CmasterSampler::MakeEvent(){
 				CALCMU=false;
 			}
 			if(hyper->T0>TFmin-0.00001){
-				printf("calling ChooseSampler, with hyper->T0=%g\n",hyper->T0);
+				//printf("calling ChooseSampler, with hyper->T0=%g\n",hyper->T0);
 				samplerptr=ChooseSampler(hyper);
 				hyper->SetSampler(samplerptr);
 				if(samplerptr->FIRSTCALL){
@@ -153,7 +153,6 @@ int CmasterSampler::MakeEvent(){
 					//samplerptr->CalcChiWithFugacity(hyper);
 				}
 				//samplerptr->partlist=partlist;
-				printf("Making parts with T=%g\n",hyper->T0);
 				np=hyper->sampler->MakeParts(hyper);
 				nparts+=np;
 			}
@@ -200,8 +199,8 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 			isigma=NSIGMAF-1;
 	}
 	if(sampler[it][isigma]==nullptr){
-		snprintf(message,CLog::CHARLENGTH,"making Csampler object, DELTF=%g, it=%d, Tf-T0=%g\n",DELTF,it,it*DELTF-hyper->T0);
-		CLog::Info(message);
+		//snprintf(message,CLog::CHARLENGTH,"making Csampler object, DELTF=%g, it=%d, Tf-T0=%g\n",DELTF,it,it*DELTF-hyper->T0);
+		//CLog::Info(message);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
 	}
 	//printf("sampler chosen\n");
@@ -270,8 +269,8 @@ void CmasterSampler::GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVecto
 	}
 	snprintf(message,CLog::CHARLENGTH,"after, trace=%g\n",trace);
 	CLog::Info(message);
-	if(fabs(picontract)>0.1)
-		Misc::Pause();
+	//if(fabs(picontract)>0.1)
+	//	Misc::Pause();
 #endif
 }
 

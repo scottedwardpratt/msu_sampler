@@ -22,7 +22,6 @@ int Csampler::NSAMPLE=1;
 
 // Constructor
 Csampler::Csampler(double Tfset,double sigmafset){
-	printf("constructing sampler for T=%g\n",Tfset);
 	if(Tfset<mastersampler->TFmin || Tfset>mastersampler->TFmax){
 		CLog::Fatal("Creating sampler object  T out of range, = "+to_string(Tfset)+"\n");
 	}
@@ -67,7 +66,6 @@ Csampler::Csampler(double Tfset,double sigmafset){
 		}
 		SFMapCalculated=true;
 	}
-	printf("finished constructing sampler for T=%g\n",Tfset);
 }
 
 Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresList *reslist_set,Crandy *randy_set){
@@ -817,9 +815,6 @@ double Csampler::GenerateThermalMass(CresInfo *resinfo){
 	if(!resinfo->decay)
 		E=resinfo->mass;
 	else{
-		printf("In GenerateThermalMass, ires=%d, Tf=%g\n",ires,Tf);
-		printf("In GenerateThermalMass, pid=%d, sfdens0imap size=%lu, netprob=%g, T=%g\n",
-		resinfo->pid,sfdens0imap[ires].size(),netprob,Tf);
 		it1=sfdens0imap[ires].lower_bound(netprob);
 		if(it1==sfdens0imap[ires].end()){
 			resinfo->Print();
