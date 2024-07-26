@@ -152,11 +152,11 @@ int CmasterSampler::MakeEvent(){
 					samplerptr->CalcNHadrons(hyper);
 					//samplerptr->CalcChiWithFugacity(hyper);
 				}
-				//samplerptr->partlist=partlist;
-				np=hyper->sampler->MakeParts(hyper);
-				nparts+=np;
 			}
+			//samplerptr->partlist=partlist;
 		}
+		np=hyper->sampler->MakeParts(hyper);
+		nparts+=np;
 	}
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
