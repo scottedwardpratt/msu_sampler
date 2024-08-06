@@ -164,7 +164,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 
 //#define __TEST_PITILDE_TRACE__
 
-
 void CmasterSampler::ReadHyper_OSU_2D(){
 	string filename;
 	Chyper *elem;
@@ -295,7 +294,12 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	double qmu0,qmu1,qmu2,qmu3;
 	double rhoB;
 	char dummy[300];
-	//double netvolume=0.0;
+	double netvolume=0.0;
+	double u0bar=0.0,u0bardenom=0.0;
+	double uxbar=0.0;
+	double uybar=0.0;
+	
+	
 
 	if(parmap->getB("MSU_SAMPLER_BJORKEN_2D",true)){
 		ETAMAX_ratio=2.0*parmap->getD("MSU_SAMPLER_BJORKEN_ETAMAX",1.0)/parmap->getD("HYDRO_BJORKEN_ETAMAX",1.0);
@@ -344,6 +348,14 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 			epsilonf=-1.0; // not used
 
 			udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
+
+			u0bar+=u0*udotdOmega;
+			u0bardenom+=udotdOmega;
+			
+			uxbar+=fabs(ux)*udotdOmega;
+			
+			uybar+=fabs(uy)*udotdOmega;
+			
 			elem=new Chyper();
 	
 			elem->tau=tau;
@@ -353,6 +365,8 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 			elem->dOmega[3]=0.0;
 
 			elem->udotdOmega=udotdOmega;
+			//netvolume+=fabs(readstuff[9]);
+			netvolume+=udotdOmega;
 		
 
 			elem->r[0]=tau;
@@ -412,6 +426,8 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 		ielement+=1;
 	}
 	nelements=ielement;
+	printf("u0bar=%g, uxbar=%g, uybar=%g\n",u0bar/u0bardenom,uxbar/u0bardenom,uybar/u0bardenom);
+	printf("netvolume=%g, ETAMAX_ratio=%g\n",netvolume,ETAMAX_ratio);
 }
 
 

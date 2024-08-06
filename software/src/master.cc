@@ -88,6 +88,7 @@ CmasterSampler::~CmasterSampler(){
 }
 
 int CmasterSampler::MakeEvent(){
+	printf("check: beginning MakeEvent\n");
 	//Eigen::Matrix3d chi,chiinv;
 	int np,nparts=0;
 	Chyper *hyper;
@@ -161,6 +162,7 @@ int CmasterSampler::MakeEvent(){
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
 	NEVENTS+=1;
+	printf("check: ending MakeEvent, nparts=%d\n",nparts);
 	return nparts;
 }
 

@@ -364,13 +364,13 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
 			fugacity=pow(fugacity_u,abs(resinfo->Nu))*pow(fugacity_d,abs(resinfo->Nd))*pow(fugacity_s,abs(resinfo->Ns));
 			nhadrons+=fugacity*density0i[ires]*exp(mutot);
-			if(resinfo->decay && !USE_POLE_MASS)
-				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
+			//if(resinfo->decay && !USE_POLE_MASS)
+				//CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
 		}
 	}
 	hyper->nhadrons=nhadrons;
-	if(!USE_POLE_MASS)
-		SFMapCalculated=true;
+	//if(!USE_POLE_MASS)
+	//	SFMapCalculated=true;
 		
 }
 
