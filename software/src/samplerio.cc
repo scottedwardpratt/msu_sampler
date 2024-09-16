@@ -319,33 +319,33 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	}
 	fgets(dummy,CLog::CHARLENGTH,fptr);
 	while(!feof(fptr)){
-		double readstuff[15];
-		for(int iread=0;iread<15;iread++)
+		double readstuff[16];
+		for(int iread=0;iread<16;iread++)
 			fscanf(fptr,"%lf",&readstuff[iread]);
 		tau=readstuff[0];
 		Tf=readstuff[1];
+		epsilonf=readstuff[2];
 		if(Tf>=TFmin){
-			f_u=readstuff[2];
-			f_d=readstuff[3];
-			f_s=readstuff[4];
-			x=readstuff[5];
-			y=readstuff[6];
-			ux=readstuff[7];
-			uy=readstuff[8];
+			f_u=readstuff[3];
+			f_d=readstuff[4];
+			f_s=readstuff[5];
+			x=readstuff[6];
+			y=readstuff[7];
+			ux=readstuff[8];
+			uy=readstuff[9];
 			u0=sqrt(1.0+ux*ux+uy*uy);
-			dOmega0=readstuff[9]*ETAMAX_ratio;
-			dOmegaX=readstuff[10]*ETAMAX_ratio;
-			dOmegaY=readstuff[11]*ETAMAX_ratio;
-			pitildexx=readstuff[12];
-			pitildexy=readstuff[13];
-			pitildeyy=readstuff[14];
+			dOmega0=readstuff[10]*ETAMAX_ratio;
+			dOmegaX=readstuff[11]*ETAMAX_ratio;
+			dOmegaY=readstuff[12]*ETAMAX_ratio;
+			pitildexx=readstuff[13];
+			pitildexy=readstuff[14];
+			pitildeyy=readstuff[15];
 			//pitildexx=pitildexy=pitildeyy=0.0;
 
 			muB=muS=muC=0.0;
 			PIbulk=0.0;
 			qmu0=qmu1=qmu2=qmu3=0.0;
 			rhoB=0.0;
-			epsilonf=-1.0; // not used
 
 			udotdOmega=dOmega0*u0-dOmegaX*ux-dOmegaY*uy;
 
@@ -378,6 +378,7 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 			elem->fugacity_d=f_d;
 			elem->fugacity_s=f_s;
 			elem->T0=Tf;
+			elem->epsilon=epsilonf;
 
 			elem->u[0]=u0;
 			elem->u[1]=ux;

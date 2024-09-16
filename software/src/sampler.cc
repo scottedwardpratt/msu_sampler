@@ -355,7 +355,7 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 	double fugacity_d=hyper->fugacity_d;
 	double fugacity_s=hyper->fugacity_s;
 	
-	double nhadrons=0.0;
+	double nhadrons=0.0,epsilon1=0.0;
 	for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
 		resinfo=iter->second;
 		if(resinfo->pid!=22){
@@ -364,11 +364,14 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 			mutot=hyper->muB*resinfo->baryon+hyper->muII*II3+hyper->muS*resinfo->strange;
 			fugacity=pow(fugacity_u,abs(resinfo->Nu))*pow(fugacity_d,abs(resinfo->Nd))*pow(fugacity_s,abs(resinfo->Ns));
 			nhadrons+=fugacity*density0i[ires]*exp(mutot);
+			epsilon1+=fugacity*epsilon0i[ires]*exp(mutot);
 			//if(resinfo->decay && !USE_POLE_MASS)
 				//CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
 		}
 	}
 	hyper->nhadrons=nhadrons;
+	printf("T=%7.3f, epsilon=%7.4f, epsilon1=%7.4f, nh=%7.4f, f= %7.4f %7.4f %7.4f\n",
+	hyper->T0,hyper->epsilon,epsilon1,nhadrons,hyper->fugacity_u,hyper->fugacity_d,hyper->fugacity_s);
 	//if(!USE_POLE_MASS)
 	//	SFMapCalculated=true;
 		
