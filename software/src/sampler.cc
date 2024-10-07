@@ -370,8 +370,8 @@ void Csampler::CalcNHadrons(Chyper *hyper){
 		}
 	}
 	hyper->nhadrons=nhadrons;
-	printf("T=%7.3f, epsilon=%7.4f, epsilon1=%7.4f, nh=%7.4f, f= %7.4f %7.4f %7.4f\n",
-	hyper->T0,hyper->epsilon,epsilon1,nhadrons,hyper->fugacity_u,hyper->fugacity_d,hyper->fugacity_s);
+	//printf("T=%7.3f, epsilon=%7.4f, epsilon1=%7.4f, nh=%7.4f, f= %7.4f %7.4f %7.4f\n",
+	//hyper->T0,hyper->epsilon,epsilon1,nhadrons,hyper->fugacity_u,hyper->fugacity_d,hyper->fugacity_s);
 	//if(!USE_POLE_MASS)
 	//	SFMapCalculated=true;
 		
