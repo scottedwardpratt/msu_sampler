@@ -88,7 +88,6 @@ CmasterSampler::~CmasterSampler(){
 }
 
 int CmasterSampler::MakeEvent(){
-	printf("check: beginning MakeEvent\n");
 	//Eigen::Matrix3d chi,chiinv;
 	int np,nparts=0;
 	Chyper *hyper;
@@ -109,7 +108,6 @@ int CmasterSampler::MakeEvent(){
 				CALCMU=false;
 			}
 			if(hyper->T0>TFmin-0.00001){
-				//printf("calling ChooseSampler, with hyper->T0=%g\n",hyper->T0);
 				samplerptr=ChooseSampler(hyper);
 				hyper->SetSampler(samplerptr);
 				if(samplerptr->FIRSTCALL){
@@ -142,7 +140,6 @@ int CmasterSampler::MakeEvent(){
 					}
 				}
 				/*if(CALCMU){
-				printf("howdy cc\n");
 				samplerptr->GetMuNH(hyper);
 				samplerptr->CalcNHadronsEpsilonP(hyper);
 				samplerptr->CalcNHadrons(hyper);
@@ -162,7 +159,6 @@ int CmasterSampler::MakeEvent(){
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
 	NEVENTS+=1;
-	printf("check: ending MakeEvent, nparts=%d\n",nparts);
 	return nparts;
 }
 
@@ -174,7 +170,6 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 	T=hyper->T0;
 	it=floorl(T/DELTF);
 	del=T-it*DELTF;
-	//printf("choosing sampler, T=%g, it=%d\n",T,it);
 	if(randy->ran()<del/DELTF)
 		it+=1;
 	if(it<0)
@@ -201,11 +196,8 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 			isigma=NSIGMAF-1;
 	}
 	if(sampler[it][isigma]==nullptr){
-		//snprintf(message,CLog::CHARLENGTH,"making Csampler object, DELTF=%g, it=%d, Tf-T0=%g\n",DELTF,it,it*DELTF-hyper->T0);
-		//CLog::Info(message);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
 	}
-	//printf("sampler chosen\n");
 	return sampler[it][isigma];
 }
 
