@@ -1,3 +1,4 @@
+
 #include "msu_sampler/master.h"
 #include "msu_commonutils/constants.h"
 
@@ -97,10 +98,8 @@ int CmasterSampler::MakeEvent(){
 	list<Chyper *>::iterator it;
 	
 	for(it=hyperlist.begin();it!=hyperlist.end();it++){
-		printf("howdy a\n");
 		hyper=*it;
 		if(hyper->firstcall){
-			printf("howdy b\n");
 			if(FINDT){
 				CLog::Fatal("In MakeEvent, but should not be here\n");
 				if(MSU_SAMPLER_findT==nullptr){
@@ -110,17 +109,12 @@ int CmasterSampler::MakeEvent(){
 				CALCMU=false;
 			}
 			if(hyper->T0>TFmin-0.00001){
-				printf("howdy c, T0=%g\n",hyper->T0);
 				samplerptr=ChooseSampler(hyper);
-				printf("howdy cc\n");
 				hyper->SetSampler(samplerptr);
-				printf("howdy cc\n");
 				if(samplerptr->FIRSTCALL){
-					printf("howdy d\n");
 					samplerptr->GetNHMu0();
 					samplerptr->CalcDensitiesMu0();
 					samplerptr->CalcNHadronsEpsilonP(hyper);
-					printf("howdy e\n");
 					samplerptr->FIRSTCALL=false;
 					samplerptr->partlist=partlist;
 					if(!VARY_FUGACITY && SETMU0){
@@ -160,7 +154,6 @@ int CmasterSampler::MakeEvent(){
 			}
 			//samplerptr->partlist=partlist;
 		}
-		printf("howdy g\n");
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
 	}
@@ -173,14 +166,11 @@ int CmasterSampler::MakeEvent(){
 Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 	double T,sigma,del;
 	int it,isigma;
-	printf("check aaa\n");
-	printf("check bbb T0=%g\n",hyper->T0);
 	if(hyper->T0>TFmax)
 		hyper->T0=TFmax-0.0001;
 	T=hyper->T0;
 	it=floorl(T/DELTF);
 	del=T-it*DELTF;
-	printf("check ddd, it=%d, NTF=%d\n",it,NTF);
 	if(randy->ran()<del/DELTF)
 		it+=1;
 	if(it<0)
@@ -207,9 +197,7 @@ Csampler* CmasterSampler::ChooseSampler(Chyper *hyper){
 			isigma=NSIGMAF-1;
 	}
 	if(sampler[it][isigma]==nullptr){
-		printf("check fff, isigma=%d, it=%d,DELTF=%g\n",isigma,it,DELTF);
 		sampler[it][isigma]=new Csampler(it*DELTF,SIGMAFmin+(isigma+0.5)*DELSIGMAF);
-		printf("check ggg\n");
 	}
 	return sampler[it][isigma];
 }
