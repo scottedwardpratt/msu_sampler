@@ -29,6 +29,7 @@ Csampler::Csampler(double Tfset,double sigmafset){
 		CLog::Info("Tf>TFmax, = "+to_string(Tfset)+"\n");
 		Tfset=mastersampler->TFmax-0.0001;
 	}
+	printf("howdy bbb, Tfset=%g\n",Tfset);
 	CresInfo *resinfo;
 	CresMassMap::iterator iter;
 	int ires;
@@ -41,24 +42,31 @@ Csampler::Csampler(double Tfset,double sigmafset){
 	if(!bose_corr)
 		n_bose_corr=1;
 	int nres=reslist->resmap.size();
+	printf("howdy ccc\n");
 	if(reslist->GetResInfoPtr(22)->pid==22)
 		nres-=1;
 	density0i.resize(nres);
 	epsilon0i.resize(nres);
 	P0i.resize(nres);
 	sfdens0imap.resize(nres);
+	printf("howdy ddd\n");
 	if(bose_corr){
 		pibose_P0.resize(n_bose_corr+1);
 		pibose_epsilon0.resize(n_bose_corr+1);
 		pibose_dedt0.resize(n_bose_corr+1);
 		pibose_dens0.resize(n_bose_corr+1);
 	}
+	printf("howdy eee\n");
 	forMU0_calculated=false;
 	if(!USE_POLE_MASS){
+		printf("howdy fff, nres=%d\n",nres);
 		sfdens0imap.resize(nres);
+		printf("howdy ggg, nres=%d\n",nres);
 		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
+			printf("howdy hhh, nres=%d\n",nres);
 			resinfo=iter->second;
 			ires=resinfo->ires;
+			printf("howdy iii, ires=%d\n",ires);
 			sfdens0imap[ires].clear();
 			if(resinfo->decay){
 				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
@@ -66,6 +74,7 @@ Csampler::Csampler(double Tfset,double sigmafset){
 		}
 		SFMapCalculated=true;
 	}
+	printf("howdy zzz\n");
 }
 
 Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresList *reslist_set,Crandy *randy_set){
