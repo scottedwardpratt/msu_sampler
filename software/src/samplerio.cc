@@ -427,8 +427,11 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 		ielement+=1;
 	}
 	nelements=ielement;
-	printf("u0bar=%g, uxbar=%g, uybar=%g\n",u0bar/u0bardenom,uxbar/u0bardenom,uybar/u0bardenom);
-	printf("netvolume=%g, ETAMAX_ratio=%g\n",netvolume,ETAMAX_ratio);
+	char message[CLog::CHARLENGTH];
+	snprintf(message,CLog::CHARLENGTH,"u0bar=%g, uxbar=%g, uybar=%g\n",u0bar/u0bardenom,uxbar/u0bardenom,uybar/u0bardenom);
+	CLog::Info(message);
+	snprintf(message,CLog::CHARLENGTH,"netvolume=%g, ETAMAX_ratio=%g\n",netvolume,ETAMAX_ratio);
+	CLog::Info(message);
 }
 
 
