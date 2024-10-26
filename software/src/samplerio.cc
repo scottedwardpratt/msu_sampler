@@ -273,7 +273,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 		elem->firstcall=true;
 		hyperlist.push_back(elem);
-		elem->fugacity_u=elem->fugacity_d=elem->fugacity_d=1.0;
+		elem->fugacity_u=elem->fugacity_d=1.0;
 		ielement+=1;
 	}
 	nelements=ielement;
@@ -281,7 +281,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	string filename;
-	Chyper *elem;
+	Chyper *elem=NULL;
 	int ielement=0;
 	double u0,ux,uy;
 	double x,y,tau;
@@ -421,10 +421,11 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 				elem->fugacity_u=elem->fugacity_d=elem->fugacity_s=1.0;
 			}
 		}
-
-		elem->firstcall=true;
-		hyperlist.push_back(elem);
-		ielement+=1;
+		if(elem!=NULL){
+			elem->firstcall=true;
+			hyperlist.push_back(elem);
+			ielement+=1;
+		}
 	}
 	nelements=ielement;
 	char message[CLog::CHARLENGTH];
