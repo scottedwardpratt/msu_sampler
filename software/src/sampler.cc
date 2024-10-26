@@ -108,10 +108,10 @@ Csampler::Csampler(double Tfset,double sigmafset,CparameterMap *parmap_set,CresL
 	if(!USE_POLE_MASS){
 		sfdens0imap.resize(nres);
 		for(iter=reslist->massmap.begin();iter!=reslist->massmap.end();++iter){
-			sfdens0imap[ires].clear();
 			resinfo=iter->second;
 			if(resinfo->decay){
 				ires=resinfo->ires;
+				sfdens0imap[ires].clear();
 				CalcSFDensMap(resinfo,Tf,sfdens0imap[ires]);
 			}
 		}
