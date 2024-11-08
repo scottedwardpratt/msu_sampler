@@ -309,7 +309,7 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	}
 
 	nelements=0;
-	filename="modelruns/run"+to_string(run_number)+"/"+qual+"/udsdata/hyper.txt";
+	filename="udsdata/modelruns/run"+to_string(run_number)+"/"+qual+"/udsdata/hyper.txt";
 	snprintf(message,CLog::CHARLENGTH,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
