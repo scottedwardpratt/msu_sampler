@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace NMSUPratt;
-CmeanField *CmasterSampler::meanfield=NULL;
+CmeanField *CmasterSampler::meanfield=nullptr;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	message=new char[CLog::CHARLENGTH];

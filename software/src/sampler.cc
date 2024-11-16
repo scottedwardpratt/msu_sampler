@@ -5,10 +5,10 @@
 using namespace std;
 using namespace NMSUPratt;
 
-Crandy* Csampler::randy=NULL;
-CresList *Csampler::reslist=NULL;
-CparameterMap *Csampler::parmap=NULL;
-CmasterSampler *Csampler::mastersampler=NULL;
+Crandy* Csampler::randy=nullptr;
+CresList *Csampler::reslist=nullptr;
+CparameterMap *Csampler::parmap=nullptr;
+CmasterSampler *Csampler::mastersampler=nullptr;
 bool Csampler::CALCMU=true;
 bool Csampler::SETMU0=false;
 int Csampler::n_bose_corr=1;

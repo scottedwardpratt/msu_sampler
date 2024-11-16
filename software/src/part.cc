@@ -1,7 +1,7 @@
 #include "msu_sampler/part.h"
 using namespace NMSUPratt;
 
-CresList *CpartList::reslist=NULL;
+CresList *CpartList::reslist=nullptr;
 char *Cpart::message=new char[CLog::CHARLENGTH];
 char *CpartList::message=new char[CLog::CHARLENGTH];
 
@@ -137,7 +137,7 @@ void CpartList::Reset(){
 
 void CpartList::WriteParts(string filename){
 	FILE *fptr=fopen(filename.c_str(),"w");
-	if (fptr==NULL) {
+	if (fptr==nullptr) {
 		snprintf(message,CLog::CHARLENGTH,"Can't open file to write parts\n");
 		CLog::Info(message);
 	}

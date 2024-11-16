@@ -25,7 +25,7 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 	snprintf(message,CLog::CHARLENGTH,"opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"rb");
-	if (fptr==NULL) {
+	if (fptr==nullptr) {
 		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
@@ -192,7 +192,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 	snprintf(message,CLog::CHARLENGTH,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
-	if(fptr==NULL){
+	if(fptr==nullptr){
 		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
@@ -281,7 +281,7 @@ void CmasterSampler::ReadHyper_OSU_2D(){
 
 void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	string filename;
-	Chyper *elem=NULL;
+	Chyper *elem=nullptr;
 	int ielement=0;
 	double u0,ux,uy;
 	double x,y,tau;
@@ -313,7 +313,7 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 	snprintf(message,CLog::CHARLENGTH,"Opening %s\n",filename.c_str());
 	CLog::Info(message);
 	FILE *fptr=fopen(filename.c_str(),"r");
-	if(fptr==NULL){
+	if(fptr==nullptr){
 		snprintf(message,CLog::CHARLENGTH,"Can't open hyper info file\n");
 		CLog::Fatal(message);
 	}
@@ -421,7 +421,7 @@ void CmasterSampler::ReadHyper_Duke_2D(int run_number,string qual){
 				elem->fugacity_u=elem->fugacity_d=elem->fugacity_s=1.0;
 			}
 		}
-		if(elem!=NULL){
+		if(elem!=nullptr){
 			elem->firstcall=true;
 			hyperlist.push_back(elem);
 			ielement+=1;
