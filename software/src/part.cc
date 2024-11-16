@@ -104,7 +104,7 @@ double Cpart::GetRapidity(){
 /////////////////
 
 CpartList::CpartList(CparameterMap *parmap,CresList *reslist_in){
-	nparts_blocksize=parmap->getI("MSU_SAMPLER_NPARTS_BLOCKSIZE",2000);
+	nparts_blocksize=parmap->getI("MSU_SAMPLER_NPARTS_BLOCKSIZE",100000);
 	partvec.resize(nparts_blocksize);
 	reslist=reslist_in;
 	Reset();

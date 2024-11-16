@@ -89,11 +89,9 @@ CmasterSampler::~CmasterSampler(){
 }
 
 int CmasterSampler::MakeEvent(){
-	//Eigen::Matrix3d chi,chiinv;
 	int np,nparts=0;
 	Chyper *hyper;
 	Csampler *samplerptr=nullptr,*MSU_SAMPLER_findT=nullptr;
-	//double Omega0Sum=0.0;
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
 	
