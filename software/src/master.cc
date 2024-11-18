@@ -70,11 +70,14 @@ CmasterSampler::CmasterSampler(CparameterMap *parmapin){
 	}
 }
 
-CmasterSampler::~CmasterSampler(){
+void CmasterSampler::DeleteHyperElements(){
 	for(auto p : hyperlist)
 		delete p;
 	hyperlist.clear();
+}
 
+CmasterSampler::~CmasterSampler(){
+	DeleteHyperElements();
 	int iT,isigma;
 	for(iT=0;iT<=NTF;iT++){
 		for(isigma=0;isigma<NSIGMAF;isigma++){

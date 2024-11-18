@@ -32,6 +32,7 @@ namespace NMSUPratt{
 		CmasterSampler(CparameterMap *parmapin);
 		CmasterSampler(string parsfilename); // Constructor
 		~CmasterSampler();
+		void DeleteHyperElements();
 		char *message;
 		CparameterMap *parmap;
 		CresList *reslist;
